@@ -1,0 +1,188 @@
+@font-face
+  font-family: UT
+  src: url(/fonts/UT.woff2)
+
+@font-face
+  font-family: SVN
+  src: url(/fonts/SVN.woff2)
+  
+:root
+  --header-size: 3.7rem
+  --nav-size: 250px
+  --nav-right-size: 300px
+  --footer-size: 2.5rem
+
+*
+  -webkit-tap-highlight-color: transparent !important
+
+html
+  font-size: 16px
+  scroll-behavior: smooth
+
+html, body
+  margin: 0
+  padding: 0
+  min-height: 100%
+  height: 100%
+  background: #09121b
+
+body
+  -webkit-overflow-scrolling: touch
+
+.safe-area-top
+  padding-top: #{env(safe-area-inset-top)}
+  
+.dark
+  --scroll-color: var(--color-gray-800)
+  --scroll-color-hover: var(--color-gray-700)
+
+#__nuxt
+  min-height: 100%
+  height: 100%
+
+@media (hover: hover)
+  ::-webkit-scrollbar
+    width: 8px
+    height: 8px
+  ::-webkit-scrollbar-track
+    background-color: transparent
+  ::-webkit-scrollbar-thumb
+    background-color: #101d2a
+    border-radius: 20px
+    border: 1px solid transparent
+    background-clip: content-box
+    cursor: pointer
+
+// Other
+.UT
+  font-family: "UT", sans-serif
+.SVN
+  font-family: "SVN", sans-serif
+.HideScroll
+  scrollbar-width: none
+  -ms-overflow-style: none
+  &::-webkit-scrollbar
+    display: none
+
+// Background Gray
+.bg-gray-1000
+  background: #101d2a !important
+.bg-gray-1100
+  background: #121925 !important
+.bg-gray
+  background: #09121b !important
+.bg-gray-blur
+  background: rgb(16 29 42 / 66%) !important
+
+// Card Modal
+.bg-card
+  background: radial-gradient(72.12% 50% at 50% 0, rgba(26, 168, 229, 0.2) 0, transparent 100%), linear-gradient(173deg, #18223380 1.04%, #0a132580 94.54%), #000 !important
+  // border: 1px solid #318eb9
+
+// Box
+.box-blue
+  background: linear-gradient(to right, #0c1226, rgb(var(--color-primary-900)), #0c1226)
+.box-purple
+  background: linear-gradient(to right, #0c1226, #441778, #0c1226)
+.box-orange
+  background: linear-gradient(to right, #0c1226, #975d0e, #0c1226)
+.box-green
+  background: linear-gradient(to right, #0c1226, rgb(11, 108, 47), #0c1226)
+.box-red
+  background: linear-gradient(to right, #0c1226, #620e0e, #0c1226)
+.box-yellow
+  background: linear-gradient(to right, #0c1226, #c7bb0c, #0c1226)
+.border-gray
+  border: 1px solid #2c3953
+
+// Title Style
+.bg-title
+  background: linear-gradient(to right, transparent, rgba(var(--color-primary-800)))
+  &::after
+    content: url(/images/icon/icon-sparks.svg)
+    margin: 0 10px
+
+// Background Light Anim
+.color-blue-light
+  --bg-light-color: var(--color-primary-600)
+  --bg-light-shadow-color: var(--color-primary-600)
+.color-cyan-light
+  --bg-light-color: 90, 229, 217
+  --bg-light-shadow-color: 9, 99, 92
+.color-purple-light
+  --bg-light-color: 179, 106, 253
+  --bg-light-shadow-color: 56, 52, 135
+.color-yellow-light
+  --bg-light-color: 247, 199, 59
+  --bg-light-shadow-color: 81, 66, 23
+  
+.bg-box-light
+  position: relative
+  background-image: linear-gradient(180deg, rgba(var(--bg-light-color)), #13171c00)
+  &::before
+    content: ''
+    position: absolute
+    inset: 1px
+    border-radius: inherit
+    pointer-events: none
+    z-index: 0
+    background-image: radial-gradient(77.89% 100% at 50% 0%, rgba(var(--bg-light-shadow-color)), #09121b 70.39%, #09121b)
+    transition: all 0.25s ease
+  &::after
+    content: ''
+    position: absolute
+    height: 5px
+    width: 70%
+    background: rgba(var(--bg-light-color))
+    top: 0
+    border-radius: 0 0 1rem 1rem
+    z-index: 0
+    transition: all 0.25s ease
+  &:hover, &--active
+    &::before
+      // background-image: radial-gradient(77.89% 100% at 50% 0%, rgba(var(--bg-light-shadow-color)), #09121b 100%, #09121b)
+      background-size: 200% 200%
+    &::after
+      height: 8px
+      width: 80%
+
+.bg-anim-light
+  background-image: linear-gradient(90deg, #0c1226, rgba(var(--bg-light-color)), #0c1226) !important
+  background-size: 200% 100%
+  animation: bg-anim 1s ease infinite alternate
+  color: #ffffff !important
+@keyframes bg-anim
+  0%
+    background-position: 0% 0%
+  100%
+    background-position: 100% 0%
+
+// Menu Item
+.MenuItem
+  width: 100%
+  min-height: 45px
+  max-height: 45px
+  overflow: hidden
+  cursor: pointer
+  user-select: none
+  padding: 0 12px
+  transition: all 0.25s ease
+  &:hover
+    background: #09121b
+  &:hover > .MenuItem__Icon
+    color: rgb(var(--color-primary-500))
+  &:hover > .MenuItem__Text
+    color: #ffffff
+  &--Active
+    background: linear-gradient(to right, rgba(var(--color-primary-800)), #0c1226) !important
+    .MenuItem__Icon
+      color: #ffffff !important
+    .MenuItem__Text
+      color: #ffffff !important
+
+// Page Anim
+.page-enter-active, .page-leave-active
+  transition: opacity 0.4s cubic-bezier(1, 0.5, 0.8, 1)
+.page-enter-from, .page-leave-to 
+  opacity: 0
+  // filter: blur(1rem)

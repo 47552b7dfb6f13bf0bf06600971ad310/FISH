@@ -1,0 +1,56 @@
+import { defineStore } from 'pinia'
+import type { IDBConfigStore } from '~~/types'
+
+export const useConfigStore = defineStore('config', () => {
+  const config : IDBConfigStore = reactive({
+    name: '',
+    description: '',
+    address: '',
+    image: {
+      logo: '',
+      banner: '',
+    },
+
+    contact: {
+      owner: '',
+      phone: '',
+      email: '',
+    },
+
+    gate: {
+      name: '',
+      number: '',
+      person: '',
+    },
+
+    social: {
+      facebook: '',
+      messenger: '',
+      zalo: '',
+      tiktok: ''
+    },
+
+    overtime: {
+      step: 1,
+      price: 0,
+    },
+
+    lunch: {
+      price: 0
+    }
+  })
+
+  const installPrompt : Ref<any> = ref()
+
+  const setInstallPrompt = (data : any) => installPrompt.value = data
+
+  const bootConfig = async () => {
+    const cfg : IDBConfigStore = await useAPI('config/public/get')
+    Object.assign(config, cfg)
+  }
+
+  return { 
+    config, bootConfig,
+    installPrompt, setInstallPrompt
+  }
+})
