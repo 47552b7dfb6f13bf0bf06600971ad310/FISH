@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
 
     const list = await DB.Fish
     .find(match)
+    .populate({ path: 'area', select: 'name' })
     .populate({ path: 'category', select: 'name key' })
     .sort(sorting)
     .limit(size)

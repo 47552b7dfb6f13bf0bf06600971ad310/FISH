@@ -1,6 +1,10 @@
 <template>
-  <div class="relative h-full min-h-full pt-[var(--header-size)]">
-    
+  <div class="relative max-w-[600px] mx-auto">
+    <LayoutPublicHeader class="z-[50] w-full" />
+
+    <main class="p-4 w-full">
+      <slot></slot>
+    </main>
   </div>
 </template>
 

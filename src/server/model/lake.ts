@@ -6,6 +6,7 @@ export const DBLakeArea = (mongoose : Mongoose) => {
     name: { type: String },
     key: { type: String },
     description: { type: String },
+    image: { type: String },
   })
 
   schema.index({ key: 'text' })

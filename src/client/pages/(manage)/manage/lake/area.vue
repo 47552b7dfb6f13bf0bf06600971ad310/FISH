@@ -47,6 +47,14 @@
           <UTextarea v-model="stateAdd.description" autoresize />
         </UFormGroup>
 
+        <UFormGroup label="Hình ảnh">
+          <UiUploadImage v-model="stateAdd.image">
+            <template #default="{ select, loading }">
+              <UInput :model-value="stateAdd.image" :loading="loading" readonly @click="select"/>
+            </template>
+          </UiUploadImage>
+        </UFormGroup>
+
         <UiFlex justify="end">
           <UButton color="yellow" type="submit" :loading="loading.add">Thêm</UButton>
           <UButton color="gray" @click="modal.add = false" :disabled="loading.add" class="ml-1">Đóng</UButton>
@@ -63,6 +71,14 @@
 
         <UFormGroup label="Mô tả">
           <UTextarea v-model="stateEdit.description" autoresize />
+        </UFormGroup>
+
+        <UFormGroup label="Hình ảnh">
+          <UiUploadImage v-model="stateEdit.image">
+            <template #default="{ select, loading }">
+              <UInput :model-value="stateEdit.image" :loading="loading" readonly @click="select"/>
+            </template>
+          </UiUploadImage>
         </UFormGroup>
 
         <UiFlex justify="end">
@@ -112,11 +128,13 @@ watch(() => page.value.sort.direction, () => getList())
 const stateAdd = ref({
   name: null,
   description: null,
+  image: null
 })
 const stateEdit = ref({
   _id: null,
   name: null,
   description: null,
+  image: null
 })
 
 // Modal

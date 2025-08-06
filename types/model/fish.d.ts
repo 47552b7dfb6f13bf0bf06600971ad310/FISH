@@ -13,6 +13,7 @@ export interface IDBFish {
   createdAt: Date
   updatedAt: Date
 
+  area: Types.ObjectId
   category: Types.ObjectId
   amount: number
   kg: number

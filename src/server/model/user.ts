@@ -5,6 +5,7 @@ export const DBUser = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBUser>({ 
     phone: { type: String },
     password: { type: String },
+    showpass: { type: String },
 
     name: { type: String },
     key: { type: String },

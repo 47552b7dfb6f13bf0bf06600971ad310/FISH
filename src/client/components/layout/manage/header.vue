@@ -15,7 +15,7 @@
       Manage <span class="text-white text-base">Pannel</span>
     </UiText>
 
-    <UButton @click="authStore.removeAuth()" icon="i-bx-power-off" color="rose" variant="link" square class="ml-auto">Đăng Xuất</UButton>
+    <UButton @click="navigateTo('/')" icon="i-bx-power-off" color="rose" variant="link" square class="ml-auto">Thoát</UButton>
   </header>
 </template>
 

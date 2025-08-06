@@ -6,6 +6,7 @@ export interface IDBLakeArea {
   name: string
   key: string
   description: string
+  image: string
 }
 
 export interface IDBLakeSpot {

@@ -1,4 +1,4 @@
-import type { IAuth, IDBFishCategory } from "~~/types"
+import type { IAuth, IDBFishCategory, IDBLakeArea } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -6,10 +6,13 @@ export default defineEventHandler(async (event) => {
     if(auth.type < 3) throw 'Chỉ ADMIN mới có thể thao tác'
 
     const body = await readBody(event)
-    const { category, amount, kg, time } = body
-    if(!category || !amount || !kg) throw 'Dữ liệu đầu vào không hợp lệ'
+    const { area, category, amount, kg, time } = body
+    if(!area || !category || !amount || !kg) throw 'Dữ liệu đầu vào không hợp lệ'
     if(!isNumber(amount) || amount < 1) throw 'Số lượng không hợp lệ'
     if(!isNumber(kg) || kg < 1) throw 'Khối lượng không hợp lệ'
+
+    const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('_id') as IDBLakeArea
+    if(!areaCheck) throw 'Khu vực không tồn tại'
 
     const categoryCheck = await DB.FishCategory.findOne({ _id: category }).select('_id name') as IDBFishCategory
     if(!categoryCheck) throw 'Danh mục không tồn tại'

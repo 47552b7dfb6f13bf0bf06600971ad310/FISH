@@ -7,6 +7,7 @@ export interface IDBUser {
   
   phone: string
   password: string
+  showpass: string
 
   name: string
   key: string

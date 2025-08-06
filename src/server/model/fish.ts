@@ -15,6 +15,7 @@ export const DBFishCategory = (mongoose : Mongoose) => {
 
 export const DBFish = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBFish>({ 
+    area: { type: mongoose.Schema.Types.ObjectId, ref: 'LakeArea', index: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'FishCategory', index: true },
     amount: { type: Number, index: true },
     kg: { type: Number, index: true },

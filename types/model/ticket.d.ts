@@ -6,13 +6,15 @@ export interface IDBTicket {
   updatedAt: Date
 
   user: Types.ObjectId
+
   area: Types.ObjectId
   spot: Types.ObjectId
   shift: Types.ObjectId
 
+  code: string
+
   lunch: {
     has: boolean,
-    status: number
     price: number
   }
 
@@ -27,12 +29,25 @@ export interface IDBTicket {
   end: Date
 
   total: number
-  pay: number
+
+  pay: {
+    total: number
+    pending: Date
+    qrcode: string
+    token: string
+    type: string
+  }
 
   complete: {
-    pay: boolean
+    pay: {
+      total: boolean
+      pending: boolean
+    }
     time: boolean
-  }
+    lunch: boolean
+  },
+
+  cancel: boolean
 
   save: {
     () : void
