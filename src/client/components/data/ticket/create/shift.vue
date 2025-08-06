@@ -1,6 +1,8 @@
 <template>
   <div>
-    <URadioGroup v-model="selected.shift" :options="options">
+    <DataEmpty text="Không có dữ liệu giờ câu" class="min-h-[300px]" :loading="loading" v-if="!!loading || options.length == 0" />
+
+    <URadioGroup v-model="selected.shift" :options="options" v-else>
       <template #label="{ option }">
         {{ option.label }}
       </template>

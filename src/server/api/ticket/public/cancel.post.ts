@@ -6,9 +6,10 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel code spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel complete code spot') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel) throw 'Vé này đã bị hủy'
+    if(!!ticket.complete.pay.pending) throw 'Không thể hủy vé câu đã thanh toán'
 
     ticket.cancel = true
     await ticket.save()
