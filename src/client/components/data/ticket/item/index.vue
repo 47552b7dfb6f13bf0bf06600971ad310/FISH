@@ -26,5 +26,6 @@ const getOrder = async () => {
     loading.value = false
   } 
 }
-getOrder()
+
+onMounted(() => setTimeout(() => getOrder(), 1))
 </script>
