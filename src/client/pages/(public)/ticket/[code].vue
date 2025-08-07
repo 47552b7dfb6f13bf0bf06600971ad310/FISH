@@ -1,14 +1,19 @@
 <template>
-  <div v-if="!!ticket">
-    <DataTicketPayPending :ticket="ticket" v-if="!!ticket.complete && !!ticket.complete.pay && !ticket.complete.pay.pending" />
+  <DataEmpty :text="err" :loading="loading" v-if="!!loading || !ticket" class="min-h-[400px]" />
+
+  <div v-else>
+    <DataTicketPayPending :ticket="ticket" v-if="ticket.status == 0" @start="getTicket" />
+    <DataTicket :ticket="ticket" v-else="ticket.status == 1" />
   </div>
 </template>
 
 <script setup>
 const route = useRoute()
+const authStore = useAuthStore()
 
 const loading = ref(true)
 const ticket = ref()
+const err = ref('Không tìm thấy thông tin vé câu')
 
 const getTicket = async () => {
   try {
@@ -19,9 +24,12 @@ const getTicket = async () => {
     loading.value = false
   }
   catch(e){
-    return false
+    loading.value = false
+    err.value = e.toString()
   }
 }
 
 getTicket()
+
+watch(() => authStore.isLogin, (val) => navigateTo('/'))
 </script>

@@ -23,13 +23,19 @@ const updateCountdown = () => {
     return
   }
 
-  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const totalSeconds = Math.floor(diff / 1000)
+  let hours = Math.floor(diff / (1000 * 60 * 60))
   let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   minutes = minutes < 10 ? '0'+minutes : minutes
   let seconds = Math.floor((diff % (1000 * 60)) / 1000)
   seconds = seconds < 10 ? '0'+seconds : seconds
 
-  remaining.value = `${minutes}:${seconds}`
+  if (hours > 0) {
+    hours = hours < 10 ? '0'+hours : hours
+    remaining.value = `${hours}:${minutes}:${seconds}`
+  } else {
+    remaining.value = `${minutes}:${seconds}`
+  }
 }
 
 onMounted(() => {

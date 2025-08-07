@@ -1,5 +1,5 @@
 import type { Mongoose } from 'mongoose'
-import type { IDBTicket } from '~~/types'
+import type { IDBTicket, IDBTicketOrder } from '~~/types'
 
 export const DBTicket = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBTicket>({ 
@@ -33,19 +33,23 @@ export const DBTicket = (mongoose : Mongoose) => {
       pending: { type: Date, index: true },
       qrcode: { type: String },
       token: { type: String },
-      type: { type: String },
+      type: { type: String }
     },
 
     complete: {
       pay: {
         total: { type: Boolean, default: false },
         pending: { type: Boolean, default: false },
+        staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
       },
       time: { type: Boolean, default: false },
       lunch: { type: Boolean, default: false },
+      cancel: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     },
 
-    cancel: { type: Boolean, default: false }
+    cancel: { type: Boolean, default: false },
+
+    status: { type: Number, default: 0 },
   }, {
     timestamps: true
   })
@@ -53,5 +57,37 @@ export const DBTicket = (mongoose : Mongoose) => {
   schema.index({ code: 'text' })
 
   const model = mongoose.model('Ticket', schema, 'Ticket')
+  return model 
+}
+
+export const DBTicketOrder = (mongoose : Mongoose) => {
+  const schema = new mongoose.Schema<IDBTicketOrder>({ 
+    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+
+    code: { type: String },
+
+    cart: [{
+      item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', index: true },
+      amount: { type: Number },
+      price: { type: Number },
+    }],
+    
+    total: { type: Number, index: true },
+
+    status: { type: Number, default: 0 },
+
+    pay: {
+      type: { type: String },
+      qrcode: { type: String },
+      token: { type: String },
+    }
+  }, {
+    timestamps: true
+  })
+
+  schema.index({ code: 'text' })
+
+  const model = mongoose.model('TicketOrder', schema, 'TicketOrder')
   return model 
 }

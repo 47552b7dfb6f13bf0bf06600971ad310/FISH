@@ -2,11 +2,11 @@
   <div class="UiContent">
     <UiFlex class="UiContentHeader gap-4 mb-4">
       <slot name="left"></slot>
-      <UiIcon :name="icon" size="8" v-if="!!icon" color="primary" />
+      <UiIcon :name="icon" size="8" v-if="!!icon" :color="color" />
 
       <div class="grow">
         <UiFlex class="gap-4">
-          <UiText weight="semibold" color="primary" class="lg:text-lg">{{ title || '...' }}</UiText>
+          <UiText weight="semibold" :color="color" class="lg:text-lg">{{ title || '...' }}</UiText>
           <slot name="more"></slot>
         </UiFlex>
         
@@ -15,7 +15,7 @@
           <div>
             <UiText class="text-xs lg:text-sm inline" color="gray">{{ !showMore ? sub.slice(0, 100) : sub }}</UiText>
             <UiText class="text-xs lg:text-sm inline" color="gray" v-if="!showMore">...</UiText>
-            <UiText class="text-xs lg:text-sm inline cursor-pointer" color="primary" v-if="!!sub && sub.length > 100" @click="showMore = !showMore">{{ !showMore ? 'Xem thêm' : 'Ẩn' }}</UiText>
+            <UiText class="text-xs lg:text-sm inline cursor-pointer" :color="color" v-if="!!sub && sub.length > 100" @click="showMore = !showMore">{{ !showMore ? 'Xem thêm' : 'Ẩn' }}</UiText>
           </div>
         </UiFlex>
       </div>
@@ -31,7 +31,8 @@
 const props = defineProps({
   title: String,
   sub: String,
-  icon: String
+  icon: String,
+  color: { type: String, default: 'primary' }
 })
 
 const slots = useSlots()

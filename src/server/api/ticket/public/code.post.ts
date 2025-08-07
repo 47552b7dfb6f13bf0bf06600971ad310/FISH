@@ -13,10 +13,11 @@ export default defineEventHandler(async (event) => {
     .populate({ path: 'shift', select: 'name duration price' }) as IDBTicket
     if(!ticket) throw 'Vé này không tồn tại'
     if(!!ticket.cancel) throw 'Vé này đã bị hủy'
+    if(ticket.user.toString() != auth._id.toString()) throw 'Bạn không phải chủ vé câu'
 
     return resp(event, { result: ticket })
   } 
   catch (e:any) {
-    return resp(event, { code: 500, message: e.toString() })
+    return resp(event, { code: 400, message: e.toString() })
   }
 })

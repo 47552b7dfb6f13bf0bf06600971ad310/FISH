@@ -72,7 +72,7 @@ const statusFormat = {
 }
 
 const selectSpot = (data) => {
-  if(data.status != 0) return useNotify().error('Không thể chọn ô này')
+  if(data.status != 0) return getSpot(data.code)
   selectData.value.spot = data
   modal.value = true
 }
@@ -81,6 +81,15 @@ const selectShift = (data) => {
   selectData.value.shift = data.shift
   selectData.value.lunch = data.lunch
   emits('spot', selectData.value)
+}
+
+const getSpot = async (code) => {
+  try {
+    const data = await useAPI('lake/public/spot/get', { code: code })
+    navigateTo(`/ticket/${data}`)
+  }
+  catch (e) {
+  }
 }
 
 const getList = async () => {

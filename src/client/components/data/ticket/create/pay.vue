@@ -7,8 +7,6 @@
 
         <UButton class="ml-auto" color="gray" size="xs" @click="emits('back', 1)">Chọn lại</UButton>
       </UiFlex>
-
-      <UAlert :title="area.name" :description="area.description" icon="i-bx-check" color="green" variant="soft"></UAlert>
     </div>
 
     <div class="mb-4">
@@ -18,18 +16,6 @@
 
         <UButton class="ml-auto" color="gray" size="xs" @click="emits('back', 2)">Chọn lại</UButton>
       </UiFlex>
-
-      <UAlert 
-        :title="`Ô số ${spot.code}`" 
-        icon="i-bx-check" 
-        color="green" 
-        variant="soft"
-      >
-        <template #description>
-          <UiText><b class="text-rose-500">{{ shift.name }}</b> với giá <b class="text-rose-500">{{ `${useMoney().toMoney(shift.price)} VNĐ` }}</b></UiText>
-          <UiText v-if="!!lunch" class="mt-1">Có đăng ký cơm với giá <b class="text-rose-500">{{ ` ${useMoney().toMoney(configStore.config.lunch.price)} VNĐ` }}</b></UiText>
-        </template>
-      </UAlert>
     </div>
 
     <div>
@@ -40,11 +26,11 @@
 
       <UForm :validate="validate" :state="state" @submit="submit">
         <UFormGroup label="Tên khách hàng" name="name">
-          <UInput icon="i-bxs-user" v-model="state.name" :readonly="!!authStore.isLogin" />
+          <UInput icon="i-bxs-user" v-model="state.name" :disabled="!!authStore.isLogin" />
         </UFormGroup>
 
         <UFormGroup label="Số điện thoại" name="phone">
-          <UInput icon="i-bxs-phone" v-model="state.phone" :readonly="!!authStore.isLogin" />
+          <UInput icon="i-bxs-phone" v-model="state.phone" :disabled="!!authStore.isLogin" />
         </UFormGroup>
 
         <UFormGroup label="Thông tin đơn hàng">
@@ -163,4 +149,11 @@ const create = async (pay_type) => {
     if(e == 'Vui lòng chọn ô khác, ô này đang có người đặt') navigateTo('/')
   }
 }
+
+watch(() => authStore.isLogin, (val) => {
+  if(!!val) {
+    state.value.name = authStore.profile.name
+    state.value.phone = authStore.profile.phone
+  }
+})
 </script>

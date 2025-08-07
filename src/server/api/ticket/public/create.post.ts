@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBUser } from "~~/types"
+import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser } from "~~/types"
 import md5 from "md5"
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
     const config = await DB.Config.findOne({}).select('lunch gate') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
-    if(pay_type == 'BANK' && !config.gate.qr) throw 'Hệ thống chuyển khoản chưa sẵn sàng, vui lòng thử lại sau'
+    if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
 
     const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('_id') as IDBLakeArea
     if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
@@ -25,6 +25,9 @@ export default defineEventHandler(async (event) => {
     const shiftCheck = await DB.ConfigShift.findOne({ _id: shift }).select('price') as IDBConfigShift
     if(!shiftCheck) throw 'Không tìm thấy dữ liệu ca câu'
 
+    const ticketHas = await DB.Ticket.count({ user: auth._id, cancel: false })
+    if(ticketHas > 0) throw 'Bạn đang có 1 vé đang hoạt động, không thể đặt thêm vé mới'
+
     const pending = new Date(Date.now() + 10 * 60 * 1000) // 10 phút thanh toán
 
     let total = shiftCheck.price
@@ -35,15 +38,13 @@ export default defineEventHandler(async (event) => {
     const token = md5(`${code}-${Date.now()}`)
 
     let qrcode
-    if(!!config.gate.qr){
-      qrcode = config.gate.qr
-      qrcode = qrcode.replaceAll('[money]', String(total))
-      qrcode = qrcode.replaceAll('[code]', code)
-      qrcode = qrcode.replaceAll('[token]', token)
-      qrcode = qrcode.replaceAll('[gate-name]', config.gate.name)
-      qrcode = qrcode.replaceAll('[gate-number]', config.gate.number)
-      qrcode = qrcode.replaceAll('[gate-person]', config.gate.person)
-    }
+    qrcode = config.gate.qr
+    qrcode = qrcode.replaceAll('[money]', String(total))
+    qrcode = qrcode.replaceAll('[code]', code)
+    qrcode = qrcode.replaceAll('[token]', token)
+    qrcode = qrcode.replaceAll('[gate-name]', config.gate.name)
+    qrcode = qrcode.replaceAll('[gate-number]', config.gate.number)
+    qrcode = qrcode.replaceAll('[gate-person]', config.gate.person)
 
     await DB.Ticket.create({
       area: areaCheck._id,

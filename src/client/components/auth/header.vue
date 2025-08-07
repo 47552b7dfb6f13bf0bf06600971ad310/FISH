@@ -35,6 +35,11 @@ const menuUser = computed(() => {
       icon: 'i-bx-shield-quarter',
       click: () => navigateTo('/manage')
     })
+    list.push({
+      label: 'Nhân viên',
+      icon: 'i-wpf-administrator',
+      click: () => navigateTo('/staff')
+    })
   }
 
   return [

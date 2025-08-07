@@ -5,7 +5,7 @@ export { IDBUser } from './user'
 export { IDBItemCategory, IDBItem, IDBItemImport, IDBItemExport } from './item'
 export { IDBFishCategory, IDBFish } from './fish'
 export { IDBLakeArea, IDBLakeSpot } from './lake'
-export { IDBTicket } from './ticket'
+export { IDBTicket, IDBTicketOrder } from './ticket'
 
 export interface IGlobalDB {
   Config: Model<IDBConfig>
@@ -25,4 +25,5 @@ export interface IGlobalDB {
   LakeSpot: Model<IDBLakeSpot>
 
   Ticket: Model<IDBTicket>
+  TicketOrder: Model<IDBTicketOrder>
 }
