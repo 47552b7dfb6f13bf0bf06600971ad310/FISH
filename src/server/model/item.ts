@@ -19,6 +19,7 @@ export const DBItem = (mongoose : Mongoose) => {
     name: { type: String },
     key: { type: String },
     description: { type: String },
+    image: { type: String },
     price: { type: Number, index: true },
     inventory: { type: Number, default: 0, index: true },
     display: { type: Boolean, default: true, index: true },
