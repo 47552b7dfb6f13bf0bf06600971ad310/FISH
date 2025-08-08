@@ -1,7 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
     const { category } = await readBody(event)
-    console.log(category)
     if(!category) throw 'Vui lòng chọn 1 danh mục dịch vụ'
 
     const match : any = { category: category, display: true }

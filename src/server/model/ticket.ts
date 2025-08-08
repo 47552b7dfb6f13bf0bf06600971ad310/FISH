@@ -1,5 +1,5 @@
 import type { Mongoose } from 'mongoose'
-import type { IDBTicket, IDBTicketOrder } from '~~/types'
+import type { IDBTicket, IDBTicketOrder, IDBTicketFish } from '~~/types'
 
 export const DBTicket = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBTicket>({ 
@@ -14,6 +14,7 @@ export const DBTicket = (mongoose : Mongoose) => {
     lunch: {
       has: { type: Boolean, default: false },
       price: { type: Number, index: true },
+      staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     },
 
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ItemExport', index: true }],
@@ -30,6 +31,7 @@ export const DBTicket = (mongoose : Mongoose) => {
 
     pay: {
       total: { type: Number, default: 0, index: true },
+      order: { type: Number, default: 0, index: true },
       pending: { type: Date, index: true },
       qrcode: { type: String },
       token: { type: String },
@@ -45,6 +47,11 @@ export const DBTicket = (mongoose : Mongoose) => {
       time: { type: Boolean, default: false },
       lunch: { type: Boolean, default: false },
       cancel: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    },
+
+    fish: {
+      amount: { type: Number, default: 0, index: true },
+      kg: { type: Number, default: 0, index: true },
     },
 
     cancel: { type: Boolean, default: false },
@@ -81,7 +88,9 @@ export const DBTicketOrder = (mongoose : Mongoose) => {
       type: { type: String },
       qrcode: { type: String },
       token: { type: String },
-    }
+    },
+
+    staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   }, {
     timestamps: true
   })
@@ -89,5 +98,30 @@ export const DBTicketOrder = (mongoose : Mongoose) => {
   schema.index({ code: 'text' })
 
   const model = mongoose.model('TicketOrder', schema, 'TicketOrder')
+  return model 
+}
+
+export const DBTicketFish = (mongoose : Mongoose) => {
+  const schema = new mongoose.Schema<IDBTicketFish>({ 
+    staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'FishCategory', index: true },
+    fish: { type: mongoose.Schema.Types.ObjectId, ref: 'Fish', index: true },
+
+    amount: { type: Number, index: true },
+    kg: { type: Number, index: true },
+
+    proof: {
+      live: { type: String },
+      image: { type: String }
+    }
+  }, {
+    timestamps: true
+  })
+
+  schema.index({ code: 'text' })
+
+  const model = mongoose.model('TicketFish', schema, 'TicketFish')
   return model 
 }

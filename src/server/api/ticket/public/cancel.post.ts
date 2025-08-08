@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
     if(!!ticket.cancel) throw 'Vé này đã bị hủy'
     if(ticket.status > 0) throw 'Không thể hủy vé câu đã thanh toán'
 
-    await DB.Ticket.updateOne({ _id: ticket._id }, {
-      complete: {
-        cancel: auth._id
-      },
-      cancel: true
-    })
+    // Cập nhật trạng thái vé câu
+    await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
+      'complete.cancel': auth._id,
+      'cancel': true
+    }})
 
+    // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
 
     return resp(event, { message: `Đã hủy vé ${ticket.code}` })

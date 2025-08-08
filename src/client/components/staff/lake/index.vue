@@ -26,14 +26,12 @@
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
         </template>
 
-        <UiFlex class="mb-2">
-          <UTabs v-model="tab" :items="tabItems"></UTabs>
-        </UiFlex>
-        
-        <Transition name="page" mode="out-in">
-          <StaffTicket :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 0" />
-          <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @close="modal = false" v-else-if="tab == 1" />
-        </Transition>
+        <UTabs v-model="tab" :items="tabItems"></UTabs>
+
+        <StaffTicket :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 0" />
+        <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @close="modal = false" v-if="tab == 1" />
+        <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
+        <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
       </UiContent>
     </UModal>
   </div>
@@ -55,6 +53,7 @@ const tabItems = [
   { label: 'Thông tin' },
   { label: 'Thanh toán' },
   { label: 'Dịch vụ' },
+  { label: 'Cá Câu' },
 ]
 
 const statusFormat = {

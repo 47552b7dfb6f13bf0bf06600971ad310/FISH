@@ -19,23 +19,19 @@ export default defineEventHandler(async (event) => {
     const start = Date.now()
     const end = new Date(start + shift.duration * 60 * 60 * 1000)
 
-    await DB.Ticket.updateOne({ _id: ticket._id }, {
+    // Cập nhật trạng thái vé câu
+    await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
       start: start,
       end: end,
-      pay: {
-        total: ticket.total,
-        pending: null
-      },
-      complete: {
-        pay: {
-          total: true,
-          pending: true,
-          staff: auth._id
-        }
-      },
+      'pay.total': ticket.total,
+      'pay.pending': null,
+      'complete.pay.total': true,
+      'complete.pay.pending': true,
+      'complete.pay.staff': auth._id,
       status: 1
-    })
+    }})
 
+    // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 2 })
 
     return resp(event, { message: 'Thao tác thánh công' })

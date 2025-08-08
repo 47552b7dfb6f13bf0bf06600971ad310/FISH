@@ -40,9 +40,11 @@ export interface IDBItemExport {
   createdAt: Date
   updatedAt: Date
 
-  ticket: Types.ObjectId
   user: Types.ObjectId
-  category: Types.ObjectId
+  ticket: Types.ObjectId
+  order: Types.ObjectId
+  staff: Types.ObjectId
+  
   item: Types.ObjectId
   amount: number
   price: number

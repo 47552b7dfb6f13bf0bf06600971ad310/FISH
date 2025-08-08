@@ -51,9 +51,11 @@ export const DBItemImport = (mongoose : Mongoose) => {
 
 export const DBItemExport = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBItemExport>({ 
-    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'ItemCategory', index: true },
+    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
+    order: { type: mongoose.Schema.Types.ObjectId, ref: 'TicketOrder', index: true },
+    staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+
     item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', index: true },
     amount: { type: Number, index: true },
     price: { type: Number, index: true },

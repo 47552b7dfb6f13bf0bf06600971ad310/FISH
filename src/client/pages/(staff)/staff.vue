@@ -4,11 +4,9 @@
       <UTabs v-model="tab" :items="tabs"></UTabs>
     </UiFlex>
 
-    <Transition name="page" mode="out-in">
-      <StaffLake v-if="tab == 0" />
-      <StaffOrder v-else-if="tab == 1" />
-      <StaffLunch v-else-if="tab == 2" />
-    </Transition>
+    <StaffLake v-if="tab == 0" />
+    <StaffOrder v-if="tab == 1" />
+    <StaffLunch v-if="tab == 2" />
   </div>
 </template>
 

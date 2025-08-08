@@ -14,8 +14,9 @@ export interface IDBTicket {
   code: string
 
   lunch: {
-    has: boolean,
+    has: boolean
     price: number
+    staff: Types.ObjectId
   }
 
   items: Array<Types.ObjectId>
@@ -32,6 +33,7 @@ export interface IDBTicket {
 
   pay: {
     total: number
+    order: number
     pending: Date
     qrcode: string
     token: string
@@ -48,6 +50,11 @@ export interface IDBTicket {
     lunch: boolean
     cancel: Types.ObjectId
   },
+
+  fish: {
+    amount: number
+    kg: number
+  }
 
   cancel: boolean
 
@@ -82,5 +89,33 @@ export interface IDBTicketOrder {
     type: string
     qrcode: string
     token: string
+  }
+
+  staff: Types.ObjectId
+
+  save: {
+    () : void
+  }
+}
+
+export interface IDBTicketFish {
+  _id: Types.ObjectId
+  createdAt: Date
+  updatedAt: Date
+
+  staff: Types.ObjectId
+  
+  ticket: Types.ObjectId
+  user: Types.ObjectId
+
+  category: Types.ObjectId
+  fish: Types.ObjectId
+
+  amount: number
+  kg: number
+
+  proof: {
+    live: string
+    image: string
   }
 }

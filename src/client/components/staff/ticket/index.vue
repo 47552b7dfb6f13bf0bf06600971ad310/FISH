@@ -25,7 +25,7 @@
 
       <UiFlex justify="between" class="w-full" v-if="!!statusLunch">
         <UiText weight="semibold" color="gray" size="sm">Trang thái cơm</UiText>
-        <UBadge variant="soft" :color="statusLunch['color']">{{ statusLunch['label'] }}</UBadge>
+        <UBadge class="cursor-pointer" variant="soft" :color="statusLunch['color']" @click="successLunch">{{ statusLunch['label'] }}</UBadge>
       </UiFlex>
 
       <UiFlex justify="between" class="w-full">
@@ -69,6 +69,14 @@ const onCancel = async () => {
   }
   catch(e){
     loading.value = false
+  }
+}
+
+const successLunch = async () => {
+  try {
+    await useAPI('ticket/staff/lunch/action', { code: props.ticket.code })
+  }
+  catch (e) {
   }
 }
 </script>

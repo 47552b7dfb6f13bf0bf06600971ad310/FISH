@@ -6,7 +6,7 @@ import { DBUser } from './user'
 import { DBItemCategory, DBItem, DBItemExport, DBItemImport } from './item'
 import { DBFishCategory, DBFish } from './fish'
 import { DBLakeArea, DBLakeSpot } from './lake'
-import { DBTicket, DBTicketOrder } from './ticket'
+import { DBTicket, DBTicketOrder, DBTicketFish } from './ticket'
 
 
 export default (mongoose : Mongoose) : IGlobalDB => {
@@ -28,6 +28,7 @@ export default (mongoose : Mongoose) : IGlobalDB => {
     LakeSpot: DBLakeSpot(mongoose),
 
     Ticket: DBTicket(mongoose),
-    TicketOrder: DBTicketOrder(mongoose)
+    TicketOrder: DBTicketOrder(mongoose),
+    TicketFish: DBTicketFish(mongoose)
   }
 }

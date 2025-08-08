@@ -19,10 +19,8 @@
     </UiFlex>
 
     <div class="w-full">
-      <Transition name="page" mode="out-in">
-        <DataTicketItem :ticket="ticket" v-if="tab == 1" />
-        <DataTicketFishHistory v-else-if="tab == 2" />
-      </Transition>
+      <DataTicketItem :ticket="ticket" v-if="tab == 1" />
+      <DataTicketFish :ticket="ticket" v-if="tab == 2" />
     </div>
   </UiFlex>
 </template>
