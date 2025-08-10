@@ -1,5 +1,5 @@
 import type { Mongoose } from 'mongoose'
-import type { IDBUser } from '~~/types'
+import type { IDBUser, IDBUserMember } from '~~/types'
 
 export const DBUser = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBUser>({ 
@@ -9,12 +9,36 @@ export const DBUser = (mongoose : Mongoose) => {
 
     name: { type: String },
     key: { type: String },
-
     email: { type: String },
-
     type: { type: Number, index: true, default: 0 },
-
     token: { type: String },
+
+    currency: {
+      wheel: { type: Number, default: 0, index: true }
+    },
+
+    member: {
+      week: {
+        enable: { type: Boolean, default: false },
+        end: { type: Date },
+        discount: { type: Number, default: 0 },
+        free: {
+          lunch: { type: Number, default: 0 },
+          time: { type: Number, default: 0 },
+        }
+      },
+      month: {
+        enable: { type: Boolean, default: false },
+        end: { type: Date },
+        discount: { type: Number, default: 0 },
+        free: {
+          lunch: { type: Number, default: 0 },
+          time: { type: Number, default: 0 },
+        }
+      }
+    },
+
+    vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true }],
   }, {
     timestamps: true
   })
@@ -32,5 +56,29 @@ export const DBUser = (mongoose : Mongoose) => {
   }
 
   autoCreate()
+  return model 
+}
+
+export const DBUserMemeber = (mongoose : Mongoose) => {
+  const schema = new mongoose.Schema<IDBUserMember>({ 
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    code: { type: String },
+    type: { type: String },
+    price: { type: Number, index: true },
+    money: { type: Number, index: true, default: 0 },
+    qrcode: { type: String },
+    token: { type: String },
+    status: { type: Number, default: 0, index: true },
+    verify: {
+      person: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+      time: { type: Date },
+      reason: { type: String },
+    }
+  }, {
+    timestamps: true
+  })
+
+  schema.index({ code: 'text' })
+  const model = mongoose.model('UserMember', schema, 'UserMember')
   return model 
 }

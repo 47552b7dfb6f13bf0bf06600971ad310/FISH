@@ -14,9 +14,8 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('code user cancel status') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
-    if(ticket.status == 0) throw 'Vé này chưa thanh toán'
-    if(ticket.status == 2) throw 'Vé này đã hết giờ câu'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+    if(ticket.status != 2) throw 'Vé này không còn khả dụng'
 
     const categoryFish = await DB.FishCategory.findOne({ _id: category }).select('_id') as IDBFishCategory
     if(!categoryFish) throw 'Không tìm thấy dữ liệu loại cá'
@@ -43,6 +42,10 @@ export default defineEventHandler(async (event) => {
     
     const kgMinus = kg < fish.kg ? kg : fish.kg
     await DB.Fish.updateOne({ _id: fish._id }, { $inc: { 'amount': -1, 'kg': kgMinus * -1 }})
+    await DB.Ticket.updateOne({ _id: ticket._id }, { $inc: { 
+      'fish.amount': 1, 
+      'fish.kg': kg 
+    }})
 
     return resp(event, { message: 'Thao tác thành công' })
   } 

@@ -12,9 +12,9 @@ export default defineEventHandler(async (event) => {
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
     const match : any = { 
-      'status': { $gt: 0 },
+      'cancel.status': false,
       'lunch.has': true,
-      'complete.lunch': false
+      'lunch.complete': false
     }
 
     const list = await DB.Ticket

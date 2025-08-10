@@ -1,29 +1,49 @@
 <template>
   <div v-if="!!area && !!spot && !!ticket">
     <UiFlex type="col" class="gap-4">
-      <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="gray" size="sm">Trạng thái</UiText>
-        <UBadge variant="soft" :color="statusPay[ticket.status]['color']">{{ statusPay[ticket.status]['label'] }}</UBadge>
-      </UiFlex>
-
       <UiFlex justify="between" class="w-full" v-if="!!ticket.pay">
         <UiText weight="semibold" color="gray" size="sm">Phương thức</UiText>
         <UiText weight="semibold" size="sm">{{ ticket.pay.type == 'BANK' ? 'Chuyển Khoản' : 'Tiền Mặt' }}</UiText>
       </UiFlex>
       
-      <UiFlex justify="between" class="w-full" v-if="ticket.shift">
+      <UiFlex justify="between" class="w-full" v-if="ticket.price.spot > 0">
         <UiText weight="semibold" color="gray" size="sm">Giá câu</UiText>
-        <UiText weight="semibold" size="sm" color="rose">{{ useMoney().toMoney(ticket.shift.price) }} VNĐ</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.spot) }}</UiText>
       </UiFlex>
 
-      <UiFlex justify="between" class="w-full" v-if="lunch">
+      <UiFlex justify="between" class="w-full" v-if="ticket.price.lunch > 0">
         <UiText weight="semibold" color="gray" size="sm">Giá cơm</UiText>
-        <UiText weight="semibold" size="sm" color="rose">{{ useMoney().toMoney(lunch.price) }} VNĐ</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.lunch) }}</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && !!ticket.discount.time">
+        <UiText weight="semibold" color="gray" size="sm">Miễn phí câu hội viên</UiText>
+        <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(ticket.price.spot) }}</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && !!ticket.discount.lunch">
+        <UiText weight="semibold" color="gray" size="sm">Miễn phí cơm hội viên</UiText>
+        <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(ticket.price.lunch) }}</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && ticket.discount.price > 0">
+        <UiText weight="semibold" color="gray" size="sm">Giảm giá hội viên</UiText>
+        <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(ticket.discount.price) }}%</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && ticket.discount.voucher">
+        <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ</UiText>
+        <UiText weight="semibold" size="sm" color="rose">- {{ ticket.discount.voucher.value }}%</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="ticket.price.item > 0">
+        <UiText weight="semibold" color="gray" size="sm">Tiền mua dịch vụ</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.item) }}</UiText>
       </UiFlex>
 
       <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="green" size="sm">Tổng thanh toán</UiText>
-        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.total) }} VNĐ</UiText>
+        <UiText weight="semibold" color="green" size="sm">Tổng hóa đơn</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.total) }} VNĐ</UiText>
       </UiFlex>
 
       <UiFlex justify="center" v-if="!!ticket.pay && !!ticket.pay.qrcode && ticket.status == 0">
@@ -31,7 +51,7 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-4" justify="end" v-if="ticket.status == 0">
+    <UiFlex class="gap-1 mt-4" justify="end" >
       <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
     </UiFlex>
   </div>
@@ -43,15 +63,17 @@ const emits = defineEmits(['close'])
 
 const loading = ref(false)
 
-const statusPay = {
-  0: { label: 'Chưa Thanh Toán', color: 'orange' },
-  1: { label: 'Đã Thanh Toán', color: 'green' },
-}
+const total = computed(() => {
+  if(!props.ticket) return 0
+  if(!props.ticket.price) return 0
+  if(!props.ticket.discount) return 0
 
-const lunch = computed(() => {
-  if(!props.ticket) return null
-  if(!props.ticket.complete) return null
-  return props.ticket.lunch
+  let total = props.ticket.price.spot + props.ticket.price.lunch
+  if(!!props.ticket.discount.time) total = total - props.ticket.price.spot
+  if(!!props.ticket.discount.lunch) total = total - props.ticket.price.lunch
+  if(props.ticket.discount.price > 0) total = total - Math.floor(total * props.ticket.discount.price / 100)
+  
+  return total
 })
 
 const paySuccess = async () => {

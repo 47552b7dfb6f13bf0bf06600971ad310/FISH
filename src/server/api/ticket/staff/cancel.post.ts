@@ -10,13 +10,13 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('cancel complete code spot status') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
-    if(ticket.status > 0 && auth.type < 3) throw 'Bạn không có quyền thao tác hủy với vé đã thanh toán'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+    if(ticket.status > 0) throw 'Vé đã thanh toán, không thể hủy'
 
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
-      'complete.cancel': auth._id,
-      'cancel': true
+      'cancel.staff': auth._id,
+      'cancel.status': true
     }})
 
     // Cập nhật trạng thái ô câu

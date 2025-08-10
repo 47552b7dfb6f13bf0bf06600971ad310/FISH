@@ -1,10 +1,13 @@
 import { Types } from 'mongoose'
+import type { IDBUser } from '../model'
 
 export interface IAuth {
   _id: Types.ObjectId
   phone: string
   name: string
   type: number
+  currency: IDBUser['currency']
+  member: IDBUser['member']
 }
 
 export interface IResp {

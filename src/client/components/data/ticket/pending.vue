@@ -3,8 +3,8 @@
     <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Hệ Thống Thanh Toán</UiText>
     <!-- <UiText color="gray" class="text-base md:text-xl" align="center">Vui lòng thanh toán sau</UiText> -->
 
-    <UiText class="text-[5rem]" weight="semibold" v-if="!!ticket.pay && !!ticket.pay.pending">
-      <UiCountdown :time="ticket.pay.pending" @end="onCancel"></UiCountdown>
+    <UiText class="text-[5rem]" weight="semibold" v-if="!!ticket.pay && !!ticket.time.pay">
+      <UiCountdown :time="ticket.time.pay" @end="onCancel"></UiCountdown>
     </UiText>
 
     <UiText color="rose" size="sm" align="center">
@@ -55,12 +55,12 @@
         <UButton color="gray" size="xs" @click="startCopy(ticket.code)">Sao chép</UButton>
       </UiFlex>
 
-      <UiFlex justify="between" v-if="!!ticket.total">
+      <UiFlex justify="between" v-if="!!ticket.price && !!ticket.price.total">
         <div>
           <UiText size="xs" weight="semibold" color="gray" class="mb-1.5">Số tiền</UiText>
-          <UiText size="sm" weight="bold">{{ useMoney().toMoney(ticket.total) }}</UiText>
+          <UiText size="sm" weight="bold">{{ useMoney().toMoney(ticket.price.total) }}</UiText>
         </div>
-        <UButton color="gray" size="xs" @click="startCopy(ticket.total)">Sao chép</UButton>
+        <UButton color="gray" size="xs" @click="startCopy(ticket.price.total)">Sao chép</UButton>
       </UiFlex>
     </div>
 

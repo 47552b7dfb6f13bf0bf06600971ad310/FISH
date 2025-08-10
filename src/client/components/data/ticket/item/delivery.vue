@@ -10,7 +10,6 @@
           <UiImg :src="product.item.image" w="1" h="1" class="bg-gray-1000 rounded-xl max-w-[80px]"/>
           <div>
             <UiText weight="semibold" class="text-base line-clamp-1 mb-1">{{ product.item.name }}</UiText>
-            <UiText color="gray" class="text-sm line-clamp-1">{{ useMoney().toMoney(product.price) }}</UiText>
             <UiText color="gray" class="text-sm line-clamp-1">Số lượng {{ useMoney().toMoney(product.amount) }}</UiText>
           </div>
         </UiFlex>

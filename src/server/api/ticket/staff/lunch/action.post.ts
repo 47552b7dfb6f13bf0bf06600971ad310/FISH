@@ -11,12 +11,12 @@ export default defineEventHandler(async (event) => {
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(ticket.status == 0) throw 'Vé này chưa thanh toán'
     if(!ticket.lunch.has) throw 'Vé này không đăng ký cơm'
-    if(!!ticket.complete.lunch) throw 'Vé này đã được giao cơm'
+    if(!!ticket.lunch.complete) throw 'Vé này đã được giao cơm'
 
     await DB.Ticket.updateOne({ _id: ticket._id }, { 
       $set: {
-        'complete.lunch': true,
-        'lunch.staff': auth._id
+        'lunch.staff': auth._id,
+        'lunch.complete': true,
       }
     })
 

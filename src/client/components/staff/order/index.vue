@@ -14,7 +14,7 @@
         :rows="list"
       >
         <template #ticket-data="{ row }">
-          <UBadge variant="soft" color="primary">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket ? row.ticket.code : null)">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
         </template>
 
         <template #user-data="{ row }">
@@ -40,6 +40,10 @@
       <USelectMenu v-model="selectedColumns" :options="columns" multiple placeholder="Chọn cột" />
       <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="4" />
     </UiFlex>
+
+    <UModal v-model="modal">
+      <StaffTicket :code="select" @close="modal = false" type="ticket" />
+    </UModal>
   </UiContent>
 </template>
 
@@ -92,11 +96,20 @@ const loading = ref({
   action: false
 })
 
+const modal = ref(false)
+
+const select = ref()
+
+const selectTicket = (code) => {
+  select.value = code
+  modal.value = true
+}
+
 // Fetch
 const getList = async () => {
   try {
     loading.value.load = true
-    const data = await useAPI('ticket/staff/order/all', JSON.parse(JSON.stringify(page.value)))
+    const data = await useAPI('item/staff/order/list', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false
     list.value = data.list
@@ -105,19 +118,6 @@ const getList = async () => {
   catch (e) {
     loading.value.load = false
   } 
-}
-
-const successAction = async (ticket, order, status) => {
-  try {
-    loading.value.action = true
-    await useAPI('ticket/staff/order/success', { ticket, order, status })
-
-    loading.value.action = false
-    getList()
-  }
-  catch (e) {
-    loading.value.action = false
-  }
 }
 
 getList()

@@ -5,17 +5,24 @@ export default defineEventHandler(async (event) => {
     const auth = await getAuth(event) as IAuth
     if(auth.type < 1) throw 'Bạn không có quyền truy cập'
 
-    const list = await DB.LakeArea
+    const list = await DB.LakeSpot
     .aggregate([
       {
         $lookup: {
-          from: "LakeSpot",
-          localField: "_id",
-          foreignField: "area",
-          as: "spots"
+          from: "Ticket",
+          let: { spotId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $and: [
+              { $eq: ["$spot", "$$spotId"] },
+              { $eq: ["$cancel.status", false] }
+            ]}}},
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 }
+          ],
+          as: "ticket"
         }
       },
-      { $addFields: { count: {  $size: '$spots' }}}
+      { $unwind: { path: "$ticket", preserveNullAndEmptyArrays: true } }
     ])
 
     return resp(event, { result: list })

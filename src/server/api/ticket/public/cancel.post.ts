@@ -6,15 +6,15 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status complete code spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status code spot') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé câu'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
     if(ticket.status > 0) throw 'Không thể hủy vé câu đã thanh toán'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
-      'complete.cancel': auth._id,
-      'cancel': true
+      'cancel.status': true,
+      'cancel.staff': auth._id,
     }})
 
     // Cập nhật trạng thái ô câu

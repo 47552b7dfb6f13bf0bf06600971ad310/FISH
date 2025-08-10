@@ -3,8 +3,8 @@ import type { IDBUser } from "~~/types"
 export default async (now : Date)  => {
   const tickets = await DB.Ticket.find({
     'status': 0,
-    'cancel': false,
-    'pay.pending': { $lt: now }
+    'cancel.status': false,
+    'time.pay': { $lt: now }
   }).select('spot code')
 
   const bot = await DB.User.findOne({ phone: 'bot' }).select('_id') as IDBUser
@@ -14,15 +14,13 @@ export default async (now : Date)  => {
   listTicketCancel.length > 0 && await DB.Ticket.updateMany(
     { _id: { $in: listTicketCancel }}, 
     { $set: {
-      'complete.cancel': bot._id,
-      'cancel': true
+      'cancel.staff': bot._id,
+      'cancel.status': true
     }}
   )
   
   listSpotUpdate.length > 0 && await DB.LakeSpot.updateMany(
     { _id: { $in: listSpotUpdate }}, 
-    { $set: {
-      'status': 0
-    }}
+    { $set: { 'status': 0 }}
   )
 }

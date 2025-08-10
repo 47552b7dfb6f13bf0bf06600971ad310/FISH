@@ -7,9 +7,9 @@
     flex items-center
     h-[var(--header-size)] max-h-[var(--header-size)]
     px-4
-    md:gap-4
+    gap-4
   ">
-    <LayoutNavSlide class="flex lg:hidden" />
+    <LayoutManageNavSlide class="flex xl:hidden" />
     
     <UiText weight="semibold" size="2xl" color="primary" class="italic">
       Manage <span class="text-white text-base">Pannel</span>

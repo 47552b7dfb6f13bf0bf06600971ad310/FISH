@@ -37,6 +37,27 @@ export const useConfigStore = defineStore('config', () => {
 
     lunch: {
       price: 0
+    },
+
+    member: {
+      week: {
+        price: 0,
+        discount: 0,
+        wheel: 0,
+        free: {
+          lunch: 0,
+          time: 0
+        }
+      },
+      month: {
+        price: 0,
+        discount: 0,
+        wheel: 0,
+        free: {
+          lunch: 0,
+          time: 0
+        }
+      }
     }
   })
 

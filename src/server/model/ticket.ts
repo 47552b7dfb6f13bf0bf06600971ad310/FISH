@@ -13,40 +13,37 @@ export const DBTicket = (mongoose : Mongoose) => {
 
     lunch: {
       has: { type: Boolean, default: false },
-      price: { type: Number, index: true },
+      complete: { type: Boolean, default: false },
       staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     },
 
-    items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ItemExport', index: true }],
-
-    overtime: {
-      step: { type: Number, index: true },
-      price: { type: Number, index: true },
+    time: {
+      start: { type: Date, index: true },
+      end: { type: Date, index: true },
+      pay: { type: Date, index: true },
+      delay: { type: Date, index: true },
     },
 
-    start: { type: Date, index: true },
-    end: { type: Date, index: true },
-    
-    total: { type: Number, index: true },
+    price: {
+      spot: { type: Number, default: 0, index: true },
+      lunch: { type: Number, default: 0, index: true },
+      item: { type: Number, default: 0, index: true },
+      total: { type: Number, default: 0, index: true },
+    },
 
     pay: {
-      total: { type: Number, default: 0, index: true },
-      order: { type: Number, default: 0, index: true },
-      pending: { type: Date, index: true },
       qrcode: { type: String },
       token: { type: String },
-      type: { type: String }
+      type: { type: String },
+      complete: { type: Boolean, default: false },
+      staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     },
 
-    complete: {
-      pay: {
-        total: { type: Boolean, default: false },
-        pending: { type: Boolean, default: false },
-        staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
-      },
+    discount: {
       time: { type: Boolean, default: false },
       lunch: { type: Boolean, default: false },
-      cancel: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+      price: { type: Number, default: 0 },
+      voucher: { type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true },
     },
 
     fish: {
@@ -54,9 +51,12 @@ export const DBTicket = (mongoose : Mongoose) => {
       kg: { type: Number, default: 0, index: true },
     },
 
-    cancel: { type: Boolean, default: false },
+    cancel: {
+      status: { type: Boolean, default: false },
+      staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    },
 
-    status: { type: Number, default: 0 },
+    status: { type: Number, default: 0 }, // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
   }, {
     timestamps: true
   })

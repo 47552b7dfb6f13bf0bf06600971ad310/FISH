@@ -1,35 +1,80 @@
 <template>
   <UiFlex type="col" v-if="!!ticket">
-    <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center" color="gray">Thời Gian Còn Lại</UiText>
-  
-    <UiText class="text-[5rem]" weight="semibold" v-if="ticket.end">
-      <UiCountdown :time="ticket.end" @end="onEnd"></UiCountdown>
-    </UiText>
+    <UiFlex type="col" class="w-full" v-if="ticket.status == 1">
+      <UiText class="uppercase text-[1.5rem] md:text-[2rem] mb-4" weight="semibold" align="center" color="gray">Vé Câu Sẵn Sàng</UiText>
+      <UButton color="green" size="lg" :loading="starting" @click="onStart">Bắt Đầu Câu</UButton>
+    </UiFlex>
 
-    <div class="mb-6">
+    <UiFlex type="col" class="w-full" v-if="ticket.status == 2">
+      <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center" color="gray">Thời Gian Còn Lại</UiText>
+    
+      <UiText class="text-[5rem]" weight="semibold" v-if="ticket.time.end">
+        <UiCountdown :time="ticket.time.end"></UiCountdown>
+      </UiText>
+    </UiFlex>
+
+    <UiFlex type="col" class="w-full" v-if="ticket.status == 3">
+      <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center" color="gray">Thời Gian Dọn Đồ</UiText>
+    
+      <UiText class="text-[5rem]" weight="semibold" v-if="ticket.time.delay">
+        <UiCountdown :time="ticket.time.delay" @end="onEnd"></UiCountdown>
+      </UiText>
+
+      <UButton color="rose" size="lg" :loading="ending" @click="onEnd">Đã Dọn Xong</UButton>
+    </UiFlex>
+
+    <div class="my-6">
       <UiText size="base" align="center" color="gray">Vị trí ngồi</UiText>
       <UiText size="lg" align="center" weight="semibold" color="yellow">
         {{ ticket.area.name }}, Ô {{ ticket.spot.code }}
       </UiText>
     </div>
 
-    <UiFlex class="gap-1 mb-4 w-full md:w-auto">
-      <UButton size="lg" class="justify-center grow" color="orange" icon="i-mdi-food" @click="tab = 1">Gọi Dịch Vụ</UButton>
-      <UButton size="lg" class="justify-center grow" color="gray" icon="i-mdi-fish" @click="tab = 2">Cá Đã Câu</UButton>
-    </UiFlex>
+    <div v-if="ticket.status == 2" class="w-full">
+      <UiFlex class="gap-1 mb-4 w-full md:w-auto">
+        <UButton size="lg" class="justify-center grow" color="orange" icon="i-mdi-food" @click="tab = 1">Gọi Dịch Vụ</UButton>
+        <UButton size="lg" class="justify-center grow" color="gray" icon="i-mdi-fish" @click="tab = 2">Cá Đã Câu</UButton>
+      </UiFlex>
 
-    <div class="w-full">
-      <DataTicketItem :ticket="ticket" v-if="tab == 1" />
-      <DataTicketFish :ticket="ticket" v-if="tab == 2" />
+      <div class="w-full">
+        <DataTicketItem :ticket="ticket" v-if="tab == 1" />
+        <DataTicketFish :ticket="ticket" v-if="tab == 2" />
+      </div>
     </div>
   </UiFlex>
 </template>
 
 <script setup>
 const props = defineProps(['ticket'])
+const emits = defineEmits(['reload'])
 const tab = ref(1)
 
-const onEnd = async () => {
+const starting = ref(false)
+const ending = ref(false)
 
+const onStart = async () => {
+  try {
+    starting.value = true
+    await useAPI('ticket/public/start', { code: props.ticket.code })
+
+    starting.value = false
+    emits('reload')
+  }
+  catch(e){
+    starting.value = false
+  }
+}
+
+const onEnd = async () => {
+  try {
+    ending.value = true
+    await useAPI('ticket/public/end', { code: props.ticket.code })
+
+    ending.value = false
+    navigateTo('/')
+  }
+  catch(e){
+    ending.value = false
+  }
 }
 </script>

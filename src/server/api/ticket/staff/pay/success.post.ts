@@ -1,4 +1,4 @@
-import { IAuth, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket } from "~~/types"
+import { IAuth, IDBConfigShift, IDBTicket, IDBUser } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,27 +8,26 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code }).select('cancel status shift total spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code }).select('user cancel pay shift spot price discount') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé'
-    if(!!ticket.cancel) throw 'Vé đã bị hủy'
-    if(ticket.status > 0) throw 'Không thể thao tác trên vé này'
+    if(!!ticket.cancel.status) throw 'Vé đã bị hủy'
+    // if(!!ticket.pay.complete) throw 'Vé này đã được xác nhận thanh toán'
+
+    const user = await DB.User.findOne({ _id: ticket.user }).select('vouchers') as IDBUser
+    if(!user) throw 'Không tìm thấy tài khoản khách hàng'
 
     const shift = await DB.ConfigShift.findOne({ _id: ticket.shift }).select('duration') as IDBConfigShift
     if(!shift) throw 'Không tìm thấy thời gian ca câu'
 
-    const start = Date.now()
-    const end = new Date(start + shift.duration * 60 * 60 * 1000)
+    // Xóa Voucher nếu có
+    if(ticket.discount.voucher) await delUserVoucher(user, ticket.discount.voucher)
 
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
-      start: start,
-      end: end,
-      'pay.total': ticket.total,
-      'pay.pending': null,
-      'complete.pay.total': true,
-      'complete.pay.pending': true,
-      'complete.pay.staff': auth._id,
-      status: 1
+      'time.pay': null,
+      'pay.complete': true,
+      'pay.staff': auth._id,
+      'status': 1
     }})
 
     // Cập nhật trạng thái ô câu

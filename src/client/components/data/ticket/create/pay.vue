@@ -33,6 +33,10 @@
           <UInput icon="i-bxs-phone" v-model="state.phone" :disabled="!!authStore.isLogin" />
         </UFormGroup>
 
+        <UFormGroup label="Chọn thẻ khuyến mãi" v-if="!!authStore.isLogin">
+          <SelectVoucher v-model="state.voucher" v-model:voucherData="voucher" :type="['DISCOUNT', 'DISCOUNT-PRICE']" />
+        </UFormGroup>
+
         <UFormGroup label="Thông tin đơn hàng">
           <UiFlex type="col" class="mt-4 gap-4 relative bg-gray-1000 p-4 rounded-2xl">
             <UiFlex justify="between" class="w-full">
@@ -52,17 +56,37 @@
 
             <UiFlex justify="between" class="w-full">
               <UiText weight="semibold" color="gray" size="sm">Giá câu</UiText>
-              <UiText weight="semibold" size="sm" color="rose">{{ useMoney().toMoney(shift.price) }} VNĐ</UiText>
+              <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(shift.price) }}</UiText>
             </UiFlex>
 
             <UiFlex justify="between" class="w-full" v-if="!!props.lunch">
               <UiText weight="semibold" color="gray" size="sm">Phí cơm</UiText>
-              <UiText weight="semibold" size="sm" color="rose">{{ useMoney().toMoney(configStore.config.lunch.price) }} VNĐ</UiText>
+              <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(configStore.config.lunch.price) }}</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="!!discountTime">
+              <UiText weight="semibold" color="gray" size="sm">Miễn phí câu hội viên</UiText>
+              <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(shift.price) }}</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="!!discountLunch">
+              <UiText weight="semibold" color="gray" size="sm">Miễn phí cơm hội viên</UiText>
+              <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(configStore.config.lunch.price) }}</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="discountPrice > 0">
+              <UiText weight="semibold" color="gray" size="sm">Giảm giá hội viên</UiText>
+              <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(discountPrice) }}%</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="discountVoucher > 0">
+              <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ</UiText>
+              <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(discountVoucher) }}%</UiText>
             </UiFlex>
 
             <UiFlex justify="between" class="w-full">
               <UiText weight="semibold" color="green" size="xl">Tổng</UiText>
-              <UiText weight="semibold" size="xl" color="green">{{ useMoney().toMoney((!!props.lunch ? configStore.config.lunch.price : 0) + shift.price) }} VNĐ</UiText>
+              <UiText weight="semibold" size="xl" color="green">{{ useMoney().toMoney(totalPrice) }} VNĐ</UiText>
             </UiFlex>
           </UiFlex>
         </UFormGroup>
@@ -108,8 +132,11 @@ const state = ref({
   spot: props.spot._id,
   shift: props.shift._id,
   lunch: props.lunch,
-  pay_type: null
+  pay_type: null,
+  voucher: null
 })
+
+const voucher = ref()
 
 const loading = ref(false)
 
@@ -121,20 +148,70 @@ const validate = (state) => {
   return errors
 }
 
-const submit = async () => {
-  try {
-    if(!!authStore.isLogin) return modal.value = true
+const discountTime = computed(() => {
+  if(!authStore.isLogin) return false
+  if(!props.shift) return false
+  if(!props.shift.duration) return false
 
-    loading.value = true
-    await useAPI('user/public/sign/fast', JSON.parse(JSON.stringify(state.value)))
-    
-    await authStore.setAuth()
-    loading.value = false
-    modal.value = true
-  }
-  catch (e) {
-    loading.value = false
-  }
+  const member = authStore.getMember()
+  if(!member) return false
+
+  const free = member.free.time
+  if(free > props.shift.duration) return true
+  return false
+})
+
+const discountLunch = computed(() => {
+  if(!authStore.isLogin) return false
+  if(!props.lunch) return false
+
+  const member = authStore.getMember()
+  if(!member) return false
+
+  const free = member.free.lunch
+  if(free > 0) return true
+  return false
+})
+
+const discountPrice = computed(() => {
+  if(!authStore.isLogin) return 0
+  const member = authStore.getMember()
+  if(!member) return 0
+  const type = authStore.getMemberType()
+  if(!type) return 0
+  return configStore.config.member[type].discount || 0
+})
+
+const discountVoucher = computed(() => {
+  if(!authStore.isLogin) return 0
+  if(!state.value.voucher) return 0
+  if(!voucher.value) return 0
+  if(!voucher.value.value) return 0
+  
+  return voucher.value.value
+})
+
+const totalPrice = computed(() => {
+  if(!props.shift) return 0
+  if(!props.shift.duration) return 0
+  
+  const shift = props.shift.price
+  const lunch = !!props.lunch ? configStore.config.lunch.price : 0
+  let total = shift + lunch
+  if(!!discountTime.value) total = total - shift
+  if(!!discountLunch.value) total = total - configStore.config.lunch.price
+
+  const discountPriceValue = discountPrice.value
+  const discountVoucherValue = discountVoucher.value
+  let discount = discountPriceValue + discountVoucherValue
+  discount = discount > 100 ? 100 : discount
+  if(discount > 0) total = total - Math.floor(total * discount / 100)
+  return total
+})
+
+const submit = async () => {
+  if(totalPrice.value == 0) return await create('BANK')
+  return modal.value = true
 }
 
 const create = async (pay_type) => {
@@ -146,14 +223,12 @@ const create = async (pay_type) => {
   }
   catch(e){
     loading.value = false
-    if(e == 'Vui lòng chọn ô khác, ô này đang có người đặt') navigateTo('/')
   }
 }
 
-watch(() => authStore.isLogin, (val) => {
-  if(!!val) {
-    state.value.name = authStore.profile.name
-    state.value.phone = authStore.profile.phone
-  }
+onMounted(async () => {
+  await authStore.setAuth()
 })
+
+watch(() => authStore.isLogin, (val) => !val && navigateTo('/'))
 </script>

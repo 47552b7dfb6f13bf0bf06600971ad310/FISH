@@ -5,7 +5,8 @@
     <UiText class="uppercase text-[2rem] md:text-[3rem]" weight="semibold" align="center">{{ configStore.config.name }}</UiText>
     <UiText color="gray" class="text-base md:text-xl" align="center">{{ configStore.config.description }}</UiText>
 
-    <UButton color="yellow" class="mt-4" size="xl" @click="checkTicket">ĐẶT CHỖ NGAY</UButton>
+    <UButton color="yellow" class="mt-4 w-[250px] justify-center" size="xl" icon="i-tdesign-fish-filled" @click="checkTicket">ĐẶT CHỖ NGAY</UButton>
+    <UButton color="orange"  class="mt-2 w-[250px] justify-center" size="xl" icon="i-bxl-vimeo" @click="navigateTo('/member')">NÂNG CẤP HỘI VIÊN</UButton>
   </UiFlex>
 </template>
 

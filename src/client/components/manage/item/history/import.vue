@@ -84,7 +84,7 @@ const columns = [
     sortable: true,
   },{
     key: 'price',
-    label: 'Giá nhập',
+    label: 'Đơn giá 1 SP',
     sortable: true,
   },{
     key: 'note',

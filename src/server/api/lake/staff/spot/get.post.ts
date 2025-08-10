@@ -16,11 +16,12 @@ export default defineEventHandler(async (event) => {
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'
 
     const ticket = await DB.Ticket
-    .findOne({ area: area._id, spot: spot._id, cancel: false })
+    .findOne({ 'area': area._id, 'spot': spot._id, 'cancel.status': false })
     .populate({ path: 'user', select: 'name phone' })
     .populate({ path: 'area', select: 'name' })
     .populate({ path: 'spot', select: 'code status' })
-    .populate({ path: 'shift', select: 'name duration price' }) as IDBTicket
+    .populate({ path: 'shift', select: 'name duration price' })
+    .populate({ path: 'discount.voucher', select: 'value' }) as IDBTicket
     if(!ticket) throw 'Ô này chưa được sử dụng'
 
     return resp(event, { result: { ticket, spot, area } })

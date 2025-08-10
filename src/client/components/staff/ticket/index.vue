@@ -1,82 +1,79 @@
 <template>
-  <div v-if="!!area && !!spot && !!ticket">
-    <div class="mb-4" v-if="!!ticket.end">
-      <UiText class="uppercase" size="lg" weight="semibold" align="center" color="gray">Thời Gian Còn Lại</UiText>
-      <UiText class="text-[4rem]" weight="semibold" align="center" >
-        <UiCountdown :time="ticket.end"></UiCountdown>
-      </UiText>
-    </div>
+  <DataEmpty text="Không có thông tin" class="bg-card p-4 rounded-2xl min-h-[300px]" :loading="loading" v-if="!!loading || !(!!select.area && !!select.spot && !!select.ticket)" />
 
-    <UiFlex type="col" class="gap-4">
-      <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="gray" size="sm">Số vé</UiText>
-        <UiText weight="semibold" size="sm" color="primary">{{ ticket.code }}</UiText>
-      </UiFlex>
+  <UiContent :title="`${select.area.name} - ${select.spot.code}`" color="yellow" sub="Thông tin chi tiết vé câu" class="bg-card p-4 rounded-2xl" v-else>
+    <template #more>
+      <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="emits('close')"></UButton>
+    </template>
 
-      <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="gray" size="sm">Người thuê</UiText>
-        <UiText weight="semibold" size="sm">{{ ticket.user?.name }}</UiText>
-      </UiFlex>
+    <UTabs v-model="tab" :items="tabItems"></UTabs>
 
-      <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="gray" size="sm">Số điện thoại</UiText>
-        <UiText weight="semibold" size="sm">{{ ticket.user?.phone }}</UiText>
-      </UiFlex>
-
-      <UiFlex justify="between" class="w-full" v-if="!!statusLunch">
-        <UiText weight="semibold" color="gray" size="sm">Trang thái cơm</UiText>
-        <UBadge class="cursor-pointer" variant="soft" :color="statusLunch['color']" @click="successLunch">{{ statusLunch['label'] }}</UBadge>
-      </UiFlex>
-
-      <UiFlex justify="between" class="w-full">
-        <UiText weight="semibold" color="gray" size="sm">Trạng thái vé</UiText>
-        <UBadge variant="soft" :color="statusTicket[ticket.status]['color']">{{ statusTicket[ticket.status]['label'] }}</UBadge>
-      </UiFlex>
-    </UiFlex>
-
-    <UiFlex class="gap-1 mt-4" justify="end">
-      <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
-    </UiFlex>
-  </div>
+    <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 0" />
+    <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 1" />
+    <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
+    <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
+  </UiContent>
 </template>
 
 <script setup>
-const props = defineProps(['area', 'spot', 'ticket'])
+const props = defineProps(['code', 'type'])
+const emits = defineEmits(['close'])
 
-const loading = ref(false)
+const loading = ref(true)
+const tab = ref(0) 
+const tabItems = [
+  { label: 'Thông tin' },
+  { label: 'Thanh toán' },
+  { label: 'Dịch vụ' },
+  { label: 'Cá Câu' },
+]
 
-const statusTicket = {
-  0: { label: 'Chưa Thanh Toán', color: 'orange' },
-  1: { label: 'Đang Câu', color: 'green' },
-}
-
-const statusLunch = computed(() => {
-  if(!props.ticket) return null
-  if(!props.ticket.complete) return null
-  if(!props.ticket.lunch) return null
-
-  if(!props.ticket.lunch.has) return { label: 'Không Đăng Ký', color: 'gray' }
-  if(!props.ticket.complete.lunch) return { label: 'Chưa Giao', color: 'orange' }
-  return { label: 'Đã Giao', color: 'green' }
+const select = ref({
+  area: null,
+  spot: null,
+  ticket: null
 })
 
-const onCancel = async () => {
+const selectSpot = async (code) => {
   try {
     loading.value = true
-    const data = await useAPI('ticket/staff/cancel', { code: props.ticket.code })
-
+    const data = await useAPI('lake/staff/spot/get', { code: props.code })
+    
+    select.value.area = data.area
+    select.value.spot = data.spot
+    select.value.ticket = data.ticket
+    tab.value = 0
     loading.value = false
   }
   catch(e){
     loading.value = false
+    select.value.area = null
+    select.value.spot = null
+    select.value.ticket = null
   }
 }
 
-const successLunch = async () => {
+const selectTicket = async (code) => {
   try {
-    await useAPI('ticket/staff/lunch/action', { code: props.ticket.code })
+    loading.value = true
+    const data = await useAPI('ticket/staff/get', { code: props.code })
+    
+    select.value.area = data.area
+    select.value.spot = data.spot
+    select.value.ticket = data.ticket
+    tab.value = 0
+    loading.value = false
   }
-  catch (e) {
+  catch(e){
+    loading.value = false
+    select.value.area = null
+    select.value.spot = null
+    select.value.ticket = null
   }
 }
+
+onMounted(() => setTimeout(() => {
+  if(props.type == 'spot') return selectSpot()
+  if(props.type == 'ticket') return selectTicket()
+}, 1))
 </script>

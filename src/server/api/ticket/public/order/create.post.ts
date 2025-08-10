@@ -9,19 +9,24 @@ export default defineEventHandler(async (event) => {
     if(!cart) throw 'Không tìm thấy giỏ hàng'
     if(!Array.isArray(cart)) throw 'Giỏ hàng không hợp lệ'
 
-    const config = await DB.Config.findOne({}).select('gate') as IDBConfig
+    const config = await DB.Config.findOne({}).select('gate member') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
 
     const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('code cancel status') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
-    if(ticket.status == 0) throw 'Vé này chưa khả dụng'
-    if(ticket.status == 2) throw 'Vé này đã hết hạn'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+    if(ticket.status != 2) throw 'Vé này chưa bắt đầu câu'
 
     const has = await DB.TicketOrder.count({ ticket: ticket._id, user: auth._id, status: 0 }) 
     if(has > 0) throw 'Bạn đang có 1 đơn hàng đang xử lý, vui lòng đợi đơn hàng đó hoàn thành'
 
+    // Make Discount
+    const member = getMember(auth.member)
+    // @ts-expect-error
+    const discountPrice = !!member ? config.member[member.type].discount : 0
+
+    // Make Total and Item
     const cartOrder : any = []
     let total = 0
     await Promise.all(cart.map(async (product) => {
@@ -30,20 +35,25 @@ export default defineEventHandler(async (event) => {
       if(!item.display || item.inventory == 0) throw `${item.name} hiện đã hết hàng`
       if(item.inventory < product.amount) throw `${item.name} chỉ còn ${item.inventory} sản phẩm trong kho, vui lòng chọn lại số lượng`
 
+      let itemPrice = item.price
+      if(discountPrice > 0) itemPrice = itemPrice - Math.floor(itemPrice * discountPrice / 100)
+
       cartOrder.push({
         item: item._id,
         amount: product.amount,
-        price: item.price
+        price: itemPrice
       })
 
-      const price = product.amount * item.price
+      const price = product.amount * itemPrice
       total = total + price
     }))
 
+    // Make Code, Token
     const countOrder = await DB.TicketOrder.count({ ticket: ticket._id })
     const codeOrder = "OD" + '-' + ticket.code + '-' + (countOrder > 9 ? countOrder : `0${countOrder}`)
     const tokenOrder = md5(`${code}-${Date.now()}`)
 
+    // Make QR
     let qrcode
     qrcode = config.gate.qr
     qrcode = qrcode.replaceAll('[money]', String(total))
@@ -53,6 +63,7 @@ export default defineEventHandler(async (event) => {
     qrcode = qrcode.replaceAll('[gate-number]', config.gate.number)
     qrcode = qrcode.replaceAll('[gate-person]', config.gate.person)
 
+    // Create
     const order = await DB.TicketOrder.create({
       ticket: ticket._id,
       user: auth._id,

@@ -2,37 +2,36 @@
   <div>
     <DataEmpty text="Không tìm thấy dữ liệu hồ" class="min-h-[300px]" :loading="loading" v-if="!!loading || lake.length == 0"></DataEmpty>
     
-    <div class="grid grid-cols-12 gap-4" v-else>
-      <div class="lg:col-span-6 col-span-12" v-for="area in lake" :key="area._id">
-        <UiTitle :name="area.name" icon="i-mdi-fish" class="mb-3" />
-
-        <UiFlex wrap class="gap-0.5 lg:justify-start justify-center">
-          <UiFlex 
-            v-for="spot in area.spots" :key="spot._id" 
-            justify="center"
-            :class="`bg-${statusFormat[spot.status]['color']}-500`" 
-            class="p-4 w-[80px] h-[80px] font-semibold cursor-pointer text-xl rounded-lg"
-            @click="selectSpot(spot.code)"
-          >
-            {{ spot.code }}
-          </UiFlex>
+    <div v-else>
+      <UiFlex class="gap-4 mb-6" justify="center" wrap>
+        <UiFlex v-for="(value, key) in statusFormat" class="gap-2">
+          <UBadge :color="value.color"></UBadge>
+          <UiText size="sm" color="gray">{{ value.label }}</UiText>
         </UiFlex>
-      </div>
+      </UiFlex>
+
+      <UiFlex wrap class="gap-0.5 lg:justify-start justify-center">
+        <UiFlex 
+          type="col"
+          v-for="spot in lake" :key="spot._id" 
+          justify="center"
+          :class="`bg-${statusFormat[spot.status]['color']}-500`" 
+          class="p-4 w-[80px] h-[80px] cursor-pointer rounded-lg"
+          @click="selectSpot(spot.code)"
+        >
+          <UiText size="xl" weight="semibold">{{ spot.code }}</UiText>
+            
+          <UiText size="sm" v-if="!!spot.ticket && !!spot.ticket.time">
+            <UiCountdown :time="spot.ticket.time.pay" v-if="spot.status == 1"></UiCountdown>
+            <UiCountdown :time="spot.ticket.time.end" v-if="spot.status == 3"></UiCountdown>
+            <UiCountdown :time="spot.ticket.time.delay" v-if="spot.status == 4"></UiCountdown>
+          </UiText>
+        </UiFlex>
+      </UiFlex>
     </div>
 
     <UModal v-model="modal">
-      <UiContent :title="`${select.area.name} - ${select.spot.code}`" color="yellow" sub="Thông tin chi tiết vé câu" class="bg-card p-4 rounded-2xl" v-if="!!select.area && !!select.spot && !!select.ticket">
-        <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
-        </template>
-
-        <UTabs v-model="tab" :items="tabItems"></UTabs>
-
-        <StaffTicket :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 0" />
-        <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @close="modal = false" v-if="tab == 1" />
-        <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
-        <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
-      </UiContent>
+      <StaffTicket :code="select" @close="modal = false" type="spot" />
     </UModal>
   </div>
 </template>
@@ -42,41 +41,19 @@ const loading = ref(true)
 const modal = ref(false)
 
 const lake = ref([])
-const select = ref({
-  area: null,
-  spot: null,
-  ticket: null
-})
-
-const tab = ref(0) 
-const tabItems = [
-  { label: 'Thông tin' },
-  { label: 'Thanh toán' },
-  { label: 'Dịch vụ' },
-  { label: 'Cá Câu' },
-]
+const select = ref()
 
 const statusFormat = {
-  0: { color: 'primary', label: 'Đang trống' },
+  0: { color: 'gray', label: 'Đang trống' },
   1: { color: 'orange', label: 'Đang thanh toán' },
-  2: { color: 'red', label: 'Đã có người' },
+  2: { color: 'green', label: 'Đã đặt chỗ' },
+  3: { color: 'red', label: 'Đang câu' },
+  4: { color: 'purple', label: 'Sắp kết thúc' },
 }
 
-const selectSpot = async (code) => {
-  try {
-    const data = await useAPI('lake/staff/spot/get', { code: code })
-    
-    select.value.area = data.area
-    select.value.spot = data.spot
-    select.value.ticket = data.ticket
-    tab.value = 0
-    modal.value = true
-  }
-  catch(e){
-    select.value.area = null
-    select.value.spot = null
-    select.value.ticket = null
-  }
+const selectSpot = (code) => {
+  select.value = code
+  modal.value = true
 }
 
 const getLake = async () => {

@@ -13,6 +13,10 @@
         :columns="selectedColumns" 
         :rows="list"
       >
+        <template #area-data="{ row }">
+          <UiText color="yellow">{{ row.area ? row.area.name : '...' }}</UiText>
+        </template>
+        
         <template #spot-data="{ row }">
           <UiText color="yellow">{{ row.spot ? row.spot.code : '...' }}</UiText>
         </template>
@@ -87,9 +91,11 @@ const loading = ref({
 })
 
 const statusTicket = {
-  0: { label: 'Chưa Thanh Toán', color: 'orange' },
-  1: { label: 'Đang Câu', color: 'green' },
-  2: { label: 'Đã kết thúc', color: 'red' },
+  0: { label: 'Chưa Thanh Toán', color: 'gray' },
+  1: { label: 'Đã thanh toán', color: 'primary' },
+  2: { label: 'Đang Câu', color: 'green' },
+  3: { label: 'Sắp kết thúc', color: 'purple' },
+  4: { label: 'Kết thúc', color: 'end' },
 }
 
 // Fetch

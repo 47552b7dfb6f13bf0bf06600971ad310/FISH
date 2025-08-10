@@ -1,4 +1,4 @@
-import type { H3Event } from 'h3'
+import { use, type H3Event } from 'h3'
 import type { IDBUser, IResp, IAuth } from '~~/types'
 import jwt from 'jsonwebtoken'
 
@@ -10,7 +10,7 @@ export default async (event: H3Event, throwError : boolean = true) : Promise<IAu
     if(!token) throw 'Vui lòng đăng nhập trước'
 
     const decoded = jwt.verify(token, runtimeConfig.apiSecret) as any
-    const user = await DB.User.findOne({ _id: decoded._id }).select('phone name type token') as IDBUser
+    const user = await DB.User.findOne({ _id: decoded._id }) as IDBUser
 
     if(!user) throw 'Xác thực tài khoản không thành công'
     if(user.token != token) throw 'Tài khoản đang đăng nhập ở nơi khác, vui lòng đăng nhập lại'
@@ -19,7 +19,9 @@ export default async (event: H3Event, throwError : boolean = true) : Promise<IAu
       _id: user._id,
       phone: user.phone,
       name: user.name,
-      type: user.type
+      type: user.type,
+      currency: user.currency,
+      member: user.member
     }
     event.context.auth = result
     return Promise.resolve(result)

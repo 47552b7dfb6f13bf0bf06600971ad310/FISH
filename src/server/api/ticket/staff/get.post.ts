@@ -1,0 +1,28 @@
+import { IAuth, IDBLakeArea, IDBLakeSpot, IDBTicket } from "~~/types"
+
+export default defineEventHandler(async (event) => {
+  try {
+    const auth = await getAuth(event) as IAuth
+    if(auth.type < 1) throw 'Bạn không có quyền truy cập'
+
+    const { code } = await readBody(event)
+    if(!code) throw 'Không tìm thấy mã ô câu'
+
+    const ticket = await DB.Ticket
+    .findOne({ code: code })
+    .populate({ path: 'user', select: 'name phone' })
+    .populate({ path: 'area', select: 'name' })
+    .populate({ path: 'spot', select: 'code status' })
+    .populate({ path: 'shift', select: 'name duration price' })
+    .populate({ path: 'discount.voucher', select: 'value' }) as IDBTicket
+    if(!ticket) throw 'Vé này không còn tồn tại'
+
+    const spot = ticket.spot
+    const area = ticket.area
+
+    return resp(event, { result: { ticket, spot, area } })
+  } 
+  catch (e:any) {
+    return resp(event, { code: 400, message: e.toString() })
+  }
+})

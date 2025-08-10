@@ -4,7 +4,7 @@
 
     <div v-else>
       <DataTicketItemOrder :ticket="ticket" @done="getOrder" v-if="!order"></DataTicketItemOrder>
-      <DataTicketItemPay :ticket="ticket" :order="order" v-else></DataTicketItemPay>
+      <DataTicketItemDelivery :ticket="ticket" :order="order" v-else></DataTicketItemDelivery>
     </div>
   </div>
 </template>

@@ -36,6 +36,32 @@ export interface IDBConfig {
   lunch: {
     price: number
   }
+  member: {
+    week: {
+      price: number
+      discount: number
+      wheel: number
+      free: {
+        lunch: number
+        time: number
+      }
+    },
+    month: {
+      price: number
+      discount: number
+      wheel: number
+      free: {
+        lunch: number
+        time: number
+      }
+    }
+  }
+  reg: {
+    voucher: {
+      source: Types.ObjectId
+      amount: number
+    }
+  }
 }
 
 export interface IDBConfigStore {
@@ -68,6 +94,26 @@ export interface IDBConfigStore {
   }
   lunch: {
     price: number
+  }
+  member: {
+    week: {
+      price: number
+      discount: number
+      wheel: number
+      free: {
+        lunch: number
+        time: number
+      }
+    },
+    month: {
+      price: number
+      discount: number
+      wheel: number
+      free: {
+        lunch: number
+        time: number
+      }
+    }
   }
 }
 

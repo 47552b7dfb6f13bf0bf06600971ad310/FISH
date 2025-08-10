@@ -35,6 +35,32 @@ export const DBConfig = (mongoose : Mongoose) => {
     },
     lunch: {
       price: { type: Number, default: 50000 },
+    },
+    member: {
+      week: {
+        price: { type: Number, default: 500000 },
+        discount: { type: Number, default: 10 },
+        wheel: { type: Number, default: 0 },
+        free: {
+          lunch: { type: Number, default: 7 },
+          time: { type: Number, default: 40 },
+        }
+      },
+      month: {
+        price: { type: Number, default: 1500000 },
+        discount: { type: Number, default: 15 },
+        wheel: { type: Number, default: 1 },
+        free: {
+          lunch: { type: Number, default: 30 },
+          time: { type: Number, default: 180 },
+        }
+      }
+    },
+    reg: {
+      voucher: {
+        source: { type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true },
+        amount: { type: Number, default: 0 },
+      }
     }
   })
 

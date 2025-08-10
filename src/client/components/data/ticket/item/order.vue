@@ -60,6 +60,8 @@
 </template>
 
 <script setup>
+const configStore = useConfigStore()
+const authStore = useAuthStore()
 const props = defineProps(['ticket'])
 const emits = defineEmits(['done'])
 
@@ -73,6 +75,15 @@ const modal = ref({
 })
 
 const list = ref([])
+
+const discountPrice = computed(() => {
+  if(!authStore.isLogin) return 0
+  const member = authStore.getMember()
+  if(!member) return 0
+  const type = authStore.getMemberType()
+  if(!type) return 0
+  return configStore.config.member[type].discount || 0
+})
 
 const cart = ref({})
 const cartData = computed(() => {
@@ -90,6 +101,9 @@ const cartData = computed(() => {
       price: value.item.price
     })
   }
+
+  const discount = discountPrice.value
+  if(discount > 0) total = total - Math.floor(total * discount / 100)
 
   return { product, total, amount, list }
 })

@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('code cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
     const order = await DB.TicketOrder
     .findOne({ ticket: ticket._id, status: 0 })

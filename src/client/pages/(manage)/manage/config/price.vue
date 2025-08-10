@@ -1,5 +1,5 @@
 <template>
-  <UiContent title="Giá Cơm Và Giá Giờ Câu"  sub="Chỉnh sửa thông tin giá cả khác">
+  <UiContent title="Giá và Khuyến Mãi"  sub="Chỉnh sửa thông tin giá cả khác">
     <UAccordion
       color="primary"
       variant="soft"
@@ -46,6 +46,24 @@
           </UForm>
         </UCard>
       </template>
+
+      <template #voucher>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="Đăng ký tặng phiếu">
+              <SelectVoucherManage v-model="state.reg.voucher.source"  />
+            </UFormGroup>
+
+            <UFormGroup label="Số lượng">
+              <UInput v-model="state.reg.voucher.amount" type="number" />
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
     </UAccordion>
   </UiContent>
 </template>
@@ -63,12 +81,19 @@ const state = ref({
   },
   lunch: {
     price: null
+  },
+  reg: {
+    voucher: {
+      source: null,
+      amount: null,
+    }
   }
 })
 
 const menu = [
   { label: 'Giá cơm hằng ngày', slot: 'lunch', defaultOpen: true },
   { label: 'Giá mua thêm giờ', slot: 'overtime' },
+  { label: 'Khuyến mãi tạo tài khoản', slot: 'voucher' },
 ]
 
 const getConfig = async () => {

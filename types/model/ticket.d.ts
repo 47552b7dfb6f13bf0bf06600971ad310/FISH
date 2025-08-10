@@ -15,50 +15,50 @@ export interface IDBTicket {
 
   lunch: {
     has: boolean
-    price: number
+    complete: boolean
     staff: Types.ObjectId
   }
-
-  items: Array<Types.ObjectId>
   
-  overtime: {
-    step: number
-    price: number
+  time: {
+    start: Date
+    end: Date
+    pay: Date
+    delay: Date
   }
 
-  start: Date
-  end: Date
+  price: {
+    spot: number
+    lunch: number
+    item: number
+    total: number
+  }
 
-  total: number
+  discount: {
+    time: boolean
+    lunch: boolean
+    price: number
+    voucher: Types.ObjectId
+  }
 
   pay: {
-    total: number
-    order: number
-    pending: Date
     qrcode: string
     token: string
     type: string
+    complete: boolean
+    staff: Types.ObjectId
   }
-
-  complete: {
-    pay: {
-      total: boolean
-      pending: boolean
-      staff: Types.ObjectId
-    }
-    time: boolean
-    lunch: boolean
-    cancel: Types.ObjectId
-  },
 
   fish: {
     amount: number
     kg: number
   }
 
-  cancel: boolean
+  cancel: {
+    status: boolean
+    staff: Types.ObjectId
+  }
 
-  status: number // 0-PENDING 1-STARTING 2-END
+  status: number // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
 
   save: {
     () : void

@@ -33,6 +33,22 @@ export const useAuthStore = defineStore('auth', () => {
     profile.value = undefined
   }
 
+  function getMember () {
+    if(!isLogin.value || !profile.value) return null
+    const member = profile.value.member
+    if(!!member.week.enable) return member.week
+    if(!!member.month.enable) return member.month
+    return null
+  }
+
+  function getMemberType () {
+    if(!isLogin.value || !profile.value) return null
+    const member = profile.value.member
+    if(!!member.week.enable) return 'week'
+    if(!!member.month.enable) return 'month'
+    return null
+  }
+
   return { 
     modal,
     isLogin, 
@@ -42,6 +58,8 @@ export const useAuthStore = defineStore('auth', () => {
     profile,
     setModal,
     setAuth, 
-    removeAuth
+    removeAuth,
+    getMember,
+    getMemberType
   }
 })

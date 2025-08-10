@@ -37,12 +37,14 @@ const emit = defineEmits(['to'])
 const menu = ref([
   { title: 'Cài đặt', child: [
     { title: 'Thông tin hồ', icon: 'i-ix-about-filled', to: `/manage/config/info` },
-    { title: 'Giá cơm và giờ', icon: 'i-solar-tag-price-bold', to: `/manage/config/price` },
+    { title: 'Giá và khuyến mãi', icon: 'i-solar-tag-price-bold', to: `/manage/config/price` },
     { title: 'Kênh thanh toán', icon: 'i-mynaui-bank-solid', to: `/manage/config/gate` },
     { title: 'Thời gian câu', icon: 'i-bxs-time', to: `/manage/config/shift` },
+    { title: 'Cấu hình Hội viên', icon: 'i-bxs-group', to: `/manage/config/member` }
   ]},
   { title: 'Tài khoản', child: [
     { title: 'Danh sách', icon: 'i-bx-group', to: `/manage/user` },
+    { title: 'Hội viên', icon: 'i-bxs-group', to: `/manage/user/member` },
   ]},
   { title: 'Quản lý hồ', child: [
     { title: 'Khu vực', icon: 'i-ph-map-pin-simple-area-bold', to: `/manage/lake/area` },
@@ -55,6 +57,10 @@ const menu = ref([
   { title: 'Dịch vụ thêm', child: [
     { title: 'Loại sản phẩm', icon: 'i-mdi-food', to: `/manage/item/category` },
     { title: 'Danh sách', icon: 'i-mdi-list-box', to: `/manage/item` },
+  ]},
+  { title: 'Thẻ Voucher', child: [
+    { title: 'Danh sách', icon: 'i-mdi-voucher', to: `/manage/voucher` },
+    { title: 'Lịch sử', icon: 'i-bx-time', to: `/manage/voucher/history` },
   ]}
 ])
 

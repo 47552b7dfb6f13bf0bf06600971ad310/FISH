@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('user code cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
     const order = await DB.TicketOrder.findOne({ ticket: ticket._id, code: orderCode }).select('status cart total') as IDBTicketOrder
     if(!order) throw 'Đơn hàng còn tồn tại'
@@ -46,8 +46,8 @@ export default defineEventHandler(async (event) => {
 
     // Update Ticket
     await DB.Ticket.updateOne({ _id: ticket._id }, { $inc: { 
-      'pay.total': order.total,
-      'pay.order': order.total,
+      'price.total': order.total,
+      'price.item': order.total,
     }})
     
     return resp(event, { message: 'Thao tác thành công' })

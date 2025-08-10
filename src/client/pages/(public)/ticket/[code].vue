@@ -2,8 +2,8 @@
   <DataEmpty :text="err" :loading="loading" v-if="!!loading || !ticket" class="min-h-[400px]" />
 
   <div v-else>
-    <DataTicketPayPending :ticket="ticket" v-if="ticket.status == 0" @start="getTicket" />
-    <DataTicket :ticket="ticket" v-else="ticket.status == 1" />
+    <DataTicketPending :ticket="ticket" v-if="ticket.status == 0" @start="getTicket" />
+    <DataTicket :ticket="ticket" @reload="getTicket" v-else />
   </div>
 </template>
 

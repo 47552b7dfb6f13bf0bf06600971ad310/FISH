@@ -144,7 +144,7 @@
           <UInput v-model="stateImport.data.amount" type="number" />
         </UFormGroup>
 
-        <UFormGroup label="Giá nhập">
+        <UFormGroup label="Đơn giá 1 sản phẩm">
           <UInput v-model="stateImport.data.price" type="number" />
         </UFormGroup>
 
@@ -153,8 +153,8 @@
         </UFormGroup>
 
         <UiFlex justify="end" class="gap-1">
-          <UButton color="yellow" type="submit" :loading="loading.edit">Xác Nhận</UButton>
-          <UButton color="gray" @click="modal.edit = false" :disabled="loading.edit">Đóng</UButton>
+          <UButton color="yellow" type="submit" :loading="loading.import">Xác Nhận</UButton>
+          <UButton color="gray" @click="modal.import = false" :disabled="loading.import">Đóng</UButton>
         </UiFlex>
       </UForm>
     </UModal>

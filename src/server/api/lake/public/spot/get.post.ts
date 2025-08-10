@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     if(!spot) throw 'Ô không tồn tại'
     if(spot.status == 0) throw 'Vui lòng tải lại trang'
 
-    const ticket = await DB.Ticket.findOne({ spot: spot._id, cancel: false }).select('user code') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ 'spot': spot._id, 'cancel.status': false }).select('user code') as IDBTicket
     if(!ticket) throw 'Ô lỗi, vui lòng chọn ô khác'
     if(auth._id.toString() != ticket.user.toString()) throw 'Ô này không thể chọn'
 

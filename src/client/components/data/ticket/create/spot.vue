@@ -28,13 +28,20 @@
 
       <UiFlex wrap class="gap-0.5 lg:px-8 px-0" justify="center" v-else>
         <UiFlex 
+          type="col"
           v-for="spot in list" :key="spot._id" 
           justify="center"
           :class="`bg-${statusFormat[spot.status]['color']}-500`" 
-          class="p-4 w-[70px] h-[70px] font-semibold cursor-pointer text-xl rounded-lg"
+          class="p-4 w-[70px] h-[70px] cursor-pointer rounded-lg"
           @click="selectSpot(spot)"
         >
-          {{ spot.code }}
+          <UiText size="xl" weight="semibold">{{ spot.code }}</UiText>
+          
+          <UiText size="sm" v-if="!!spot.ticket && !!spot.ticket.time">
+            <UiCountdown :time="spot.ticket.time.pay" v-if="spot.status == 1"></UiCountdown>
+            <UiCountdown :time="spot.ticket.time.end" v-if="spot.status == 3"></UiCountdown>
+            <UiCountdown :time="spot.ticket.time.delay" v-if="spot.status == 4"></UiCountdown>
+          </UiText>
         </UiFlex>
       </UiFlex>
     </div>
@@ -52,6 +59,8 @@
 </template>
 
 <script setup>
+const authStore = useAuthStore()
+
 const props = defineProps(['area'])
 const emits = defineEmits(['back', 'spot'])
 
@@ -66,12 +75,15 @@ const selectData = ref({
 })
 
 const statusFormat = {
-  0: { color: 'primary', label: 'Đang trống' },
+  0: { color: 'gray', label: 'Đang trống' },
   1: { color: 'orange', label: 'Đang thanh toán' },
-  2: { color: 'red', label: 'Đã có người' },
+  2: { color: 'green', label: 'Đã đặt chỗ' },
+  3: { color: 'red', label: 'Đang câu' },
+  4: { color: 'purple', label: 'Sắp kết thúc' },
 }
 
 const selectSpot = (data) => {
+  if(!authStore.isLogin) return authStore.setModal(true)
   if(data.status != 0) return getSpot(data.code)
   selectData.value.spot = data
   modal.value = true

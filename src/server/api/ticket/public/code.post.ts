@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     .populate({ path: 'spot', select: 'code status' })
     .populate({ path: 'shift', select: 'name duration price' }) as IDBTicket
     if(!ticket) throw 'Vé này không tồn tại'
-    if(!!ticket.cancel) throw 'Vé này đã bị hủy'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(ticket.user.toString() != auth._id.toString()) throw 'Bạn không phải chủ vé câu'
 
     return resp(event, { result: ticket })
