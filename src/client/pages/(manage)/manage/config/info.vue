@@ -100,11 +100,39 @@
           </UForm>
         </UCard>
       </template>
+
+      <template #time>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="Thời gian mở đặt vé">
+              <SelectDate time v-model="state.time.create" />
+            </UFormGroup>
+
+            <!-- <UFormGroup label="Thời gian bắt đầu">
+              <SelectDate time v-model="state.time.start" />
+            </UFormGroup> -->
+
+            <UFormGroup label="Thời gian chờ thanh toán (Phút)">
+              <UInput v-model="state.time.pay" type="number" />
+            </UFormGroup>
+
+            <UFormGroup label="Thời gian chờ dọn đồ (Phút)">
+              <UInput v-model="state.time.delay" type="number" />
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
     </UAccordion>
   </UiContent>
 </template>
 
 <script setup>
+import { SelectDate } from '#components'
+
 const { bootConfig } = useConfigStore()
 
 const load = ref(true)
@@ -130,13 +158,21 @@ const state = ref({
     messenger: '',
     zalo: '',
     tiktok: ''
+  },
+
+  time: {
+    create: null,
+    start: null,
+    delay: null,
+    pay: null
   }
 })
 
 const menu = [
-  { label: 'Cơ bản', slot: 'basic', defaultOpen: true },
+  { label: 'Cơ bản', slot: 'basic' },
   { label: 'Liên hệ', slot: 'contact' },
-  { label: 'Mạng xã hội', slot: 'social' }
+  { label: 'Mạng xã hội', slot: 'social' },
+  { label: 'Thời gian', slot: 'time' },
 ]
 
 const getConfig = async () => {

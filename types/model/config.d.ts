@@ -36,6 +36,12 @@ export interface IDBConfig {
   lunch: {
     price: number
   }
+  time: {
+    create: Date
+    start: Date
+    delay: number
+    pay: number
+  }
   member: {
     week: {
       price: number
@@ -95,6 +101,12 @@ export interface IDBConfigStore {
   lunch: {
     price: number
   }
+  time: {
+    create: Date | null
+    start: Date | null
+    delay: number
+    pay: number
+  }
   member: {
     week: {
       price: number
@@ -120,6 +132,7 @@ export interface IDBConfigStore {
 export interface IDBConfigShift {
   _id: Types.ObjectId
 
+  area: Types.ObjectId
   name: string
   key: string
   duration: number

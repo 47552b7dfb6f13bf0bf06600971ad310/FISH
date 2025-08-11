@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const ticket = await DB.Ticket.findOne({ code: code }).select('user cancel pay shift spot price discount') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé'
     if(!!ticket.cancel.status) throw 'Vé đã bị hủy'
-    // if(!!ticket.pay.complete) throw 'Vé này đã được xác nhận thanh toán'
+    if(!!ticket.pay.complete) throw 'Vé này đã được xác nhận thanh toán'
 
     const user = await DB.User.findOne({ _id: ticket.user }).select('vouchers') as IDBUser
     if(!user) throw 'Không tìm thấy tài khoản khách hàng'
@@ -22,16 +22,29 @@ export default defineEventHandler(async (event) => {
     // Xóa Voucher nếu có
     if(ticket.discount.voucher) await delUserVoucher(user, ticket.discount.voucher)
 
+    // Set Thời gian
+    const start = new Date();
+    const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
+    const delay = new Date(end.getTime() + 5 * 60 * 1000)
+
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
       'time.pay': null,
+      'time.start': start,
+      'time.end': end,
+      'time.delay': delay,
       'pay.complete': true,
       'pay.staff': auth._id,
-      'status': 1
+      'status': 2
     }})
 
     // Cập nhật trạng thái ô câu
-    await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 2 })
+    await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 3 })
+
+    // Cập nhật thông số
+    if(ticket.price.total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
+      'statistic.pay': ticket.price.total
+    }})
 
     return resp(event, { message: 'Thao tác thánh công' })
   } 

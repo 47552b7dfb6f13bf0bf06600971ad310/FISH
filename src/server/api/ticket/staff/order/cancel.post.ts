@@ -1,5 +1,4 @@
-import type { IAuth, IDBItem, IDBTicket, IDBConfig, IDBTicketOrder } from "~~/types"
-import md5 from "md5"
+import type { IAuth, IDBTicket, IDBTicketOrder } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -19,41 +18,9 @@ export default defineEventHandler(async (event) => {
     if(order.status > 0) throw 'Không thể thao tác trên đơn hàng này'
 
     // Update Order
-    order.status = 1
+    order.status = 2
     order.staff = auth._id
     await order.save()
-
-    // Update Export Item
-    const list = order.cart.map(product => ({
-      user: ticket.user,
-      ticket: ticket._id,
-      order: order._id,
-      staff: auth._id,
-
-      item: product.item,
-      amount: product.amount,
-      price: product.price,
-    }))
-    await DB.ItemExport.insertMany(list)
-
-    // Update Inventory Item
-    await Promise.all(order.cart.map(async (product) => {
-      const item = product.item
-      const amount = product.amount
-
-      await DB.Item.updateOne({ _id: item }, { $inc: { inventory: amount * -1 } })
-    }))
-
-    // Update Ticket
-    await DB.Ticket.updateOne({ _id: ticket._id }, { $inc: { 
-      'price.total': order.total,
-      'price.item': order.total,
-    }})
-
-    // Update User
-    if(order.total > 0) await DB.User.updateOne({ _id: ticket.user }, { $inc: {
-      'statistic.pay': order.total
-    }})
     
     return resp(event, { message: 'Thao tác thành công' })
   } 

@@ -16,7 +16,13 @@ export interface IDBUser {
   token: string
 
   currency: {
+    coin: number
     wheel: number
+  }
+
+  statistic: {
+    pay: number
+    miss: number
   }
 
   member: {

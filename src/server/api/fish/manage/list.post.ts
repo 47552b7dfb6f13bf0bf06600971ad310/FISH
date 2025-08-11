@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const auth = await getAuth(event) as IAuth
     if(auth.type < 1) throw 'Bạn không phải quản trị viên'
 
-    const { size, current, sort, category } = await readBody(event)
+    const { size, current, sort, category, area } = await readBody(event)
     if(!size || !current) throw 'Dữ liệu phân trang sai'
     if(!sort.column || !sort.direction) throw 'Dữ liệu sắp xếp sai'
 
@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
 
     const match : any = {}
     if(!!category) match['category'] = category
+    if(!!area) match['area'] = area
 
     const list = await DB.Fish
     .find(match)

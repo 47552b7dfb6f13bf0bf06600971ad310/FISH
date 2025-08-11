@@ -51,7 +51,7 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-4" justify="end" >
+    <UiFlex class="gap-1 mt-4" justify="end" v-if="ticket.status == 0">
       <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
     </UiFlex>
   </div>

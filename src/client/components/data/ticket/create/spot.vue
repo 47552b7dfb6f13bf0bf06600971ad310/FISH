@@ -33,7 +33,7 @@
           justify="center"
           :class="`bg-${statusFormat[spot.status]['color']}-500`" 
           class="p-4 w-[70px] h-[70px] cursor-pointer rounded-lg"
-          @click="selectSpot(spot)"
+          @click="getSpot(spot)"
         >
           <UiText size="xl" weight="semibold">{{ spot.code }}</UiText>
           
@@ -52,7 +52,7 @@
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
         </template>
 
-        <DataTicketCreateShift @select="selectShift" @close="modal = false" />
+        <DataTicketCreateShift :area="area" @select="selectShift" @close="modal = false" />
       </UiContent>
     </UModal>
   </div>
@@ -82,23 +82,22 @@ const statusFormat = {
   4: { color: 'purple', label: 'Sắp kết thúc' },
 }
 
-const selectSpot = (data) => {
-  if(!authStore.isLogin) return authStore.setModal(true)
-  if(data.status != 0) return getSpot(data.code)
-  selectData.value.spot = data
-  modal.value = true
-}
-
 const selectShift = (data) => {
   selectData.value.shift = data.shift
   selectData.value.lunch = data.lunch
   emits('spot', selectData.value)
 }
 
-const getSpot = async (code) => {
+const getSpot = async (spot) => {
   try {
-    const data = await useAPI('lake/public/spot/get', { code: code })
-    navigateTo(`/ticket/${data}`)
+    if(!authStore.isLogin) return authStore.setModal(true)
+    const data = await useAPI('lake/public/spot/get', { code: spot.code })
+
+    if(data.ticket) return navigateTo(`/ticket/${data.ticket}`)
+    else {
+      selectData.value.spot = spot
+      modal.value = true
+    }
   }
   catch (e) {
   }

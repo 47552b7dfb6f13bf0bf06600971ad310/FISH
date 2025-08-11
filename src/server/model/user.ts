@@ -14,7 +14,13 @@ export const DBUser = (mongoose : Mongoose) => {
     token: { type: String },
 
     currency: {
+      coin: { type: Number, default: 0, index: true },
       wheel: { type: Number, default: 0, index: true }
+    },
+
+    statistic: {
+      pay: { type: Number, default: 0, index: true },
+      miss: { type: Number, default: 0, index: true },
     },
 
     member: {

@@ -11,9 +11,14 @@ export default defineEventHandler(async (event) => {
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
     if(!pay_type) throw 'Không tìm thấy phương thức thanh toán'
 
-    const config = await DB.Config.findOne({}).select('lunch gate member') as IDBConfig
+    const config = await DB.Config.findOne({}).select('lunch gate member time') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
+    if(!!config.time.create){
+      const now = DayJS(Date.now()).unix()
+      const create = DayJS(config.time.create).unix()
+      if(now < create) throw 'Chưa tới thời gian mở bán vé'
+    }
 
     const user = await DB.User.findOne({ _id: auth._id }).select('vouchers') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
@@ -85,6 +90,13 @@ export default defineEventHandler(async (event) => {
     // Has Pay
     const hasPay = total == 0
 
+    // Set Time
+    const timeNow = new Date()
+    const timeStart = timeNow
+    const timeEnd = new Date(timeStart.getTime() + shiftCheck.duration * 60 * 60 * 1000)
+    const timeDelay = new Date(timeEnd.getTime() + config.time.delay * 60 * 1000)
+    const timePay = new Date(timeNow.getTime() + config.time.pay * 60 * 1000)
+
     // Create
     await DB.Ticket.create({
       user: auth._id,
@@ -96,7 +108,10 @@ export default defineEventHandler(async (event) => {
         has: !!lunch ? true : false,
       },
       time: {
-        pay: !hasPay ? new Date(Date.now() + 10 * 60 * 1000) : null
+        pay: !hasPay ? timePay : null,
+        start: !hasPay ? null : timeStart,
+        end: !hasPay ? null : timeEnd,
+        delay: !hasPay ? null : timeDelay
       },
       price: {
         spot: shiftCheck.price,
@@ -116,9 +131,9 @@ export default defineEventHandler(async (event) => {
         complete: !hasPay ? false : true,
         staff: !hasPay ? null : auth._id
       },
-      status: !hasPay ? 0 : 1
+      status: !hasPay ? 0 : 2
     })
-    await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: !hasPay ? 1 : 2 })
+    await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: !hasPay ? 1 : 3 })
     
     // Update User
     !!member && await DB.User.updateOne({ _id: auth._id }, { $inc: { 
@@ -126,7 +141,13 @@ export default defineEventHandler(async (event) => {
       [`member.${member.type}.free.lunch`]: !!discountLunch ? -1 : 0,
     }})
 
+    // Xóa Voucher Nếu Sử Dụng
     if(!!hasPay && !!voucherSelect) await delUserVoucher(user, voucherSelect._id)
+
+    // Cập nhật thông số
+    if(!!hasPay && total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
+      'statistic.pay': total
+    }})
 
     return resp(event, { message: 'Đặt chỗ thành công', result: code })
   } 

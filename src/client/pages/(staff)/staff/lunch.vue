@@ -95,7 +95,7 @@ const statusTicket = {
   1: { label: 'Đã thanh toán', color: 'primary' },
   2: { label: 'Đang Câu', color: 'green' },
   3: { label: 'Sắp kết thúc', color: 'purple' },
-  4: { label: 'Kết thúc', color: 'end' },
+  4: { label: 'Kết thúc', color: 'rose' },
 }
 
 // Fetch

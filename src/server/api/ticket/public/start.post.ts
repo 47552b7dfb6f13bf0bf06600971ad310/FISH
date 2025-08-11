@@ -1,10 +1,13 @@
-import type { IAuth, IDBTicket, IDBConfigShift } from "~~/types"
+import type { IAuth, IDBConfig, IDBTicket, IDBConfigShift } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
+
+    const config = await DB.Config.findOne({}).select('time') as IDBConfig
+    if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
 
     const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status shift spot') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
@@ -16,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     const start = new Date();
     const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
-    const delay = new Date(end.getTime() + 5 * 60 * 1000)
+    const delay = new Date(end.getTime() + config.time.delay * 60 * 1000)
 
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {

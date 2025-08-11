@@ -4,9 +4,7 @@
       <UTabs v-model="tab" :items="tabs"></UTabs>
     </UiFlex>
 
-    <StaffLake v-if="tab == 0" />
-    <StaffOrder v-if="tab == 1" />
-    <StaffLunch v-if="tab == 2" />
+    <NuxtPage />
   </div>
 </template>
 
@@ -16,10 +14,18 @@ definePageMeta({
   middleware: 'staff'
 })
 
-const tab = ref(0)
+const route = useRoute()
+const tabRoute = {
+  '/staff': 0,
+  '/staff/order': 1,
+  '/staff/lunch': 2
+}
+const tab = ref(tabRoute[route.fullPath])
 const tabs = [
-  { label: 'Hồ Câu', key: 'lake' },
-  { label: 'Gọi Dịch Vụ', key: 'order' },
-  { label: 'Đăng Ký Cơm', key: 'lunch' },
+  { label: 'Hồ Câu', key: '/staff' },
+  { label: 'Gọi Dịch Vụ', key: '/staff/order' },
+  { label: 'Đăng Ký Cơm', key: '/staff/lunch' },
 ]
+
+watch(tab, (val) => navigateTo(tabs[val]['key']))
 </script>

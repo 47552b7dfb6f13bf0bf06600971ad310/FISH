@@ -1,8 +1,8 @@
 <template>
-  <div class="relative h-full min-h-full pt-[var(--header-size)]">
+  <div class="relative h-full min-h-full pt-[var(--header-size)] h-full">
     <LayoutManageHeader />
 
-    <UiFlex class="px-4 py-4 lg:gap-6 gap-0" items="start">
+    <UiFlex class="px-4 py-4 lg:gap-6 gap-0 h-full" items="start">
       <div class="
         HideScroll
         sticky top-[calc(var(--header-size)+1rem)]
@@ -15,7 +15,7 @@
       </div>
 
       <UContainer 
-        class="relative grow !px-0" 
+        class="relative grow h-full !px-0" 
         style="min-height: calc(100% - var(--header-size));" 
         :ui="{ constrained: 'overflow-x-hidden' }
       ">

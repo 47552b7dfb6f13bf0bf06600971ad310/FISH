@@ -30,6 +30,7 @@
 
 <script setup>
 const configStore = useConfigStore()
+const props = defineProps(['area'])
 const emits = defineEmits(['close', 'select'])
 
 const list = ref([])
@@ -56,7 +57,9 @@ const onSelect = () => {
 const getList = async () => {
   try {
     loading.value = true
-    const data = await useAPI('config/public/shift/list')
+    const data = await useAPI('config/public/shift/list', { 
+      area: props.area._id
+    })
     
     list.value = data
     loading.value = false

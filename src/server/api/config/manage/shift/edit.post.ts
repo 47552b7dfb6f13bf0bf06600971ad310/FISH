@@ -11,17 +11,18 @@ export default defineEventHandler(async (event) => {
     if(!isNumber(duration) || duration < 1) throw 'Thời lượng không hợp lệ'
     if(!isNumber(price) || price < 1) throw 'Giá không hợp lệ'
 
-    const shift = await DB.ConfigShift.findOne({ _id: _id }).select('name') as IDBConfigShift
+    const shift = await DB.ConfigShift.findOne({ _id: _id }).select('name area') as IDBConfigShift
     if(!shift) throw 'Ca câu không tồn tại'
 
     if(shift.name != name){
       const key = formatVNString(name, '-')
-      const getByKey = await DB.ConfigShift.findOne({ key: key }).select('_id') as IDBConfigShift
-      if(!!getByKey) throw 'Ca câu đã tồn tại'
+      const getByKey = await DB.ConfigShift.findOne({ key: key, area: shift.area }).select('_id') as IDBConfigShift
+      if(!!getByKey) throw 'Tên ca câu đã tồn tại'
       body.key = key
     }
 
     delete body['_id']
+    delete body['area']
     await DB.ConfigShift.updateOne({ _id: _id }, body)
     
     return resp(event, { message: 'Sửa thành công' })

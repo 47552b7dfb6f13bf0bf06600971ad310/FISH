@@ -36,6 +36,12 @@ export const DBConfig = (mongoose : Mongoose) => {
     lunch: {
       price: { type: Number, default: 50000 },
     },
+    time: {
+      create: { type: Date },
+      start: { type: Date },
+      delay: { type: Number, default: 10 },
+      pay: { type: Number, default: 10 },
+    },
     member: {
       week: {
         price: { type: Number, default: 500000 },
@@ -84,6 +90,7 @@ export const DBConfig = (mongoose : Mongoose) => {
 
 export const DBConfigShift = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBConfigShift>({ 
+    area: { type: mongoose.Schema.Types.ObjectId, ref: 'LakeArea', index: true },
     name: { type: String },
     key: { type: String },
     duration: { type: Number, index: true },
@@ -93,18 +100,5 @@ export const DBConfigShift = (mongoose : Mongoose) => {
 
   schema.index({ key: 'text' })
   const model = mongoose.model('ConfigShift', schema, 'ConfigShift')
-
-  const autoCreate = async () => {
-    const ca4 = await model.count({ key: 'ca-4-tieng' })
-    const ca6 = await model.count({ key: 'ca-6-tieng' })
-    const ca8 = await model.count({ key: 'ca-8-tieng' })
-    const ca12 = await model.count({ key: 'ca-12-tieng' })
-    if(ca4 == 0) await model.create({ name: 'Ca 4 tiếng', key: 'ca-4-tieng', duration: 4, price: 200000 })
-    if(ca6 == 0) await model.create({ name: 'Ca 6 tiếng', key: 'ca-6-tieng', duration: 6, price: 300000 })
-    if(ca8 == 0) await model.create({ name: 'Ca 8 tiếng', key: 'ca-8-tieng', duration: 8, price: 400000 })
-    if(ca12 == 0) await model.create({ name: 'Ca 12 tiếng', key: 'ca-12-tieng', duration: 12, price: 600000 })
-  }
-
-  autoCreate()
   return model 
 }

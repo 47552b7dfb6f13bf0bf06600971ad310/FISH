@@ -39,6 +39,13 @@ export const useConfigStore = defineStore('config', () => {
       price: 0
     },
 
+    time: {
+      create: null,
+      start: null,
+      delay: 0,
+      pay: 0
+    },
+
     member: {
       week: {
         price: 0,

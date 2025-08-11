@@ -11,13 +11,18 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('code cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+    //if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
     const order = await DB.TicketOrder
-    .findOne({ ticket: ticket._id, status: 0 })
-    .populate({ path: 'cart.item' }) as IDBTicketOrder
+    .findOne({ ticket: ticket._id, status: 0 }).
+    populate({ path: 'cart.item' }) as IDBTicketOrder
+    
+    const list = await DB.TicketOrder
+    .find({ ticket: ticket._id })
+    .populate({ path: 'cart.item' })
+    .sort({ createdAt: -1 })
 
-    return resp(event, { result: order })
+    return resp(event, { result: { list, order } })
   } 
   catch (e:any) {
     return resp(event, { code: 400, message: e.toString() })

@@ -120,6 +120,7 @@ watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
+watch(() => page.value.area, () => getList())
 watch(() => page.value.category, () => getList())
 
 // State
