@@ -2,13 +2,13 @@ import { IAuth, IDBLakeSpot, IDBTicket, IDBConfig } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
-    const { code } = await readBody(event)
-    if(!code) throw 'Không tìm thấy mã ô câu'
+    const { _id } = await readBody(event)
+    if(!_id) throw 'Không tìm thấy mã ô câu'
 
     const auth = await getAuth(event, false) as IAuth | null
     if(!auth) throw 'Vui lòng đăng nhập trước'
     
-    const spot = await DB.LakeSpot.findOne({ code: code }).select('status') as IDBLakeSpot
+    const spot = await DB.LakeSpot.findOne({ _id: _id }).select('status') as IDBLakeSpot
     if(!spot) throw 'Ô không tồn tại'
     if(spot.status == 0){
       const config = await DB.Config.findOne({}).select('time') as IDBConfig

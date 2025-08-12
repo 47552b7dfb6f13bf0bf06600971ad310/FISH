@@ -9,11 +9,11 @@
         </template>
 
         <template #amount-data="{ row }">
-          <UiText color="green">{{ useMoney().toMoney(row.amount || 0) }}</UiText>
+          <UiText color="green">{{ useMoney().toMoney(row.amount || 0) }} con</UiText>
         </template>
 
         <template #kg-data="{ row }">
-          <UiText color="primary">{{ useMoney().toMoney(row.kg || 0) }}</UiText>
+          <UiText color="primary">{{ useMoney().toMoney(row.kg || 0) }} kg</UiText>
         </template>
 
         <template #createdAt-data="{ row }">
@@ -36,7 +36,7 @@ const columns = [
     label: 'Loại',
   },{
     key: 'amount',
-    label: 'Số con'
+    label: 'Lượng'
   },{
     key: 'kg',
     label: 'Nặng'

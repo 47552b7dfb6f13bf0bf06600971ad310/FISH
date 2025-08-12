@@ -1,4 +1,4 @@
-import { IAuth, IDBConfigShift, IDBTicket, IDBUser } from "~~/types"
+import { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBTicket, IDBUser } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,10 +8,13 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code }).select('user cancel pay shift spot price discount') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code }).select('area user cancel pay shift spot price discount') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé'
     if(!!ticket.cancel.status) throw 'Vé đã bị hủy'
     if(!!ticket.pay.complete) throw 'Vé này đã được xác nhận thanh toán'
+
+    const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('pig') as IDBLakeArea
+    if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
 
     const user = await DB.User.findOne({ _id: ticket.user }).select('vouchers') as IDBUser
     if(!user) throw 'Không tìm thấy tài khoản khách hàng'
@@ -44,6 +47,11 @@ export default defineEventHandler(async (event) => {
     // Cập nhật thông số
     if(ticket.price.total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
       'statistic.pay': ticket.price.total
+    }})
+
+    // Cập nhật Heo
+    if(ticket.price.spot > 0 && areaCheck.pig.percent > 0) await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
+      'pig.money': Math.floor(ticket.price.spot * areaCheck.pig.percent / 100),
     }})
 
     return resp(event, { message: 'Thao tác thánh công' })

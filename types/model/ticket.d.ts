@@ -37,6 +37,7 @@ export interface IDBTicket {
     time: boolean
     lunch: boolean
     price: number
+    miss: number
     voucher: Types.ObjectId
   }
 
@@ -108,6 +109,7 @@ export interface IDBTicketFish {
   ticket: Types.ObjectId
   user: Types.ObjectId
 
+  area: Types.ObjectId
   category: Types.ObjectId
   fish: Types.ObjectId
 
@@ -118,4 +120,6 @@ export interface IDBTicketFish {
     live: string
     image: string
   }
+
+  isPig: boolean
 }

@@ -40,7 +40,8 @@ const menu = ref([
     { title: 'Giá và khuyến mãi', icon: 'i-solar-tag-price-bold', to: `/manage/config/price` },
     { title: 'Kênh thanh toán', icon: 'i-mynaui-bank-solid', to: `/manage/config/gate` },
     { title: 'Thời gian câu', icon: 'i-bxs-time', to: `/manage/config/shift` },
-    { title: 'Cấu hình Hội viên', icon: 'i-bxs-group', to: `/manage/config/member` }
+    { title: 'Cấu hình Hội viên', icon: 'i-bxs-group', to: `/manage/config/member` },
+    { title: 'Thẻ Voucher', icon: 'i-mdi-voucher', to: `/manage/config/voucher` },
   ]},
   { title: 'Tài khoản', child: [
     { title: 'Danh sách', icon: 'i-bx-group', to: `/manage/user` },
@@ -57,10 +58,6 @@ const menu = ref([
   { title: 'Dịch vụ thêm', child: [
     { title: 'Loại sản phẩm', icon: 'i-mdi-food', to: `/manage/item/category` },
     { title: 'Danh sách', icon: 'i-mdi-list-box', to: `/manage/item` },
-  ]},
-  { title: 'Thẻ Voucher', child: [
-    { title: 'Danh sách', icon: 'i-mdi-voucher', to: `/manage/voucher` },
-    { title: 'Lịch sử', icon: 'i-bx-time', to: `/manage/voucher/history` },
   ]}
 ])
 

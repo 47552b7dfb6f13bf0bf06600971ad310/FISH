@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['code', 'type'])
+const props = defineProps(['spot', 'ticket', 'type'])
 const emits = defineEmits(['close'])
 
 const loading = ref(true)
@@ -34,10 +34,10 @@ const select = ref({
   ticket: null
 })
 
-const selectSpot = async (code) => {
+const selectSpot = async () => {
   try {
     loading.value = true
-    const data = await useAPI('lake/staff/spot/get', { code: props.code })
+    const data = await useAPI('lake/staff/spot/get', { _id: props.spot?._id })
     
     select.value.area = data.area
     select.value.spot = data.spot
@@ -53,10 +53,10 @@ const selectSpot = async (code) => {
   }
 }
 
-const selectTicket = async (code) => {
+const selectTicket = async () => {
   try {
     loading.value = true
-    const data = await useAPI('ticket/staff/get', { code: props.code })
+    const data = await useAPI('ticket/staff/get', { code: props.ticket?.code })
     
     select.value.area = data.area
     select.value.spot = data.spot

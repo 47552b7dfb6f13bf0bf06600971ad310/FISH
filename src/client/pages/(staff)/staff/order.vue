@@ -14,7 +14,7 @@
         :rows="list"
       >
         <template #ticket-data="{ row }">
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket ? row.ticket.code : null)">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket)">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
         </template>
 
         <template #user-data="{ row }">
@@ -42,7 +42,7 @@
     </UiFlex>
 
     <UModal v-model="modal">
-      <StaffTicket :code="select" @close="modal = false" type="ticket" />
+      <StaffTicket :ticket="select" @close="modal = false" type="ticket" />
     </UModal>
   </UiContent>
 </template>
@@ -100,8 +100,8 @@ const modal = ref(false)
 
 const select = ref()
 
-const selectTicket = (code) => {
-  select.value = code
+const selectTicket = (ticket) => {
+  select.value = ticket
   modal.value = true
 }
 

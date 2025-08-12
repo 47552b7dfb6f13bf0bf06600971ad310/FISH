@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
     const { category } = await readBody(event)
     if(!category) throw 'Vui lòng chọn 1 danh mục dịch vụ'
 
-    const match : any = { category: category, display: true }
+    const match : any = { category: category, display: true, inventory: { $gt: 0 } }
 
     const list = await DB.Item
     .find(match)

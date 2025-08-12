@@ -43,6 +43,7 @@ export const DBTicket = (mongoose : Mongoose) => {
       time: { type: Boolean, default: false },
       lunch: { type: Boolean, default: false },
       price: { type: Number, default: 0 },
+      miss: { type: Number, default: 0 },
       voucher: { type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true },
     },
 
@@ -106,6 +107,8 @@ export const DBTicketFish = (mongoose : Mongoose) => {
     staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+
+    area: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'FishCategory', index: true },
     fish: { type: mongoose.Schema.Types.ObjectId, ref: 'Fish', index: true },
 
@@ -115,7 +118,9 @@ export const DBTicketFish = (mongoose : Mongoose) => {
     proof: {
       live: { type: String },
       image: { type: String }
-    }
+    },
+
+    isPig: { type: Boolean, default: false }
   }, {
     timestamps: true
   })

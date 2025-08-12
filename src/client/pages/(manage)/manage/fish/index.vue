@@ -67,7 +67,12 @@
           <SelectDate time v-model="stateAdd.time" placeholder="Chọn" />
         </UFormGroup>
 
-        <UiFlex justify="end" class="gap-1">
+        <UiFlex class="gap-1">
+          <UiFlex justify="end" class="gap-2 mr-auto">
+            <UToggle v-model="stateAdd.isPig" />
+            <UiText color="gray" size="sm">Là Heo</UiText>
+          </UiFlex>
+
           <UButton color="yellow" type="submit" :loading="loading.add">Nhập</UButton>
           <UButton color="gray" @click="modal.add = false" :disabled="loading.add">Đóng</UButton>
         </UiFlex>
@@ -130,6 +135,7 @@ const stateAdd = ref({
   amount: null,
   kg: null,
   time: null,
+  isPig: false
 })
 
 // Modal
@@ -143,6 +149,7 @@ watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   amount: null,
   kg: null,
   time: null,
+  isPig: false
 }))
 
 // Loading

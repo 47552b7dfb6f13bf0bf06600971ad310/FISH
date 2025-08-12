@@ -5,10 +5,10 @@ export default defineEventHandler(async (event) => {
     const auth = await getAuth(event) as IAuth
     if(auth.type < 1) throw 'Bạn không có quyền truy cập'
 
-    const { code } = await readBody(event)
-    if(!code) throw 'Không tìm thấy mã ô câu'
+    const { _id } = await readBody(event)
+    if(!_id) throw 'Không tìm thấy mã ô câu'
 
-    const spot = await DB.LakeSpot.findOne({ code: code }) as IDBLakeSpot
+    const spot = await DB.LakeSpot.findOne({ _id: _id }) as IDBLakeSpot
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
     if(spot.status == 0) throw 'Ô này đang trống, không thể xem'
 

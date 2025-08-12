@@ -7,6 +7,14 @@ export const DBLakeArea = (mongoose : Mongoose) => {
     key: { type: String },
     description: { type: String },
     image: { type: String },
+    future: {
+      price: { type: Number, default: 0 },
+      percent: { type: Number, default: 10 },
+    },
+    pig: {
+      money: { type: Number, default: 0 },
+      percent: { type: Number, default: 0 },
+    }
   })
 
   schema.index({ key: 'text' })

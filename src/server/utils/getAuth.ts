@@ -21,7 +21,8 @@ export default async (event: H3Event, throwError : boolean = true) : Promise<IAu
       name: user.name,
       type: user.type,
       currency: user.currency,
-      member: user.member
+      member: user.member,
+      statistic: user.statistic
     }
     event.context.auth = result
     return Promise.resolve(result)

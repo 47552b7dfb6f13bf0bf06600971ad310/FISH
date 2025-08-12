@@ -67,6 +67,11 @@ export const DBConfig = (mongoose : Mongoose) => {
         source: { type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true },
         amount: { type: Number, default: 0 },
       }
+    },
+    miss: {
+      1: { type: Number, default: 5 },
+      2: { type: Number, default: 10 },
+      3: { type: Number, default: 20 },
     }
   })
 

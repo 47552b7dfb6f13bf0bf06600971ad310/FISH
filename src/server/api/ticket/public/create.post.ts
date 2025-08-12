@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
     if(!pay_type) throw 'Không tìm thấy phương thức thanh toán'
 
-    const config = await DB.Config.findOne({}).select('lunch gate member time') as IDBConfig
+    const config = await DB.Config.findOne({}).select('lunch gate member time miss') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
     if(!!config.time.create){
@@ -20,10 +20,10 @@ export default defineEventHandler(async (event) => {
       if(now < create) throw 'Chưa tới thời gian mở bán vé'
     }
 
-    const user = await DB.User.findOne({ _id: auth._id }).select('vouchers') as IDBUser
+    const user = await DB.User.findOne({ _id: auth._id }).select('vouchers statistic') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
 
-    const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('_id') as IDBLakeArea
+    const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('pig') as IDBLakeArea
     if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
 
     const spotCheck = await DB.LakeSpot.findOne({ _id: spot, area: areaCheck._id }).select('status') as IDBLakeSpot
@@ -56,13 +56,25 @@ export default defineEventHandler(async (event) => {
       voucherSelect = voucher
     }
 
-    // Make Discount
+    // Check Miss
+    let discountMiss = 0
+    if(!!config.miss && user.statistic.miss > 0){
+      const maxKey = Math.max(...Object.keys(config.miss).map(Number));
+      const key = user.statistic.miss >= maxKey ? maxKey : user.statistic.miss
+      // @ts-expect-error
+      const value = config.miss[key]
+      discountMiss = value || 0
+    }
+
+    // Make Discount Member 
     const member = getMember(auth.member)
     const discountTime = !!member ? (member.data.free.time > shiftCheck.duration ? true : false) : false
     const discountLunch = !!lunch ? (!!member ? (member.data.free.lunch > 0 ? true : false) : false) : false
     // @ts-expect-error
     const discountPrice = !!member ? config.member[member.type].discount : 0
-    let discount = discountPrice + discountVoucher
+
+    // Make Discount
+    let discount = discountPrice + discountVoucher + discountMiss
     discount = discount > 100 ? 100 : discount
 
     // Make Total
@@ -122,6 +134,7 @@ export default defineEventHandler(async (event) => {
         time: discountTime,
         lunch: discountLunch,
         price: discountPrice,
+        miss: discountMiss,
         voucher: !!voucherSelect ? voucherSelect._id : null
       },
       pay: {
@@ -147,6 +160,10 @@ export default defineEventHandler(async (event) => {
     // Cập nhật thông số
     if(!!hasPay && total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
       'statistic.pay': total
+    }})
+
+    if(!!hasPay && areaCheck.pig.percent > 0) await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
+      'pig.money': Math.floor(shiftCheck.price * areaCheck.pig.percent / 100),
     }})
 
     return resp(event, { message: 'Đặt chỗ thành công', result: code })

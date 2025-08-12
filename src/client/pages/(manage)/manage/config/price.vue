@@ -64,6 +64,28 @@
           </UForm>
         </UCard>
       </template>
+
+      <template #miss>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="Lần 1">
+              <UInput v-model="state.miss[1]" type="number" />
+            </UFormGroup>
+
+            <UFormGroup label="Lần 2">
+              <UInput v-model="state.miss[2]" type="number" />
+            </UFormGroup>
+
+            <UFormGroup label="Lớn hơn 3 lần">
+              <UInput v-model="state.miss[3]" type="number" />
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
     </UAccordion>
   </UiContent>
 </template>
@@ -87,6 +109,11 @@ const state = ref({
       source: null,
       amount: null,
     }
+  },
+  miss: {
+    1: null,
+    2: null,
+    3: null,
   }
 })
 
@@ -94,6 +121,7 @@ const menu = [
   { label: 'Giá cơm hằng ngày', slot: 'lunch', defaultOpen: true },
   { label: 'Giá mua thêm giờ', slot: 'overtime' },
   { label: 'Khuyến mãi tạo tài khoản', slot: 'voucher' },
+  { label: 'Tặng khuyến mãi móm', slot: 'miss' },
 ]
 
 const getConfig = async () => {

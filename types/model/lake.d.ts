@@ -7,6 +7,14 @@ export interface IDBLakeArea {
   key: string
   description: string
   image: string
+  future: {
+    price: number
+    percent: number
+  }
+  pig: {
+    money: number
+    percent: number
+  }
 }
 
 export interface IDBLakeSpot {

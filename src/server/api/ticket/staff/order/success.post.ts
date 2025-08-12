@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
       'price.item': order.total,
     }})
 
-    // Update User
+    // Update User Statistic
     if(order.total > 0) await DB.User.updateOne({ _id: ticket.user }, { $inc: {
       'statistic.pay': order.total
     }})

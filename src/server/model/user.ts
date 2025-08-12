@@ -15,7 +15,8 @@ export const DBUser = (mongoose : Mongoose) => {
 
     currency: {
       coin: { type: Number, default: 0, index: true },
-      wheel: { type: Number, default: 0, index: true }
+      wheel: { type: Number, default: 0, index: true },
+      pig: { type: Number, default: 0, index: true },
     },
 
     statistic: {

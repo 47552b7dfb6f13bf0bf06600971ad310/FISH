@@ -1,13 +1,16 @@
 <template>
-  <UiFlex type="col">
-    <UiImg :src="configStore.config.image.banner || '/images/banner.png'" w="1" h="1" img-size="700px" class="bg-card w-[90%] rounded-2xl md:w-[60%] mb-4" />
-
+  <div>
+    <!-- <UiImg :src="configStore.config.image.banner || '/images/banner.png'" w="1" h="1" img-size="700px" class="bg-card w-[90%] rounded-2xl md:w-[60%] mb-4" /> -->
     <UiText class="uppercase text-[2rem] md:text-[3rem]" weight="semibold" align="center">{{ configStore.config.name }}</UiText>
     <UiText color="gray" class="text-base md:text-xl" align="center">{{ configStore.config.description }}</UiText>
 
-    <UButton color="yellow" class="mt-4 w-[250px] justify-center" size="xl" icon="i-tdesign-fish-filled" @click="checkTicket">ĐẶT CHỖ NGAY</UButton>
-    <UButton color="orange"  class="mt-2 w-[250px] justify-center" size="xl" icon="i-bxl-vimeo" @click="navigateTo('/member')">NÂNG CẤP HỘI VIÊN</UButton>
-  </UiFlex>
+    <UiFlex type="col" class="gap-2 mt-4">
+      <UButton color="yellow" class="w-[250px] justify-center" size="xl" icon="i-tdesign-fish-filled" @click="navigateTo('/create')">ĐẶT CHỖ NGAY</UButton>
+      <UButton color="orange"  class="w-[250px] justify-center" size="xl" icon="i-bxl-vimeo" @click="navigateTo('/member')">NÂNG CẤP HỘI VIÊN</UButton>
+    </UiFlex>
+
+    <DataLake class="my-4"/>
+  </div>
 </template>
 
 <script setup>

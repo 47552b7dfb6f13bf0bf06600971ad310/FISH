@@ -91,7 +91,7 @@ const selectShift = (data) => {
 const getSpot = async (spot) => {
   try {
     if(!authStore.isLogin) return authStore.setModal(true)
-    const data = await useAPI('lake/public/spot/get', { code: spot.code })
+    const data = await useAPI('lake/public/spot/get', { _id: spot._id })
 
     if(data.ticket) return navigateTo(`/ticket/${data.ticket}`)
     else {

@@ -17,7 +17,7 @@
           justify="center"
           :class="`bg-${statusFormat[spot.status]['color']}-500`" 
           class="p-4 w-[80px] h-[80px] cursor-pointer rounded-lg"
-          @click="selectSpot(spot.code)"
+          @click="selectSpot(spot)"
         >
           <UiText size="xl" weight="semibold">{{ spot.code }}</UiText>
             
@@ -31,7 +31,7 @@
     </div>
 
     <UModal v-model="modal">
-      <StaffTicket :code="select" @close="modal = false" type="spot" />
+      <StaffTicket :spot="select" @close="modal = false" type="spot" />
     </UModal>
   </div>
 </template>
@@ -51,8 +51,8 @@ const statusFormat = {
   4: { color: 'purple', label: 'Sắp kết thúc' },
 }
 
-const selectSpot = (code) => {
-  select.value = code
+const selectSpot = (spot) => {
+  select.value = spot
   modal.value = true
 }
 

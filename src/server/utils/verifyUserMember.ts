@@ -74,6 +74,7 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
         }
       })
     }
+
     if(order.type == 'month'){
       const now = DayJS(!!user.member.month.end ? new Date(user.member.month.end) : Date.now())
       const end = now.add(30, 'day')
@@ -95,5 +96,10 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
         }
       })
     }
+
+    // Update User Statistic
+    order.price > 0 && await DB.User.updateOne({ _id: user._id }, { $inc: {
+      'statistic.pay': order.price
+    }})
   }
 }

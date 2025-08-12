@@ -68,6 +68,11 @@ export interface IDBConfig {
       amount: number
     }
   }
+  miss: {
+    1: number
+    2: number
+    3: number
+  }
 }
 
 export interface IDBConfigStore {
@@ -126,6 +131,11 @@ export interface IDBConfigStore {
         time: number
       }
     }
+  }
+  miss: {
+    1: number
+    2: number
+    3: number
   }
 }
 

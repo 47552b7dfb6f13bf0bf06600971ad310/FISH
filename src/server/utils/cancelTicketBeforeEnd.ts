@@ -3,7 +3,7 @@ import type { IDBUser } from "~~/types"
 
 export default async (now : Date)  => {
   const tickets = await DB.Ticket.find({
-    'status': 4,
+    'status': 3,
     'cancel.status': false,
     'time.delay': { $lt: now }
   }).select('spot code user fish')
@@ -12,19 +12,12 @@ export default async (now : Date)  => {
   const listTicketCancel = tickets.map(i => i._id)
   const listSpotUpdate = tickets.map(i => i.spot)
   const listUserMissFish = [
-    ...new Set(
-      tickets
-        .filter(i => i.fish?.amount == 0)
-        .map(i => i.user.toString())
-    )
-  ].map(id => new Types.ObjectId(id))
+    ...new Set(JSON.parse(JSON.stringify(tickets)).filter((i : any) => i.fish?.amount == 0).map((i : any) => i.user.toString()))
+  ].map((id : any) => new Types.ObjectId(id))
   const listUserHasFiss = [
-    ...new Set(
-      tickets
-        .filter(i => i.fish?.amount > 0)
-        .map(i => i.user.toString())
-    )
-  ].map(id => new Types.ObjectId(id))
+    ...new Set(JSON.parse(JSON.stringify(tickets)).filter((i : any) => i.fish?.amount > 0).map((i : any) => i.user.toString()))
+  ].map((id : any) => new Types.ObjectId(id))
+
 
   listTicketCancel.length > 0 && await DB.Ticket.updateMany(
     { _id: { $in: listTicketCancel }}, 
@@ -34,7 +27,7 @@ export default async (now : Date)  => {
       'status': 4 
     }}
   )
-
+  
   listSpotUpdate.length > 0 && await DB.LakeSpot.updateMany(
     { _id: { $in: listSpotUpdate }}, 
     { $set: { 'status': 0 }}

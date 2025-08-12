@@ -8,6 +8,7 @@ export interface IAuth {
   type: number
   currency: IDBUser['currency']
   member: IDBUser['member']
+  statistic: IDBUser['statistic']
 }
 
 export interface IResp {

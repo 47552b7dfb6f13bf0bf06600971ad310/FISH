@@ -32,8 +32,13 @@
       </UiFlex>
 
       <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && ticket.discount.voucher">
-        <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ</UiText>
+        <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ Voucher</UiText>
         <UiText weight="semibold" size="sm" color="rose">- {{ ticket.discount.voucher.value }}%</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.discount && ticket.discount.miss">
+        <UiText weight="semibold" color="gray" size="sm">Giảm giá móm lần trước</UiText>
+        <UiText weight="semibold" size="sm" color="rose">- {{ ticket.discount.miss }}%</UiText>
       </UiFlex>
 
       <UiFlex justify="between" class="w-full" v-if="ticket.price.item > 0">

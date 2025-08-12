@@ -65,6 +65,12 @@ export const useConfigStore = defineStore('config', () => {
           time: 0
         }
       }
+    },
+
+    miss: {
+      1: 0,
+      2: 0,
+      3: 0
     }
   })
 

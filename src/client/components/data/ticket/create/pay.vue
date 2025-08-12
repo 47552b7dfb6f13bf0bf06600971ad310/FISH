@@ -80,8 +80,13 @@
             </UiFlex>
 
             <UiFlex justify="between" class="w-full" v-if="discountVoucher > 0">
-              <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ</UiText>
+              <UiText weight="semibold" color="gray" size="sm">Giảm giá thẻ Voucher</UiText>
               <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(discountVoucher) }}%</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="discountMiss > 0">
+              <UiText weight="semibold" color="gray" size="sm">Giảm giá móm lần trước</UiText>
+              <UiText weight="semibold" size="sm" color="rose">- {{ useMoney().toMoney(discountMiss) }}%</UiText>
             </UiFlex>
 
             <UiFlex justify="between" class="w-full">
@@ -191,6 +196,19 @@ const discountVoucher = computed(() => {
   return voucher.value.value
 })
 
+const discountMiss = computed(() => {
+  if(!authStore.isLogin) return 0
+  if(!authStore.profile) return 0
+  if(!authStore.profile.statistic) return 0
+  if(!authStore.profile.statistic.miss) return 0
+  if(!configStore.config.miss) return 0
+  const maxKey = Math.max(...Object.keys(configStore.config.miss).map(Number));
+  const key = authStore.profile.statistic.miss >= maxKey ? maxKey : authStore.profile.statistic.miss
+  const value = configStore.config.miss[key]
+  if(!value) return 0
+  return value
+})
+
 const totalPrice = computed(() => {
   if(!props.shift) return 0
   if(!props.shift.duration) return 0
@@ -203,7 +221,8 @@ const totalPrice = computed(() => {
 
   const discountPriceValue = discountPrice.value
   const discountVoucherValue = discountVoucher.value
-  let discount = discountPriceValue + discountVoucherValue
+  const discountMissValue = discountMiss.value
+  let discount = discountPriceValue + discountVoucherValue + discountMissValue
   discount = discount > 100 ? 100 : discount
   if(discount > 0) total = total - Math.floor(total * discount / 100)
   return total

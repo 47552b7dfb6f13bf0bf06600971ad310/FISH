@@ -18,6 +18,7 @@ export interface IDBUser {
   currency: {
     coin: number
     wheel: number
+    pig: number
   }
 
   statistic: {

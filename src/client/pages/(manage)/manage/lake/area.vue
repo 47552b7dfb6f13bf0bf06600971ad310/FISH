@@ -18,6 +18,22 @@
           <UiText weight="semibold" color="primary">{{ row.name }}</UiText>
         </template>
 
+        <template #[`pig.money-data`]="{ row }">
+          {{ useMoney().toMoney(row.pig.money || 0) }}
+        </template>
+
+        <template #[`pig.percent-data`]="{ row }">
+          {{ useMoney().toMoney(row.pig.percent || 0) }}%
+        </template>
+
+        <template #[`future.price-data`]="{ row }">
+          {{ row.future ? useMoney().toMoney(row.future.price) : '0' }} VNĐ /Kg
+        </template>
+
+        <template #[`future.percent-data`]="{ row }">
+          {{ row.future ? useMoney().toMoney(row.future.percent) : '0' }}% doanh thu
+        </template>
+
         <template #description-data="{ row }">
           {{ row.description || '...' }}
         </template>
@@ -55,6 +71,18 @@
           </UiUploadImage>
         </UFormGroup>
 
+        <UFormGroup label="Giá bồi tương lai (? VNĐ / 1 Kg)">
+          <UInput v-model="stateAdd.future.price" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Bồi thêm bằng bao % doanh thu">
+          <UInput v-model="stateAdd.future.percent" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Mua vé chia % cho hũ heo">
+          <UInput v-model="stateAdd.pig.percent" type="number" />
+        </UFormGroup>
+
         <UiFlex justify="end">
           <UButton color="yellow" type="submit" :loading="loading.add">Thêm</UButton>
           <UButton color="gray" @click="modal.add = false" :disabled="loading.add" class="ml-1">Đóng</UButton>
@@ -81,6 +109,18 @@
           </UiUploadImage>
         </UFormGroup>
 
+        <UFormGroup label="Giá bồi tương lai (? VNĐ / 1 Kg)">
+          <UInput v-model="stateEdit.future.price" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Bồi thêm bằng bao % doanh thu">
+          <UInput v-model="stateEdit.future.percent" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Mua vé chia % cho hũ heo">
+          <UInput v-model="stateEdit.pig.percent" type="number" />
+        </UFormGroup>
+
         <UiFlex justify="end">
           <UButton color="yellow" type="submit" :loading="loading.edit">Sửa</UButton>
           <UButton color="gray" @click="modal.edit = false" :disabled="loading.edit" class="ml-1">Đóng</UButton>
@@ -102,6 +142,18 @@ const columns = [
   },{
     key: 'description',
     label: 'Mô tả',
+  },{
+    key: 'pig.money',
+    label: 'Hũ heo',
+  },{
+    key: 'pig.percent',
+    label: 'Chia hũ heo',
+  },{
+    key: 'future.price',
+    label: 'Giá bồi tương lai',
+  },{
+    key: 'future.percent',
+    label: 'Bồi theo doanh thu',
   },{
     key: 'actions',
     label: 'Chức năng',
@@ -128,13 +180,29 @@ watch(() => page.value.sort.direction, () => getList())
 const stateAdd = ref({
   name: null,
   description: null,
-  image: null
+  image: null,
+  future: {
+    price: null,
+    percent: null
+  },
+  pig: {
+    money: 0,
+    percent: 0
+  }
 })
 const stateEdit = ref({
   _id: null,
   name: null,
   description: null,
-  image: null
+  image: null,
+  future: {
+    price: null,
+    percent: null
+  },
+  pig: {
+    money: null,
+    percent: null
+  }
 })
 
 // Modal
@@ -146,6 +214,15 @@ const modal = ref({
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   name: null,
   description: null,
+  image: null,
+  future: {
+    price: null,
+    percent: null
+  },
+  pig: {
+    money: 0,
+    percent: 0
+  }
 }))
 
 // Loading
@@ -162,7 +239,14 @@ const actions = (row) => [
     label: 'Sửa thông tin',
     icon: 'i-bx-pencil',
     click: () => {
-      Object.keys(stateEdit.value).forEach(key => stateEdit.value[key] = row[key])
+      stateEdit.value._id = row._id
+      stateEdit.value.name = row.name || ''
+      stateEdit.value.description = row.description || ''
+      stateEdit.value.image = row.image || ''
+      stateEdit.value.future.price = !!row.future ? row.future.price || 0 : 0
+      stateEdit.value.future.percent = !!row.future ? row.future.percent || 10 : 10
+      stateEdit.value.pig.money = !!row.pig ? row.pig.money || 0 : 0
+      stateEdit.value.pig.percent = !!row.pig ? row.pig.percent || 0 : 0
       modal.value.edit = true
     }
   }],[{

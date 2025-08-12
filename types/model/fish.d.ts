@@ -18,6 +18,7 @@ export interface IDBFish {
   amount: number
   kg: number
   time: Date
+  isPig: boolean
 
   save: {
     () : void
