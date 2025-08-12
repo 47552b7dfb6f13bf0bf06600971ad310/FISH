@@ -20,6 +20,7 @@ export const DBFish = (mongoose : Mongoose) => {
     amount: { type: Number, index: true },
     kg: { type: Number, index: true },
     time: { type: Date, index: true },
+    price: { type: Number, index: true },
     isPig: { type: Boolean, default: false }
   }, {
     timestamps: true

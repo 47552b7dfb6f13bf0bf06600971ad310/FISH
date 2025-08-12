@@ -32,6 +32,10 @@
           {{ useMoney().toMoney(row.kg) }} Kg
         </template>
 
+        <template #price-data="{ row }">
+          {{ useMoney().toMoney(row.price) }} / Kg
+        </template>
+
         <template #time-data="{ row }">
           {{ useDayJs().displayFull(row.time) }}
         </template>
@@ -61,6 +65,10 @@
 
         <UFormGroup label="Tổng khối lượng">
           <UInput v-model="stateAdd.kg" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Đơn giá (1kg)">
+          <UInput v-model="stateAdd.price" type="number" />
         </UFormGroup>
 
         <UFormGroup label="Thời gian nhập">
@@ -102,6 +110,10 @@ const columns = [
     label: 'Khối lượng',
     sortable: true
   },{
+    key: 'price',
+    label: 'Đơn giá',
+    sortable: true
+  },{
     key: 'time',
     label: 'Ngày nhập',
     sortable: true
@@ -135,6 +147,7 @@ const stateAdd = ref({
   amount: null,
   kg: null,
   time: null,
+  price: null,
   isPig: false
 })
 
@@ -149,6 +162,7 @@ watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   amount: null,
   kg: null,
   time: null,
+  price: null,
   isPig: false
 }))
 
