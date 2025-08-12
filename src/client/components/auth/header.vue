@@ -47,15 +47,11 @@ const menuUser = computed(() => {
     {
       label: 'Thông tin',
       icon: 'i-bx-user',
-      click: () => {
-
-      }
+      click: () => navigateTo('/profile')
     },{
       label: 'Lịch sử câu',
       icon: 'i-bx-credit-card',
-      click: () => {
-
-      }
+      click: () => navigateTo('/tickets')
     },{
       label: 'Đăng xuất',
       icon: 'i-bx-log-out',
