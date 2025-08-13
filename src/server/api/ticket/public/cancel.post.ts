@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status code spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('user cancel status code spot') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé câu'
     if(ticket.status > 0) throw 'Không thể hủy vé câu đã thanh toán'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
@@ -19,6 +19,13 @@ export default defineEventHandler(async (event) => {
 
     // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
+
+    // Log
+    await logUser({
+      user: ticket.user,
+      type: 'ticket.cancel',
+      action: `Hủy thanh toán vé câu <b>${ticket.code}</b>`,
+    })
 
     return resp(event, { message: `Đã hủy vé ${ticket.code}` })
   } 

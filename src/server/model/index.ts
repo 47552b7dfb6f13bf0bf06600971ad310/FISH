@@ -8,6 +8,8 @@ import { DBFishCategory, DBFish } from './fish'
 import { DBLakeArea, DBLakeSpot } from './lake'
 import { DBTicket, DBTicketOrder, DBTicketFish } from './ticket'
 import { DBVoucher, DBVoucherHistory } from './voucher'
+import { DBWheel, DBWheelHistory, DBWheelLucky } from './wheel'
+import { DBLogUser } from './log'
 
 
 export default (mongoose : Mongoose) : IGlobalDB => {
@@ -34,6 +36,12 @@ export default (mongoose : Mongoose) : IGlobalDB => {
     TicketFish: DBTicketFish(mongoose),
 
     Voucher: DBVoucher(mongoose),
-    VoucherHistory: DBVoucherHistory(mongoose)
+    VoucherHistory: DBVoucherHistory(mongoose),
+
+    Wheel: DBWheel(mongoose),
+    WheelHistory: DBWheelHistory(mongoose),
+    WheelLucky: DBWheelLucky(mongoose),
+
+    LogUser: DBLogUser(mongoose)
   }
 }

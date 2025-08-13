@@ -72,6 +72,10 @@ export const DBConfig = (mongoose : Mongoose) => {
       1: { type: Number, default: 5 },
       2: { type: Number, default: 10 },
       3: { type: Number, default: 20 },
+    },
+    wheel: {
+      price: { type: Number, default: 500000 },
+      start: { type: Boolean, default: false },
     }
   })
 

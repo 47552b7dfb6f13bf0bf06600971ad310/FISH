@@ -42,10 +42,12 @@ const menu = ref([
     { title: 'Thời gian câu', icon: 'i-bxs-time', to: `/manage/config/shift` },
     { title: 'Cấu hình Hội viên', icon: 'i-bxs-group', to: `/manage/config/member` },
     { title: 'Thẻ Voucher', icon: 'i-mdi-voucher', to: `/manage/config/voucher` },
+    { title: 'Vòng quay tuần', icon: 'i-mdi-wheel', to: `/manage/wheel` },
   ]},
   { title: 'Tài khoản', child: [
     { title: 'Danh sách', icon: 'i-bx-group', to: `/manage/user` },
     { title: 'Hội viên', icon: 'i-bxs-group', to: `/manage/user/member` },
+    { title: 'Tặng Voucher', icon: 'i-mdi-voucher', to: `/manage/user/voucher` },
   ]},
   { title: 'Quản lý hồ', child: [
     { title: 'Khu vực', icon: 'i-ph-map-pin-simple-area-bold', to: `/manage/lake/area` },

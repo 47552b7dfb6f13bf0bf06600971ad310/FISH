@@ -3,7 +3,7 @@
     <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Lịch Sử Vé Câu</UiText>
     <UiText color="gray" class="text-base md:text-xl mb-4" align="center">Thông kê các vé câu bạn đã mua</UiText>
 
-    <DataEmpty text="Không tìm thấy thông tin người dùng" :loading="loading" v-if="!!loading || list.length == 0" />
+    <DataEmpty text="Không tìm thấy thông tin vé câu" :loading="loading" v-if="!!loading || list.length == 0" />
 
     <UiFlex type="col" class="gap-2" v-else>
       <div class="w-full bg-gray-1000 rounded-2xl p-4 cursor-pointer" v-for="ticket in list" :key="ticket._id" @click="goToTicket(ticket)">

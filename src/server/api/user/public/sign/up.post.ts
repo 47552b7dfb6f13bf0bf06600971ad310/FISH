@@ -43,6 +43,13 @@ export default defineEventHandler(async (event) => {
     user.token = token
     await user.save()
 
+    // Log User
+    await logUser({
+      user: user._id,
+      type: 'register',
+      action: `Đăng ký tài khoản với số điện thoại ${phone}`,
+    })
+
     return resp(event, { message: 'Đăng ký thành công' })
   } 
   catch (e:any) {

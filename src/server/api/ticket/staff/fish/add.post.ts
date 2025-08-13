@@ -55,9 +55,12 @@ export default defineEventHandler(async (event) => {
       const area = await DB.LakeArea.findOne({ _id: ticket.area }).select('pig') as IDBLakeArea
       if(!!area && area.pig.money > 0){
         await DB.User.updateOne({ _id: ticket.user }, { $inc: { 'currency.pig': area.pig.money }})
-        await DB.LakeArea.updateOne({ _id: ticket.area }, { $inc: { 'pig.money': area.pig.money * -1 }})
+        await DB.LakeArea.updateOne({ _id: ticket.area }, { $set: { 'pig.money': 0 }})
       }
     }
+
+    // Update Lake Info
+    await socketUpdateLakeInfo()
 
     return resp(event, { message: 'Thao tác thành công' })
   } 

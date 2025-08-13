@@ -17,4 +17,7 @@ export default async (now : Date)  => {
     { _id: { $in: listSpotUpdate }}, 
     { $set: { 'status': 4 }}
   )
+
+  // Update Lake Info
+  listTicketCancel.length > 0 && await socketUpdateLakeInfo()
 }

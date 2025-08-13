@@ -21,6 +21,7 @@ export const DBUser = (mongoose : Mongoose) => {
 
     statistic: {
       pay: { type: Number, default: 0, index: true },
+      payweek: { type: Number, default: 0, index: true },
       miss: { type: Number, default: 0, index: true },
     },
 
@@ -46,6 +47,10 @@ export const DBUser = (mongoose : Mongoose) => {
     },
 
     vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher', index: true }],
+
+    login: {
+      update: { type: Date, default: Date.now }
+    }
   }, {
     timestamps: true
   })

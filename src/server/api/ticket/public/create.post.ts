@@ -86,7 +86,7 @@ export default defineEventHandler(async (event) => {
 
     // Make Code, Token
     const countTick = await DB.Ticket.count()
-    const code = (config.gate.prefix || 'SEN') + (countTick > 9 ? countTick : `0${countTick}`) +  Math.floor(Math.random() * (99 - 10) + 10)
+    const code = (config.gate.prefix || 'SENTICK') + (countTick > 9 ? countTick : `0${countTick}`) +  Math.floor(Math.random() * (99 - 10) + 10)
     const token = md5(`${code}-${Date.now()}`)
 
     // Make QR
@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
     const timePay = new Date(timeNow.getTime() + config.time.pay * 60 * 1000)
 
     // Create
-    await DB.Ticket.create({
+    const newTicket = await DB.Ticket.create({
       user: auth._id,
       area: areaCheck._id,
       spot: spotCheck._id,
@@ -145,7 +145,7 @@ export default defineEventHandler(async (event) => {
         staff: !hasPay ? null : auth._id
       },
       status: !hasPay ? 0 : 2
-    })
+    }) as IDBTicket
     await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: !hasPay ? 1 : 3 })
     
     // Update User
@@ -159,12 +159,36 @@ export default defineEventHandler(async (event) => {
 
     // Cập nhật thông số
     if(!!hasPay && total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
-      'statistic.pay': total
+      'statistic.pay': total,
+      'statistic.payweek': total,
     }})
 
-    if(!!hasPay && areaCheck.pig.percent > 0) await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
-      'pig.money': Math.floor(shiftCheck.price * areaCheck.pig.percent / 100),
-    }})
+    // Cập nhật Heo
+    if(!!hasPay && total > 0 && areaCheck.pig.percent > 0) {
+      const pigMoney = Math.floor(total * areaCheck.pig.percent / 100)
+
+      await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
+      'pig.money': pigMoney > areaCheck.pig.max ? areaCheck.pig.max : pigMoney
+      }})
+
+      newTicket.pig = pigMoney
+      await newTicket.save()
+    }
+
+    // Update Lake Info
+    if(!!hasPay) await socketUpdateLakeInfo()
+
+    // Log User
+    await logUser({
+      user: user._id,
+      type: 'ticket.create',
+      action: `Đặt chỗ câu với mã vé <b>${newTicket.code}</b>`,
+    })
+    if(!!hasPay) await logUser({
+      user: user._id,
+      type: 'ticket.pay.success',
+      action: `Thanh toán vé <b>${newTicket.code}</b> với số tiền <b>${total.toLocaleString("vi-VN")}đ</b>`,
+    })
 
     return resp(event, { message: 'Đặt chỗ thành công', result: code })
   } 

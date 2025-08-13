@@ -23,6 +23,31 @@
             <UiText weight="semibold" color="gray" size="sm">Email</UiText>
             <UiText weight="semibold" size="sm">{{ user.email || '...' }}</UiText>
           </UiFlex>
+
+          <UiFlex justify="between" class="w-full" v-if="!!memberData">
+            <UiText weight="semibold" color="gray" size="sm">Hội viên</UiText>
+            <UiText weight="semibold" size="sm">{{ memberData.name }}</UiText>
+          </UiFlex>
+
+          <UiFlex justify="between" class="w-full" v-if="!!memberData && !!memberData.data">
+            <UiText weight="semibold" color="gray" size="sm">Hạn hội viên</UiText>
+            <UiText weight="semibold" size="sm">{{ useDayJs().displayFull(memberData.data.end) }}</UiText>
+          </UiFlex>
+
+          <UiFlex justify="between" class="w-full" v-if="!!memberData && !!memberData.data && memberData.data.free">
+            <UiText weight="semibold" color="gray" size="sm">Số lần miễn phí cơm</UiText>
+            <UiText weight="semibold" size="sm">{{ memberData.data.free.lunch || 0 }}</UiText>
+          </UiFlex>
+
+          <UiFlex justify="between" class="w-full" v-if="!!memberData && !!memberData.data && memberData.data.free">
+            <UiText weight="semibold" color="gray" size="sm">Số giờ câu miễn phí</UiText>
+            <UiText weight="semibold" size="sm">{{ memberData.data.free.time || 0 }}</UiText>
+          </UiFlex>
+
+          <UiFlex justify="between" class="w-full" v-if="!!memberData && !!memberData.data">
+            <UiText weight="semibold" color="gray" size="sm">Giảm giá cho hội viên</UiText>
+            <UiText weight="semibold" size="sm">{{ memberData.data.discount || 0 }}%</UiText>
+          </UiFlex>
         </UiFlex>
       </div>
 
@@ -73,6 +98,20 @@ definePageMeta({
 
 const loading = ref(false)
 const user = ref(null)
+
+const memberData = computed(() => {
+  if (!user.value) return null
+  const member = user.value.member
+  if(!!member.week.enable) return {
+    name: 'Tuần',
+    data: member.week
+  }
+  if(!!member.month.enable) return {
+    name: 'Tháng',
+    data: member.month
+  }
+  return null
+})
 
 const getUser = async () => {
   try {

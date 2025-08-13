@@ -61,6 +61,7 @@
 </template>
 
 <script setup>
+const { $socket } = useNuxtApp()
 const lake = ref(null)
 const getLake = async () => {
   try {
@@ -83,5 +84,9 @@ const getFuture = (area) => {
   return futureKg.toFixed(1)
 }
 
-onMounted(() => setTimeout(() => getLake(), 1))
+onMounted(() => {
+  setTimeout(() => getLake(), 1)
+
+  $socket.on('update-lake-info', (data) => !!data && (lake.value = data))
+})
 </script>

@@ -54,6 +54,8 @@ export interface IDBTicket {
     kg: number
   }
 
+  pig: number
+
   cancel: {
     status: boolean
     staff: Types.ObjectId

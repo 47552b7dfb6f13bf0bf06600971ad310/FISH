@@ -52,6 +52,8 @@ export const DBTicket = (mongoose : Mongoose) => {
       kg: { type: Number, default: 0, index: true },
     },
 
+    pig: { type: Number, default: 0, index: true },
+
     cancel: {
       status: { type: Boolean, default: false },
       staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },

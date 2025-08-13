@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const config = await DB.Config.findOne({}).select('time') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status shift spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status shift spot code user') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(ticket.status == 0) throw 'Vé câu chưa được xác nhận đã thanh toán'
@@ -31,6 +31,13 @@ export default defineEventHandler(async (event) => {
 
     // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 3 })
+
+    // Log
+    await logUser({
+      user: ticket.user,
+      type: 'ticket.start',
+      action: `Xác nhận bắt đầu câu vé <b>${ticket.code}</b>`,
+    })
 
     return resp(event, { result: true })
   } 

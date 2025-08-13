@@ -2,14 +2,14 @@ import type { Types } from 'mongoose'
 import type { IDBConfig, IDBUser, IDBUserMember } from '~~/types'
 
 interface IBodyData {
-  _id: Types.ObjectId,
+  code: string,
   status: number,
   money: number,
   reason: string
 }
 
-export default async ({ _id, status, money, reason } : IBodyData, verifier? : Types.ObjectId) : Promise<void> => {
-  if(!_id) throw 'Không tìm thấy ID giao dịch'
+export default async ({ code, status, money, reason } : IBodyData, verifier? : Types.ObjectId) : Promise<void> => {
+  if(!code) throw 'Không tìm thấy mã giao dịch'
   if(
     !!isNaN(parseInt(String(status))) 
     || parseInt(String(status)) < 1 
@@ -30,7 +30,7 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
   if(!config) throw 'Hệ thống chưa sẵn sàng'
 
   // Get Order
-  const order = await DB.UserMember.findOne({ _id: _id }) as IDBUserMember
+  const order = await DB.UserMember.findOne({ code: code }) as IDBUserMember
   if(!order) throw 'Giao dịch không tồn tại'
   if(order.status > 0) throw 'Không thể thao tác trên giao dịch này'
 
@@ -46,7 +46,7 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
   // Update Order
   const time = new Date()
   const verify_person = !!verifier ? verifier : bot._id
-  await DB.UserMember.updateOne({ _id: _id }, {
+  await DB.UserMember.updateOne({ _id: order._id }, {
     status: realStatus,
     money: realMoney,
     verify: {
@@ -71,6 +71,8 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
         $inc: {
           'member.week.free.lunch': config.member.week.free.lunch,
           'member.week.free.time': config.member.week.free.time,
+          'statistic.pay': realMoney,
+          'statistic.payweek': realMoney,
         }
       })
     }
@@ -93,6 +95,8 @@ export default async ({ _id, status, money, reason } : IBodyData, verifier? : Ty
         $inc: {
           'member.month.free.lunch': config.member.month.free.lunch + user.member.week.free.lunch,
           'member.month.free.time': config.member.month.free.time + user.member.week.free.time,
+          'statistic.pay': realMoney,
+          'statistic.payweek': realMoney,
         }
       })
     }

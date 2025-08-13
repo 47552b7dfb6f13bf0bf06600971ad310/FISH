@@ -72,6 +72,10 @@ export interface IDBConfig {
     1: number
     2: number
     3: number
+  },
+  wheel: {
+    price: number
+    start: boolean
   }
 }
 
@@ -136,6 +140,10 @@ export interface IDBConfigStore {
     1: number
     2: number
     3: number
+  }
+  wheel: {
+    price: number
+    start: boolean
   }
 }
 

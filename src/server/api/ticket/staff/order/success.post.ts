@@ -52,7 +52,8 @@ export default defineEventHandler(async (event) => {
 
     // Update User Statistic
     if(order.total > 0) await DB.User.updateOne({ _id: ticket.user }, { $inc: {
-      'statistic.pay': order.total
+      'statistic.pay': order.total,
+      'statistic.payweek': order.total,
     }})
     
     return resp(event, { message: 'Thao tác thành công' })

@@ -79,8 +79,16 @@
           <UInput v-model="stateAdd.future.percent" type="number" />
         </UFormGroup>
 
+        <UFormGroup label="Hũ heo hiện tại">
+          <UInput v-model="stateAdd.pig.money" type="number" />
+        </UFormGroup>
+
         <UFormGroup label="Mua vé chia % cho hũ heo">
           <UInput v-model="stateAdd.pig.percent" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Số tiền tối đa thêm vào hũ mỗi vé">
+          <UInput v-model="stateAdd.pig.max" type="number" />
         </UFormGroup>
 
         <UiFlex justify="end">
@@ -117,8 +125,16 @@
           <UInput v-model="stateEdit.future.percent" type="number" />
         </UFormGroup>
 
+        <UFormGroup label="Hũ heo hiện tại">
+          <UInput v-model="stateEdit.pig.money" type="number" />
+        </UFormGroup>
+
         <UFormGroup label="Mua vé chia % cho hũ heo">
           <UInput v-model="stateEdit.pig.percent" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Số tiền tối đa thêm vào hũ mỗi vé">
+          <UInput v-model="stateEdit.pig.max" type="number" />
         </UFormGroup>
 
         <UiFlex justify="end">
@@ -187,7 +203,8 @@ const stateAdd = ref({
   },
   pig: {
     money: 0,
-    percent: 0
+    percent: 0,
+    max: 0
   }
 })
 const stateEdit = ref({
@@ -201,7 +218,8 @@ const stateEdit = ref({
   },
   pig: {
     money: null,
-    percent: null
+    percent: null,
+    max: null
   }
 })
 
@@ -221,7 +239,8 @@ watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   },
   pig: {
     money: 0,
-    percent: 0
+    percent: 0,
+    max: 30000
   }
 }))
 
@@ -247,6 +266,7 @@ const actions = (row) => [
       stateEdit.value.future.percent = !!row.future ? row.future.percent || 10 : 10
       stateEdit.value.pig.money = !!row.pig ? row.pig.money || 0 : 0
       stateEdit.value.pig.percent = !!row.pig ? row.pig.percent || 0 : 0
+      stateEdit.value.pig.max = !!row.pig ? row.pig.max || 0 : 0
       modal.value.edit = true
     }
   }],[{

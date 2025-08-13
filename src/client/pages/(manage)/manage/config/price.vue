@@ -86,6 +86,32 @@
           </UForm>
         </UCard>
       </template>
+
+      <template #wheel>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="Giá quy đổi">
+              <UInput v-model="state.wheel.price" type="number" />
+            </UFormGroup>
+
+            <UFormGroup label="Trạng thái">
+              <USelectMenu v-model="state.wheel.start" size="lg" value-attribute="value" :options="[
+                { label: 'Hiện', value: true },
+                { label: 'Ẩn', value: false }
+              ]">
+                <template #label>
+                  <span v-if="state.wheel.start === undefined">Chọn loại</span>
+                  <span v-else>{{ state.wheel.start ? 'Bật' : 'Tắt' }}</span>
+                </template>
+              </USelectMenu>
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
     </UAccordion>
   </UiContent>
 </template>
@@ -114,6 +140,10 @@ const state = ref({
     1: null,
     2: null,
     3: null,
+  },
+  wheel: {
+    price: null,
+    start: false
   }
 })
 
@@ -122,6 +152,7 @@ const menu = [
   { label: 'Giá mua thêm giờ', slot: 'overtime' },
   { label: 'Khuyến mãi tạo tài khoản', slot: 'voucher' },
   { label: 'Tặng khuyến mãi móm', slot: 'miss' },
+  { label: 'Vòng quay tuần', slot: 'wheel' },
 ]
 
 const getConfig = async () => {

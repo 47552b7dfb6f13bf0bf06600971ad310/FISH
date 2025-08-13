@@ -33,7 +33,7 @@ const menuUser = computed(() => {
     list.push({
       label: 'Quản trị viên',
       icon: 'i-bx-shield-quarter',
-      click: () => navigateTo('/manage')
+      click: () => navigateTo('/manage/config/info')
     })
     list.push({
       label: 'Nhân viên',

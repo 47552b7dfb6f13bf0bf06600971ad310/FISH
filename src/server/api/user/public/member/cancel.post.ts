@@ -6,12 +6,12 @@ export default defineEventHandler(async (event) => {
     const { order : code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã giao dịch'
 
-    const order = await DB.UserMember.findOne({ user: auth._id, code: code }).select('status') as IDBUserMember
+    const order = await DB.UserMember.findOne({ user: auth._id, code: code }).select('status code') as IDBUserMember
     if(!order) throw 'Giao dịch không tồn tại hoặc bạn không phải chủ giao dịch'
     if(order.status > 0) throw 'Không thể hủy giao dịch này'
 
     await verifyUserMember({
-      _id: order._id,
+      code: order.code,
       status: 2,
       money: 0,
       reason: 'Khách tự hủy'

@@ -23,13 +23,14 @@ export interface IDBUser {
 
   statistic: {
     pay: number
+    payweek: number
     miss: number
   }
 
   member: {
     week: {
       enable: boolean
-      end: Date
+      end: date
       discount: number
       free: {
         lunch: number
@@ -37,8 +38,8 @@ export interface IDBUser {
       }
     },
     month: {
-      enable: { type: Boolean, default: false },
-      end: Date
+      enable: boolean
+      end: date
       discount: number
       free: {
         lunch: number
@@ -49,6 +50,10 @@ export interface IDBUser {
 
   vouchers: Array<Types.ObjectId | IDBVoucher>
 
+  login: {
+    update: date
+  }
+
   save: {
     () : void
   }
@@ -56,8 +61,8 @@ export interface IDBUser {
 
 export interface IDBUserMember {
   _id: Types.ObjectId
-  createdAt: Date
-  updatedAt: Date
+  createdAt: date
+  updatedAt: date
 
   user: Types.ObjectId
   code: string
@@ -69,7 +74,7 @@ export interface IDBUserMember {
   status: number
   verify: {
     person: Types.ObjectId
-    time: Date
+    time: date
     reason: string
   }
 

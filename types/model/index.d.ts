@@ -7,6 +7,8 @@ export { IDBFishCategory, IDBFish } from './fish'
 export { IDBLakeArea, IDBLakeSpot } from './lake'
 export { IDBTicket, IDBTicketOrder, IDBTicketFish } from './ticket'
 export { IDBVoucher, IDBVoucherHistory } from './voucher'
+export { IDBWheel, IDBWheelHistory, IDBWheelLucky } from './wheel'
+export { IDBLogUser } from './log'
 
 export interface IGlobalDB {
   Config: Model<IDBConfig>
@@ -32,4 +34,10 @@ export interface IGlobalDB {
 
   Voucher: Model<IDBVoucher>
   VoucherHistory: Model<IDBVoucherHistory>
+
+  Wheel: Model<IDBWheel>
+  WheelHistory: Model<IDBWheelHistory>
+  WheelLucky: Model<IDBWheelLucky>
+
+  LogUser: Model<IDBLogUser>
 }

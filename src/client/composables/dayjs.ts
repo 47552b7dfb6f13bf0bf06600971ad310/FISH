@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import isoWeek from 'dayjs/plugin/isoWeek'
 import 'dayjs/locale/vi'
 
 dayjs.locale('vi')
 dayjs.extend(relativeTime)
+dayjs.extend(isoWeek)
 
 export const useDayJs = () => {
   const fromTime = (start : Date, end? : Date, noSuffix : boolean = false) : string => {

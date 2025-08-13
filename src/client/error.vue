@@ -28,10 +28,8 @@ const goBackOrHome = () => {
 }
 
 onMounted(() => {
-  if (process.client) {
-    previousUrl.value = document.referrer
-    const isSameOrigin = previousUrl.value.startsWith(window.location.origin)
-    canGoBack.value = isSameOrigin && window.history.length > 1
-  }
+  previousUrl.value = document.referrer
+  const isSameOrigin = previousUrl.value.startsWith(window.location.origin)
+  canGoBack.value = isSameOrigin && window.history.length > 1
 })
 </script>

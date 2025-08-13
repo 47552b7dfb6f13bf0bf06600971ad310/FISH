@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
     // Make Code, Token
     const countOrder = await DB.TicketOrder.count({ ticket: ticket._id })
-    const codeOrder = "OD" + '-' + ticket.code + '-' + (countOrder > 9 ? countOrder : `0${countOrder}`)
+    const codeOrder = 'SENOD' + (countOrder > 9 ? countOrder : `0${countOrder}`) +  Math.floor(Math.random() * (99 - 10) + 10)
     const tokenOrder = md5(`${code}-${Date.now()}`)
 
     // Make QR
