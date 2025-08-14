@@ -6,6 +6,7 @@ export const DBFishCategory = (mongoose : Mongoose) => {
     name: { type: String },
     key: { type: String },
     description: { type: String },
+    display: { type: Number, index: true, default: 0 },
   })
 
   schema.index({ key: 'text' })

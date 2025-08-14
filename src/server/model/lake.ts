@@ -13,7 +13,6 @@ export const DBLakeArea = (mongoose : Mongoose) => {
     },
     pig: {
       money: { type: Number, default: 0 },
-      percent: { type: Number, default: 0 },
       max: { type: Number, default: 30000 },
     }
   })

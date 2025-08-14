@@ -52,6 +52,7 @@ export default async () => {
             { $group: {
               _id: '$category._id',
               name: { $first: '$category.name' },
+              display: { $first: '$category.display' },
               nowAmount: { $sum: '$amount' },
               nowKg: { $sum: '$kg' },
               catchAmount: { $sum: '$catchAmount' },
@@ -102,7 +103,12 @@ export default async () => {
             $map: {
               input: "$tickets",
               as: "ticket",
-              in: { $subtract: ["$$ticket.price.total", "$$ticket.price.item"] }
+              in: {
+                $subtract: [
+                  { $subtract: ["$$ticket.price.total", "$$ticket.price.item"] },
+                  "$$ticket.price.pig"
+                ]
+              }
             }
           }
         }

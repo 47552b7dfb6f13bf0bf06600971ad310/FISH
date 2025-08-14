@@ -30,6 +30,7 @@ export interface IDBTicket {
     spot: number
     lunch: number
     item: number
+    pig: number
     total: number
   }
 
@@ -53,8 +54,6 @@ export interface IDBTicket {
     amount: number
     kg: number
   }
-
-  pig: number
 
   cancel: {
     status: boolean

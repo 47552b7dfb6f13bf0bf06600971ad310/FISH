@@ -60,13 +60,10 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   }})
 
   // Cập nhật Heo
-  if(ticket.price.total > 0 && areaCheck.pig.percent > 0) {
-    const pigMoney = Math.floor(ticket.price.total * areaCheck.pig.percent / 100)
+  if(ticket.price.total > 0 && ticket.price.pig > 0) {
     await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
-      'pig.money': pigMoney > areaCheck.pig.max ? areaCheck.pig.max : pigMoney
+      'pig.money': areaCheck.pig.max
     }})
-
-    ticket.pig = pigMoney
     await ticket.save()
   }
 

@@ -28,6 +28,7 @@ export const DBTicket = (mongoose : Mongoose) => {
       spot: { type: Number, default: 0, index: true },
       lunch: { type: Number, default: 0, index: true },
       item: { type: Number, default: 0, index: true },
+      pig: { type: Number, default: 0, index: true },
       total: { type: Number, default: 0, index: true },
     },
 
@@ -51,8 +52,6 @@ export const DBTicket = (mongoose : Mongoose) => {
       amount: { type: Number, default: 0, index: true },
       kg: { type: Number, default: 0, index: true },
     },
-
-    pig: { type: Number, default: 0, index: true },
 
     cancel: {
       status: { type: Boolean, default: false },

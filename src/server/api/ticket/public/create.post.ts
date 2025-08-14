@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
     const body = await readBody(event)
-    const { area, spot, shift, lunch, pay_type, voucher : voucherID } = body
+    const { area, spot, shift, lunch, pig, pay_type, voucher : voucherID } = body
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
@@ -35,6 +35,10 @@ export default defineEventHandler(async (event) => {
 
     const ticketHas = await DB.Ticket.count({ 'user': auth._id, 'cancel.status': false })
     if(ticketHas > 0) throw 'Bạn đang có 1 vé đang hoạt động, không thể đặt thêm vé mới'
+
+    // Check Heo
+    let pigPrice = 0
+    if(!!pig && areaCheck.pig.max > 0) pigPrice = areaCheck.pig.max
 
     // Check Voucher
     let discountVoucher = 0
@@ -83,6 +87,7 @@ export default defineEventHandler(async (event) => {
     if(!!discountTime) total = total - shiftCheck.price
     if(!!discountLunch) total = total - config.lunch.price
     if(discount > 0) total = total - Math.floor(total * discount / 100)
+    total = total + pigPrice
 
     // Make Code, Token
     const countTick = await DB.Ticket.count()
@@ -128,6 +133,7 @@ export default defineEventHandler(async (event) => {
       price: {
         spot: shiftCheck.price,
         lunch: !!lunch ? config.lunch.price : 0,
+        pig: pigPrice,
         total: total,
       },
       discount: {
@@ -146,6 +152,8 @@ export default defineEventHandler(async (event) => {
       },
       status: !hasPay ? 0 : 2
     }) as IDBTicket
+
+    // Update Spot
     await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: !hasPay ? 1 : 3 })
     
     // Update User
@@ -156,24 +164,6 @@ export default defineEventHandler(async (event) => {
 
     // Xóa Voucher Nếu Sử Dụng
     if(!!hasPay && !!voucherSelect) await delUserVoucher(user, voucherSelect._id)
-
-    // Cập nhật thông số
-    if(!!hasPay && total > 0) await DB.User.updateOne({ _id: auth._id }, { $inc: {
-      'statistic.pay': total,
-      'statistic.payweek': total,
-    }})
-
-    // Cập nhật Heo
-    if(!!hasPay && total > 0 && areaCheck.pig.percent > 0) {
-      const pigMoney = Math.floor(total * areaCheck.pig.percent / 100)
-
-      await DB.LakeArea.updateOne({ _id: areaCheck._id }, { $inc: {
-      'pig.money': pigMoney > areaCheck.pig.max ? areaCheck.pig.max : pigMoney
-      }})
-
-      newTicket.pig = pigMoney
-      await newTicket.save()
-    }
 
     // Update Lake Info
     if(!!hasPay) await socketUpdateLakeInfo()

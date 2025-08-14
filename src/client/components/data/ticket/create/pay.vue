@@ -33,8 +33,20 @@
           <UInput icon="i-bxs-phone" v-model="state.phone" :disabled="!!authStore.isLogin" />
         </UFormGroup>
 
-        <UFormGroup label="Chọn thẻ khuyến mãi" v-if="!!authStore.isLogin">
+        <UFormGroup label="Thẻ khuyến mãi" v-if="!!authStore.isLogin">
           <SelectVoucher v-model="state.voucher" v-model:voucherData="voucher" :type="['DISCOUNT', 'DISCOUNT-PRICE']" />
+        </UFormGroup>
+
+        <UFormGroup label="Bạn có chơi Heo không" v-if="!!area && !!area.pig && !!area.pig.max > 0">
+          <USelectMenu v-model="state.pig" size="lg" value-attribute="value" :options="[
+            { label: 'Có', value: true },
+            { label: 'Không', value: false }
+          ]">
+            <template #label>
+              <span v-if="state.pig === undefined">Lựa chọn</span>
+              <span v-else>{{ state.pig ? 'Có' : 'Không' }}</span>
+            </template>
+          </USelectMenu>
         </UFormGroup>
 
         <UFormGroup label="Thông tin đơn hàng">
@@ -62,6 +74,11 @@
             <UiFlex justify="between" class="w-full" v-if="!!props.lunch">
               <UiText weight="semibold" color="gray" size="sm">Phí cơm</UiText>
               <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(configStore.config.lunch.price) }}</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="!!area && !!area.pig && !!area.pig.max > 0 && !!state.pig">
+              <UiText weight="semibold" color="gray" size="sm">Đăng ký chơi Heo</UiText>
+              <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(area.pig.max) }}</UiText>
             </UiFlex>
 
             <UiFlex justify="between" class="w-full" v-if="!!discountTime">
@@ -137,6 +154,7 @@ const state = ref({
   spot: props.spot._id,
   shift: props.shift._id,
   lunch: props.lunch,
+  pig: true,
   pay_type: null,
   voucher: null
 })
@@ -210,11 +228,14 @@ const discountMiss = computed(() => {
 })
 
 const totalPrice = computed(() => {
+  if(!props.area) return 0
+  if(!props.area.pig) return 0
   if(!props.shift) return 0
   if(!props.shift.duration) return 0
   
   const shift = props.shift.price
   const lunch = !!props.lunch ? configStore.config.lunch.price : 0
+  const pig = props.area.pig.max > 0 && !!state.value.pig ? props.area.pig.max : 0
   let total = shift + lunch
   if(!!discountTime.value) total = total - shift
   if(!!discountLunch.value) total = total - configStore.config.lunch.price
@@ -225,7 +246,7 @@ const totalPrice = computed(() => {
   let discount = discountPriceValue + discountVoucherValue + discountMissValue
   discount = discount > 100 ? 100 : discount
   if(discount > 0) total = total - Math.floor(total * discount / 100)
-  return total
+  return total + pig
 })
 
 const submit = async () => {

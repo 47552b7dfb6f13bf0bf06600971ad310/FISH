@@ -13,7 +13,6 @@ export interface IDBLakeArea {
   }
   pig: {
     money: number
-    percent: number
     max: number
   }
 }

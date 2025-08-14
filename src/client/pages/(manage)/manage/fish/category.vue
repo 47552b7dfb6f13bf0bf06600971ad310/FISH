@@ -22,6 +22,10 @@
           {{ row.description || '...' }}
         </template>
 
+        <template #display-data="{ row }">
+          {{ row.display == 0 ? 'Cân (kg)' : 'Số lượng (con)' }}
+        </template>
+
         <template #actions-data="{ row }">
           <UDropdown :items="actions(row)">
             <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del"/>
@@ -47,6 +51,18 @@
           <UTextarea v-model="stateAdd.description" autoresize />
         </UFormGroup>
 
+        <UFormGroup label="Hiển thị">
+          <USelectMenu v-model="stateAdd.display" size="lg" value-attribute="value" :options="[
+            { label: 'Cân (kg)', value: 0 },
+            { label: 'Số lượng (con)', value: 1 }
+          ]">
+            <template #label>
+              <span v-if="stateAdd.display === undefined">Lựa chọn</span>
+              <span v-else>{{ stateAdd.display == 0 ? 'Cân (kg)' : 'Số lượng (con)' }}</span>
+            </template>
+          </USelectMenu>
+        </UFormGroup>
+
         <UiFlex justify="end">
           <UButton color="yellow" type="submit" :loading="loading.add">Thêm</UButton>
           <UButton color="gray" @click="modal.add = false" :disabled="loading.add" class="ml-1">Đóng</UButton>
@@ -63,6 +79,18 @@
 
         <UFormGroup label="Mô tả">
           <UTextarea v-model="stateEdit.description" autoresize />
+        </UFormGroup>
+
+        <UFormGroup label="Hiển thị">
+          <USelectMenu v-model="stateEdit.display" size="lg" value-attribute="value" :options="[
+            { label: 'Cân (kg)', value: 0 },
+            { label: 'Số lượng (con)', value: 1 }
+          ]">
+            <template #label>
+              <span v-if="stateEdit.display === undefined">Lựa chọn</span>
+              <span v-else>{{ stateEdit.display == 0 ? 'Cân (kg)' : 'Số lượng (con)' }}</span>
+            </template>
+          </USelectMenu>
         </UFormGroup>
 
         <UiFlex justify="end">
@@ -86,6 +114,9 @@ const columns = [
   },{
     key: 'description',
     label: 'Mô tả',
+  },{
+    key: 'display',
+    label: 'Hiển thị',
   },{
     key: 'actions',
     label: 'Chức năng',
@@ -112,11 +143,13 @@ watch(() => page.value.sort.direction, () => getList())
 const stateAdd = ref({
   name: null,
   description: null,
+  display: 0
 })
 const stateEdit = ref({
   _id: null,
   name: null,
   description: null,
+  display: null
 })
 
 // Modal
@@ -128,6 +161,7 @@ const modal = ref({
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   name: null,
   description: null,
+  display: 0
 }))
 
 // Loading

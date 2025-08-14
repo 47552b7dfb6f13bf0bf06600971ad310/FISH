@@ -22,10 +22,6 @@
           {{ useMoney().toMoney(row.pig.money || 0) }}
         </template>
 
-        <template #[`pig.percent-data`]="{ row }">
-          {{ useMoney().toMoney(row.pig.percent || 0) }}%
-        </template>
-
         <template #[`future.price-data`]="{ row }">
           {{ row.future ? useMoney().toMoney(row.future.price) : '0' }} VNĐ /Kg
         </template>
@@ -83,11 +79,7 @@
           <UInput v-model="stateAdd.pig.money" type="number" />
         </UFormGroup>
 
-        <UFormGroup label="Mua vé chia % cho hũ heo">
-          <UInput v-model="stateAdd.pig.percent" type="number" />
-        </UFormGroup>
-
-        <UFormGroup label="Số tiền tối đa thêm vào hũ mỗi vé">
+        <UFormGroup label="Giá đăng ký chơi heo">
           <UInput v-model="stateAdd.pig.max" type="number" />
         </UFormGroup>
 
@@ -129,11 +121,7 @@
           <UInput v-model="stateEdit.pig.money" type="number" />
         </UFormGroup>
 
-        <UFormGroup label="Mua vé chia % cho hũ heo">
-          <UInput v-model="stateEdit.pig.percent" type="number" />
-        </UFormGroup>
-
-        <UFormGroup label="Số tiền tối đa thêm vào hũ mỗi vé">
+        <UFormGroup label="Giá đăng ký chơi heo">
           <UInput v-model="stateEdit.pig.max" type="number" />
         </UFormGroup>
 
@@ -161,9 +149,6 @@ const columns = [
   },{
     key: 'pig.money',
     label: 'Hũ heo',
-  },{
-    key: 'pig.percent',
-    label: 'Chia hũ heo',
   },{
     key: 'future.price',
     label: 'Giá bồi tương lai',
@@ -203,7 +188,6 @@ const stateAdd = ref({
   },
   pig: {
     money: 0,
-    percent: 0,
     max: 0
   }
 })
@@ -218,7 +202,6 @@ const stateEdit = ref({
   },
   pig: {
     money: null,
-    percent: null,
     max: null
   }
 })
@@ -265,7 +248,6 @@ const actions = (row) => [
       stateEdit.value.future.price = !!row.future ? row.future.price || 0 : 0
       stateEdit.value.future.percent = !!row.future ? row.future.percent || 10 : 10
       stateEdit.value.pig.money = !!row.pig ? row.pig.money || 0 : 0
-      stateEdit.value.pig.percent = !!row.pig ? row.pig.percent || 0 : 0
       stateEdit.value.pig.max = !!row.pig ? row.pig.max || 0 : 0
       modal.value.edit = true
     }

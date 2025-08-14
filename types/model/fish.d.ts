@@ -6,6 +6,7 @@ export interface IDBFishCategory {
   name: string
   key: string
   description: string
+  display: number // 0: kg 1: amount
 }
 
 export interface IDBFish {

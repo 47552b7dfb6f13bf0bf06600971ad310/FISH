@@ -25,12 +25,12 @@
           <tr v-for="fish in area.fishs" :key="fish._id" class="border-t border-gray-800">
             <td class="py-2">{{ fish.name }}</td>
             <td class="py-2">
-              <!-- <UiText color="primary">{{ fish.nowAmount }} con</UiText> -->
-              <UiText color="orange">{{ fish.nowKg }} kg</UiText>
+              <UiText color="orange" v-if="fish.display != 0">{{ fish.nowAmount }} con</UiText>
+              <UiText color="orange" v-else>{{ fish.nowKg }} kg</UiText>
             </td>
             <td class="py-2">
-              <!-- <UiText color="primary">{{ fish.catchAmount }} con</UiText> -->
-              <UiText color="orange">{{ fish.catchKg }} kg</UiText>
+              <UiText color="orange" v-if="fish.display != 0">{{ fish.catchAmount }} con</UiText>
+              <UiText color="orange" v-else>{{ fish.catchKg }} kg</UiText>
             </td>
           </tr>
         </tbody>

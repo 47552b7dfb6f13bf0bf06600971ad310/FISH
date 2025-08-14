@@ -203,6 +203,7 @@ export default defineAppConfig({
     },
 
     dropdown: {
+      container: 'z-[50]',
       padding: 'p-0',
       shadow: 'shadow-xl',
       rounded: 'rounded-2xl',
