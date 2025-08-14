@@ -9,3 +9,9 @@ export interface IDBLogUser {
   user: Types.ObjectId
   action: string
 }
+
+export interface IDBLogAddVoucher {
+  staff: Types.ObjectId
+  user: Types.ObjectId
+  voucher: Types.ObjectId
+}
