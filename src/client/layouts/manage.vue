@@ -2,7 +2,7 @@
   <div class="relative h-full min-h-full pt-[var(--header-size)]">
     <LayoutManageHeader />
 
-    <UiFlex class="px-4 py-4 lg:gap-6 gap-0 h-[100vh]" items="start">
+    <UiFlex class="px-4 py-4 lg:gap-6 gap-0 h-full" items="start">
       <div class="
         HideScroll
         sticky top-[calc(var(--header-size)+1rem)]
@@ -15,8 +15,8 @@
       </div>
 
       <UContainer 
-        class="relative !px-0 h-full" 
-        :ui="{ constrained: 'overflow-x-hidden' }
+        class="relative grow h-full !px-0 min-h-[calc(100vh-2rem-var(--header-size))] max-h-[calc(100vh-2rem-var(--header-size))] HideScroll" 
+        :ui="{ constrained: 'overflow-x-hidden overflow-y-auto' }
       ">
         <slot></slot>
       </UContainer>
