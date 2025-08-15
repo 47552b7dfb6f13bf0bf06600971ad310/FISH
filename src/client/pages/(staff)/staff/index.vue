@@ -31,7 +31,7 @@
     </div>
 
     <UModal v-model="modal">
-      <StaffTicket :spot="select" @close="modal = false" type="spot" />
+      <StaffTicket :spot="select" @close="modal = false" type="spot" @changeSpot="onChangeSpot" />
     </UModal>
   </div>
 </template>
@@ -54,6 +54,11 @@ const statusFormat = {
 const selectSpot = (spot) => {
   select.value = spot
   modal.value = true
+}
+
+const onChangeSpot = () => {
+  modal.value = false
+  getLake()
 }
 
 const getLake = async () => {

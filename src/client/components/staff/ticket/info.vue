@@ -30,13 +30,28 @@
     <!-- <UiFlex class="gap-1 mt-4" justify="end">
       <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
     </UiFlex> -->
+
+    <UiText size="sm" align="center" weight="semibold" class="cursor-pointer mt-4" color="rose" @click="modal = true">ĐỔI VỊ TRÍ</UiText>
+
+    <UModal v-model="modal" prevent-close>
+      <UiContent title="Đổi Vị Trí Câu" sub="Bạn chỉ được phép đổi vị trí tối đa 1 lần" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
+        </template>
+
+        <StaffTicketSpotChange :ticket="ticket" @done="onChangeSpot" />
+      </UiContent>
+    </UModal>
   </div>
 </template>
 
 <script setup>
 const props = defineProps(['area', 'spot', 'ticket'])
+const emits = defineEmits(['reload', 'change'])
 
 const loading = ref(false)
+
+const modal = ref(false)
 
 const statusTicket = {
   0: { label: 'Chưa Thanh Toán', color: 'gray' },
@@ -56,6 +71,11 @@ const statusLunch = computed(() => {
   return { label: 'Đã Giao', color: 'green' }
 })
 
+const onChangeSpot = () => {
+  modal.value = false
+  emits('change')
+}
+
 const onCancel = async () => {
   try {
     loading.value = true
@@ -71,6 +91,7 @@ const onCancel = async () => {
 const successLunch = async () => {
   try {
     await useAPI('ticket/staff/lunch/action', { code: props.ticket.code })
+    emits('reload')
   }
   catch (e) {
   }

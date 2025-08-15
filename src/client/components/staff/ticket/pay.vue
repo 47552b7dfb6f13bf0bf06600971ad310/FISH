@@ -69,7 +69,7 @@
 
 <script setup>
 const props = defineProps(['area', 'spot', 'ticket'])
-const emits = defineEmits(['close'])
+const emits = defineEmits(['reload'])
 
 const loading = ref(false)
 
@@ -92,6 +92,7 @@ const paySuccess = async () => {
     const data = await useAPI('ticket/staff/pay/success', { code: props.ticket.code })
 
     loading.value = false
+    emits('reload')
   }
   catch(e){
     loading.value = false

@@ -28,6 +28,7 @@
       <UiText size="lg" align="center" weight="semibold" color="yellow">
         {{ ticket.area.name }}, Ô {{ ticket.spot.code }}
       </UiText>
+      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer mt-1" color="rose" @click="modal = true">ĐỔI VỊ TRÍ</UiText>
     </div>
 
     <div v-if="ticket.status == 2" class="w-full">
@@ -41,6 +42,16 @@
         <DataTicketFish :ticket="ticket" v-if="tab == 2" />
       </div>
     </div>
+
+    <UModal v-model="modal" prevent-close>
+      <UiContent title="Đổi Vị Trí Câu" sub="Bạn chỉ được phép đổi vị trí tối đa 1 lần" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
+        </template>
+
+        <DataTicketSpotChange :ticket="ticket" @done="onChange" />
+      </UiContent>
+    </UModal>
   </UiFlex>
 </template>
 
@@ -51,6 +62,13 @@ const tab = ref(1)
 
 const starting = ref(false)
 const ending = ref(false)
+
+const modal = ref(false)
+
+const onChange = () => {
+  modal.value = false
+  emits('reload')
+}
 
 const onStart = async () => {
   try {

@@ -8,8 +8,8 @@
 
     <UTabs v-model="tab" :items="tabItems"></UTabs>
 
-    <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 0" />
-    <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 1" />
+    <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" @change="onChangeSpot" v-if="tab == 0" />
+    <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" v-if="tab == 1" />
     <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
     <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
   </UiContent>
@@ -17,7 +17,7 @@
 
 <script setup>
 const props = defineProps(['spot', 'ticket', 'type'])
-const emits = defineEmits(['close'])
+const emits = defineEmits(['close', 'changeSpot'])
 
 const loading = ref(true)
 const tab = ref(0) 
@@ -33,6 +33,11 @@ const select = ref({
   spot: null,
   ticket: null
 })
+
+const onChangeSpot = () => {
+  if(props.type == 'ticket') return
+  emits('changeSpot')
+}
 
 const selectSpot = async () => {
   try {
@@ -72,8 +77,10 @@ const selectTicket = async () => {
   }
 }
 
-onMounted(() => setTimeout(() => {
+const init = () => {
   if(props.type == 'spot') return selectSpot()
   if(props.type == 'ticket') return selectTicket()
-}, 1))
+}
+
+onMounted(() => setTimeout(() => init(), 1))
 </script>
