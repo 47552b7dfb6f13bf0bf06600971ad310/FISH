@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
     if(!pay_type) throw 'Không tìm thấy phương thức thanh toán'
 
-    const config = await DB.Config.findOne({}).select('lunch gate member time miss') as IDBConfig
+    const config = await DB.Config.findOne({}).select('lunch gate member time miss telegram') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
     if(!!config.time.create){
@@ -20,13 +20,13 @@ export default defineEventHandler(async (event) => {
       if(now < create) throw 'Chưa tới thời gian mở bán vé'
     }
 
-    const user = await DB.User.findOne({ _id: auth._id }).select('vouchers statistic') as IDBUser
+    const user = await DB.User.findOne({ _id: auth._id }).select('name phone vouchers statistic') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
 
-    const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('pig') as IDBLakeArea
+    const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('pig name') as IDBLakeArea
     if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
 
-    const spotCheck = await DB.LakeSpot.findOne({ _id: spot, area: areaCheck._id }).select('status') as IDBLakeSpot
+    const spotCheck = await DB.LakeSpot.findOne({ _id: spot, area: areaCheck._id }).select('status code') as IDBLakeSpot
     if(!spotCheck) throw 'Không tìm thấy dữ liệu ô câu'
     if(spotCheck.status > 0) throw 'Vui lòng chọn ô khác, ô này đang có người đặt'
 
@@ -91,7 +91,7 @@ export default defineEventHandler(async (event) => {
 
     // Make Code, Token
     const countTick = await DB.Ticket.count()
-    const code = (config.gate.prefix || 'SENTICK') + (countTick > 9 ? countTick : `0${countTick}`) +  Math.floor(Math.random() * (99 - 10) + 10)
+    const code = 'SENTICK' + (countTick > 9 ? countTick : `0${countTick}`) +  Math.floor(Math.random() * (99 - 10) + 10)
     const token = md5(`${code}-${Date.now()}`)
 
     // Make QR
@@ -104,15 +104,10 @@ export default defineEventHandler(async (event) => {
     qrcode = qrcode.replaceAll('[gate-number]', config.gate.number)
     qrcode = qrcode.replaceAll('[gate-person]', config.gate.person)
 
-    // Has Pay
-    const hasPay = total == 0
-
     // Set Time
     const timeNow = new Date()
-    const timeStart = timeNow
-    const timeEnd = new Date(timeStart.getTime() + shiftCheck.duration * 60 * 60 * 1000)
-    const timeDelay = new Date(timeEnd.getTime() + config.time.delay * 60 * 1000)
     const timePay = new Date(timeNow.getTime() + config.time.pay * 60 * 1000)
+    const timeFormat = formatDate(timeNow)
 
     // Create
     const newTicket = await DB.Ticket.create({
@@ -125,10 +120,7 @@ export default defineEventHandler(async (event) => {
         has: !!lunch ? true : false,
       },
       time: {
-        pay: !hasPay ? timePay : null,
-        start: !hasPay ? null : timeStart,
-        end: !hasPay ? null : timeEnd,
-        delay: !hasPay ? null : timeDelay
+        pay: timePay,
       },
       price: {
         spot: shiftCheck.price,
@@ -147,26 +139,11 @@ export default defineEventHandler(async (event) => {
         qrcode: qrcode,
         token: token,
         type: pay_type,
-        complete: !hasPay ? false : true,
-        staff: !hasPay ? null : auth._id
-      },
-      status: !hasPay ? 0 : 2
+      }
     }) as IDBTicket
 
     // Update Spot
-    await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: !hasPay ? 1 : 3 })
-    
-    // Update User
-    !!member && await DB.User.updateOne({ _id: auth._id }, { $inc: { 
-      [`member.${member.type}.free.time`]: !!discountTime ? shiftCheck.duration * -1 : 0,
-      [`member.${member.type}.free.lunch`]: !!discountLunch ? -1 : 0,
-    }})
-
-    // Xóa Voucher Nếu Sử Dụng
-    if(!!hasPay && !!voucherSelect) await delUserVoucher(user, voucherSelect._id)
-
-    // Update Lake Info
-    if(!!hasPay) await socketUpdateLakeInfo()
+    await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: 1 })
 
     // Log User
     await logUser({
@@ -174,11 +151,23 @@ export default defineEventHandler(async (event) => {
       type: 'ticket.create',
       action: `Đặt chỗ câu với mã vé <b>${newTicket.code}</b>`,
     })
-    if(!!hasPay) await logUser({
-      user: user._id,
-      type: 'ticket.pay.success',
-      action: `Thanh toán vé <b>${newTicket.code}</b> với số tiền <b>${total.toLocaleString("vi-VN")}đ</b>`,
+
+    // Send Tele
+    !!config.telegram.ticket && await sendTele({
+      url: config.telegram.ticket,
+      message: `
+        Vé Câu Mới Được Tạo
+        » Mã vé: ${code}
+        » Khu vực: ${areaCheck.name} - ${spotCheck.code}
+        » Khách hàng: ${user.name} - ${user.phone}
+        » Cần thanh toán: ${total.toLocaleString('vi-VN')}
+        » Phương thức: ${pay_type}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
     })
+
+    // Success
+    if(total == 0) await verifyTicketSuccess({ code: code, money: 0 })
 
     return resp(event, { message: 'Đặt chỗ thành công', result: code })
   } 

@@ -47,7 +47,7 @@
             </UFormGroup>
 
             <UiFlex justify="end" class="mt-4">
-              <UButton color="yellow" @click="update('basic')" :loading="updating">Cập nhật</UButton>
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
             </UiFlex>
           </UForm>
         </UCard>
@@ -69,7 +69,7 @@
             </UFormGroup>
 
             <UiFlex justify="end" class="mt-4">
-              <UButton color="yellow" @click="update('contact')" :loading="updating">Cập nhật</UButton>
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
             </UiFlex>
           </UForm>
         </UCard>
@@ -95,7 +95,7 @@
             </UFormGroup>
 
             <UiFlex justify="end" class="mt-4">
-              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
             </UiFlex>
           </UForm>
         </UCard>
@@ -121,7 +121,33 @@
             </UFormGroup>
 
             <UiFlex justify="end" class="mt-4">
-              <UButton color="yellow" @click="update('social')" :loading="updating">Cập nhật</UButton>
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
+
+      <template #tele>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="API Thông Báo Vé Mới">
+              <UInput v-model="state.telegram.ticket" />
+            </UFormGroup>
+
+            <UFormGroup label="API Thông Báo Gọi Dịch Vụ">
+              <UInput v-model="state.telegram.order" />
+            </UFormGroup>
+
+            <UFormGroup label="API Thông Báo Nạp Sen">
+              <UInput v-model="state.telegram.payment" />
+            </UFormGroup>
+
+            <UFormGroup label="API Thông Báo Hội Viên Mới">
+              <UInput v-model="state.telegram.member" />
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
             </UiFlex>
           </UForm>
         </UCard>
@@ -165,6 +191,13 @@ const state = ref({
     start: null,
     delay: null,
     pay: null
+  },
+
+  telegram: {
+    ticket: '',
+    order: '',
+    payment: '',
+    member: '',
   }
 })
 
@@ -173,6 +206,7 @@ const menu = [
   { label: 'Liên hệ', slot: 'contact' },
   { label: 'Mạng xã hội', slot: 'social' },
   { label: 'Thời gian', slot: 'time' },
+  { label: 'Telegram', slot: 'tele' },
 ]
 
 const getConfig = async () => {

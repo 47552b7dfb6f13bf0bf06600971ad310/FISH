@@ -26,7 +26,7 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
   if(!bot) throw 'Không tìm thấy thông tin Bot'
 
   // Get Config
-  const config = await DB.Config.findOne({}).select('member') as IDBConfig
+  const config = await DB.Config.findOne({}).select('member telegram') as IDBConfig
   if(!config) throw 'Hệ thống chưa sẵn sàng'
 
   // Get Order
@@ -45,6 +45,7 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
 
   // Update Order
   const time = new Date()
+  const timeFormat = formatDate(time)
   const verify_person = !!verifier ? verifier : bot._id
   await DB.UserMember.updateOne({ _id: order._id }, {
     status: realStatus,
@@ -105,5 +106,31 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
     order.price > 0 && await DB.User.updateOne({ _id: user._id }, { $inc: {
       'statistic.pay': order.price
     }})
+
+    // Send Tele
+    !!config.telegram.member && await sendTele({
+      url: config.telegram.member,
+      message: `
+        Xác Nhận Đăng Ký Hội Viên Thành Công
+        » Mã đơn: ${order.code}
+        » Cần thanh toán: ${order.price.toLocaleString('vi-VN')}
+        » Đã thanh toán: ${realMoney.toLocaleString('vi-VN')}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
+    })
+  }
+  else {
+    // Send Tele
+    !!config.telegram.member && await sendTele({
+      url: config.telegram.member,
+      message: `
+        Đơn Đăng Ký Hội Viên Bị Từ Chối
+        » Mã đơn: ${order.code}
+        » Cần thanh toán: ${order.price.toLocaleString('vi-VN')}
+        » Đã thanh toán: ${realMoney.toLocaleString('vi-VN')}
+        » Lý do: ${realReason}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
+    })
   }
 }

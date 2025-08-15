@@ -1,4 +1,4 @@
-import type { IAuth, IDBItem, IDBTicket, IDBConfig } from "~~/types"
+import type { IAuth, IDBItem, IDBTicket, IDBLakeArea, IDBLakeSpot, IDBConfig } from "~~/types"
 import md5 from "md5"
 
 export default defineEventHandler(async (event) => {
@@ -9,15 +9,25 @@ export default defineEventHandler(async (event) => {
     if(!cart) throw 'Không tìm thấy giỏ hàng'
     if(!Array.isArray(cart)) throw 'Giỏ hàng không hợp lệ'
 
-    const config = await DB.Config.findOne({}).select('gate member') as IDBConfig
+    const config = await DB.Config.findOne({}).select('gate member telegram') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('code cancel status') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('code cancel status area spot') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(ticket.status != 2) throw 'Vé này chưa bắt đầu câu'
 
+    // Get Area
+    const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('name') as IDBLakeArea
+    if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
+  
+    // Get Spot
+    const spotCheck = await DB.LakeSpot.findOne({ _id: ticket.spot }).select('code') as IDBLakeSpot
+    if(!spotCheck) throw 'Không tìm thấy dữ liệu ô câu'
+    
+
+    // Check Waitung
     const has = await DB.TicketOrder.count({ ticket: ticket._id, user: auth._id, status: 0 }) 
     if(has > 0) throw 'Bạn đang có 1 đơn hàng đang xử lý, vui lòng đợi đơn hàng đó hoàn thành'
 
@@ -75,6 +85,19 @@ export default defineEventHandler(async (event) => {
         token: tokenOrder,
       },
       status: 0
+    })
+
+    // Send Tele
+    const timeFormat = formatDate()
+    !!config.telegram.order && await sendTele({
+      url: config.telegram.order,
+      message: `
+        Đơn Gọi Dịch Vụ Mới
+        » Mã vé: ${codeOrder}
+        » Khu vực: ${areaCheck.name} - ${spotCheck.code}
+        » Thanh toán: ${total.toLocaleString('vi-VN')}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
     })
 
     return resp(event, { message: 'Gọi dịch vụ thành công' })

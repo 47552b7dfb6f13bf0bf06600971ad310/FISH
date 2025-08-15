@@ -76,6 +76,12 @@ export const DBConfig = (mongoose : Mongoose) => {
     wheel: {
       price: { type: Number, default: 500000 },
       start: { type: Boolean, default: false },
+    },
+    telegram: {
+      ticket: { type: String, default: '' },
+      order: { type: String, default: '' },
+      payment: { type: String, default: '' },
+      member: { type: String, default: '' },
     }
   })
 

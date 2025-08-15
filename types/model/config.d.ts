@@ -77,6 +77,12 @@ export interface IDBConfig {
     price: number
     start: boolean
   }
+  telegram: {
+    ticket: string
+    order: string
+    payment: string
+    member: string
+  }
 }
 
 export interface IDBConfigStore {

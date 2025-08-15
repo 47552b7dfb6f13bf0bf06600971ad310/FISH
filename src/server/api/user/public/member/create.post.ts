@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig } from "~~/types"
+import type { IAuth, IDBConfig, IDBUser } from "~~/types"
 import md5 from "md5"
 
 export default defineEventHandler(async (event) => {
@@ -10,12 +10,15 @@ export default defineEventHandler(async (event) => {
     if(!['month', 'week'].includes(type)) throw 'Gói nâng cấp không hỗ trợ'
     if(type == 'week' && !!auth.member.month.enable) throw 'Bạn đang là hội viên tháng, không thể mua hội viên tuần'
 
-    const config = await DB.Config.findOne({}).select('member gate') as IDBConfig
+    const config = await DB.Config.findOne({}).select('member gate telegram') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
 
+    const user = await DB.User.findOne({ _id: auth._id }).select('name phone') as IDBUser
+    if(!user) throw 'Không tìm thấy thông tin tài khoản'
+
     const waiting = await DB.UserMember.findOne({ user: auth._id, status: 0 })
-    if(waiting) return resp(event, { result: waiting }) 
+    if(waiting) return resp(event, { message: 'Bạn có 1 đơn đăng ký chưa xử lý, vui lòng thanh toán hoặc hủy đơn đăng ký này', result: waiting }) 
     
     // @ts-expect-error
     const price = config.member[type].price
@@ -39,6 +42,19 @@ export default defineEventHandler(async (event) => {
       price: price,
       qrcode: qrcode,
       token: token
+    })
+
+    // Send Tele
+    const timeFormat = formatDate()
+    !!config.telegram.member && await sendTele({
+      url: config.telegram.member,
+      message: `
+        Đơn Đăng Ký Hội Viên Mới
+        » Mã đơn: ${code}
+        » Khách hàng: ${user.name} - ${user.phone}
+        » Cần thanh toán: ${price.toLocaleString('vi-VN')}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
     })
 
     return resp(event, { result: order })

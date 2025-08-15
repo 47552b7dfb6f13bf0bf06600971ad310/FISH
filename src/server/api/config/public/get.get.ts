@@ -2,7 +2,7 @@ import { IDBConfig } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
-    const config = await DB.Config.findOne() as IDBConfig
+    const config = await DB.Config.findOne().select('-telegram -gate.secret -gate.qr') as IDBConfig
     if(!config) throw 'Không tìm thấy cấu hình trang'
 
     return resp(event, { result: config })

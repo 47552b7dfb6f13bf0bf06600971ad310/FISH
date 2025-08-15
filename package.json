@@ -31,6 +31,7 @@
     "@popperjs/core": "^2.11.8",
     "@vueuse/components": "^13.3.0",
     "@vueuse/core": "^13.3.0",
+    "axios": "^1.11.0",
     "dayjs": "^1.11.10",
     "env-cmd": "^10.1.0",
     "exceljs": "^4.4.0",

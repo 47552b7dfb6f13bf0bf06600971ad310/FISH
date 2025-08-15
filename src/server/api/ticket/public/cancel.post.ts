@@ -1,10 +1,13 @@
-import type { IAuth, IDBTicket } from "~~/types"
+import type { IAuth, IDBConfig, IDBTicket } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
+
+    const config = await DB.Config.findOne({}).select('telegram') as IDBConfig
+    if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
 
     const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('user cancel status code spot') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé câu'
@@ -19,6 +22,17 @@ export default defineEventHandler(async (event) => {
 
     // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
+
+    // Send Tele
+    const timeFormat = formatDate()
+    !!config.telegram.ticket && await sendTele({
+      url: config.telegram.ticket,
+      message: `
+        Vé Câu Đã Hủy Bởi Người Tạo
+        » Mã vé: ${ticket.code}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
+    })
 
     // Log
     await logUser({
