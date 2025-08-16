@@ -1,4 +1,4 @@
-import type { IAuth, IDBLakeSpot, IDBTicket } from "~~/types"
+import type { IAuth, IDBLakeSpot, IDBTicket, IDBLakeArea } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -7,10 +7,16 @@ export default defineEventHandler(async (event) => {
     if(!_id) throw 'Không tìm ID ô câu'
     if(!ticketID) throw 'Không tìm ID vé câu'
 
-    const ticket = await DB.Ticket.findOne({ _id: ticketID }).select('status cancel user spot') as IDBTicket
+    const config = await DB.Config.findOne().select('telegram')
+    if(!config) throw 'Không tìm thấy cấu hình trang'
+
+    const ticket = await DB.Ticket.findOne({ _id: ticketID }).select('code area status cancel user spot') as IDBTicket
     if(!ticket) throw 'Vé này không tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(ticket.user.toString() != auth._id.toString()) throw 'Bạn không phải chủ vé câu'
+
+    const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('pig name') as IDBLakeArea
+    if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
 
     const nowSpot = await DB.LakeSpot.findOne({ _id: ticket.spot }) as IDBLakeSpot
     if(!nowSpot) throw 'Không tìm thấy thông tin ô hiện tại'
@@ -28,6 +34,19 @@ export default defineEventHandler(async (event) => {
     await spot.save()
     await nowSpot.save()
 
+    // Send Tele
+    const timeFormat = formatDate()
+    !!config.telegram.ticket && await sendTele({
+      url: config.telegram.ticket,
+      message: `
+        Vé Câu Đổi Chỗ Ngồi
+        » Mã vé: ${ticket.code}
+        » Khu vực cũ: ${areaCheck.name} - ${nowSpot.code}
+        » Khu vực mới: ${areaCheck.name} - ${spot.code}
+        » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
+      `
+    })
+    
     return resp(event, { result: ticket })
   } 
   catch (e:any) {

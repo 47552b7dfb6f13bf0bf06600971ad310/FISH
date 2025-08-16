@@ -1,4 +1,4 @@
-import type { IDBConfig, IDBUserMember } from "~~/types"
+import type { IDBConfig, IDBTicketConnect } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,11 +13,11 @@ export default defineEventHandler(async (event) => {
 
     // Get Payment
     const realCode = (code as string).trim().replace(/\s/g, '').toUpperCase()
-    const order = await DB.UserMember.findOne({ code: realCode }).select('code price money') as IDBUserMember
+    const order = await DB.TicketConnect.findOne({ code: realCode }).select('code') as IDBTicketConnect
     if(!order) throw 'Giao dịch không tồn tại'
     
     // Verify
-    await verifyUserMember({
+    await verifyTicketConnect({
       code: order.code,
       status: 1,
       money: Number(money)

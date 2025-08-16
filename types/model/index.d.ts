@@ -5,7 +5,7 @@ export { IDBUser, IDBUserMember } from './user'
 export { IDBItemCategory, IDBItem, IDBItemImport, IDBItemExport } from './item'
 export { IDBFishCategory, IDBFish } from './fish'
 export { IDBLakeArea, IDBLakeSpot } from './lake'
-export { IDBTicket, IDBTicketOrder, IDBTicketFish } from './ticket'
+export { IDBTicket, IDBTicketConnect, IDBTicketOrder, IDBTicketFish } from './ticket'
 export { IDBVoucher, IDBVoucherHistory } from './voucher'
 export { IDBWheel, IDBWheelHistory, IDBWheelLucky } from './wheel'
 export { IDBLogUser, IDBLogAddVoucher } from './log'
@@ -30,6 +30,7 @@ export interface IGlobalDB {
 
   Ticket: Model<IDBTicket>
   TicketOrder: Model<IDBTicketOrder>
+  TicketConnect: Model<IDBTicketConnect>
   TicketFish: Model<IDBTicketFish>
 
   Voucher: Model<IDBVoucher>

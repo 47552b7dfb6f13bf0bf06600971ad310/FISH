@@ -6,21 +6,23 @@ export default defineEventHandler(async (event) => {
     const auth = await getAuth(event) as IAuth
     if(auth.type < 1) throw 'Bạn không có quyền truy cập'
 
-    const { ticket: ticketCode, order: orderCode } = await readBody(event)
+    const { ticket: ticketCode, order: orderCode, pay_type } = await readBody(event)
     if(!ticketCode) throw 'Không tìm mã vé'
     if(!orderCode) throw 'Không tìm mã giao dịch'
+    if(!pay_type) throw "Vui lòng chọn phương thức thanh toán"
 
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('user code cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    // if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
-    const order = await DB.TicketOrder.findOne({ ticket: ticket._id, code: orderCode }).select('status cart total') as IDBTicketOrder
+    const order = await DB.TicketOrder.findOne({ ticket: ticket._id, code: orderCode }).select('pay status cart total') as IDBTicketOrder
     if(!order) throw 'Đơn hàng còn tồn tại'
     if(order.status > 0) throw 'Không thể thao tác trên đơn hàng này'
 
     // Update Order
     order.status = 1
     order.staff = auth._id
+    order.pay.type = pay_type
     await order.save()
 
     // Update Export Item

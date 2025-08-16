@@ -21,8 +21,12 @@
           {{ row.user ? row.user.name : '...' }}
         </template>
 
-        <template #cart-data="{ row }">
-          {{ row.cart.length }}
+        <template #old-data="{ row }">
+          {{ row.old ? row.old.duration : '...' }}h
+        </template>
+
+        <template #new-data="{ row }">
+          {{ row.new ? row.new.duration : '...' }}h
         </template>
 
         <template #total-data="{ row }">
@@ -63,8 +67,11 @@ const columns = [
     key: 'user',
     label: 'Khách',
   },{
-    key: 'cart',
-    label: 'Sản phẩm'
+    key: 'old',
+    label: 'Ca cũ'
+  },{
+    key: 'new',
+    label: 'Ca mới'
   },{
     key: 'total',
     label: 'Thanh toán'
@@ -109,7 +116,7 @@ const selectTicket = (ticket) => {
 const getList = async () => {
   try {
     loading.value.load = true
-    const data = await useAPI('lake/staff/order/list', JSON.parse(JSON.stringify(page.value)))
+    const data = await useAPI('lake/staff/shift/up/list', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false
     list.value = data.list

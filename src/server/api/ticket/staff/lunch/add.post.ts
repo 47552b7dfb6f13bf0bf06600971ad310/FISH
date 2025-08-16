@@ -1,4 +1,4 @@
-import type { IAuth, IDBTicket } from "~~/types"
+import type { IAuth, IDBConfig, IDBTicket } from "~~/types"
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
@@ -7,15 +7,21 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code }).select('code lunch status') as IDBTicket
+    const config = await DB.Config.findOne().select('lunch') as IDBConfig
+    if(!config) throw 'Hệ thống chưa sẵn sàng'
+
+    const ticket = await DB.Ticket.findOne({ code: code }).select('code lunch status cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
-    if(!ticket.lunch.has) throw 'Vé này không đăng ký cơm'
-    if(!!ticket.lunch.complete) throw 'Vé này đã được giao cơm'
+    if(!!ticket.lunch.has) throw 'Vé này đã đăng ký cơm'
 
     await DB.Ticket.updateOne({ _id: ticket._id }, { 
       $set: {
-        'lunch.staff': auth._id,
-        'lunch.complete': true,
+        'lunch.has': true,
+        'lunch.complete': false,
+        'price.lunch': config.lunch.price
+      },
+      $inc: {
+        'price.total': config.lunch.price
       }
     })
 

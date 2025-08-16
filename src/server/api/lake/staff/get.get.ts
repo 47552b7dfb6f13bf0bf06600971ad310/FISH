@@ -22,7 +22,16 @@ export default defineEventHandler(async (event) => {
           as: "ticket"
         }
       },
-      { $unwind: { path: "$ticket", preserveNullAndEmptyArrays: true } }
+      { $unwind: { path: "$ticket", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "LakeArea",
+          localField: "area",
+          foreignField: "_id",
+          as: "area"
+        }
+      },
+      { $unwind: { path: "$area", preserveNullAndEmptyArrays: true } },
     ])
 
     return resp(event, { result: list })

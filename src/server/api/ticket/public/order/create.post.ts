@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('code cancel status area spot') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
-    if(ticket.status != 2) throw 'Vé này chưa bắt đầu câu'
+    if(ticket.status != 2) throw 'Không thể thao tác trên vé câu này'
 
     // Get Area
     const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('name') as IDBLakeArea
@@ -26,8 +26,7 @@ export default defineEventHandler(async (event) => {
     const spotCheck = await DB.LakeSpot.findOne({ _id: ticket.spot }).select('code') as IDBLakeSpot
     if(!spotCheck) throw 'Không tìm thấy dữ liệu ô câu'
     
-
-    // Check Waitung
+    // Check Waiting
     const has = await DB.TicketOrder.count({ ticket: ticket._id, user: auth._id, status: 0 }) 
     if(has > 0) throw 'Bạn đang có 1 đơn hàng đang xử lý, vui lòng đợi đơn hàng đó hoàn thành'
 
@@ -59,9 +58,9 @@ export default defineEventHandler(async (event) => {
     }))
 
     // Make Code, Token
-    const countOrder = await DB.TicketOrder.count({ ticket: ticket._id })
+    const countOrder = await DB.TicketOrder.count()
     const codeOrder = 'SENOD' + (countOrder > 9 ? countOrder : `0${countOrder}`) +  Math.floor(Math.random() * (99 - 10) + 10)
-    const tokenOrder = md5(`${code}-${Date.now()}`)
+    const tokenOrder = md5(`${codeOrder}-${Date.now()}`)
 
     // Make QR
     let qrcode
@@ -95,7 +94,7 @@ export default defineEventHandler(async (event) => {
         Đơn Gọi Dịch Vụ Mới
         » Mã vé: ${codeOrder}
         » Khu vực: ${areaCheck.name} - ${spotCheck.code}
-        » Thanh toán: ${total.toLocaleString('vi-VN')}
+        » Cần thanh toán: ${total.toLocaleString('vi-VN')}
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })

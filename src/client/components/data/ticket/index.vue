@@ -28,7 +28,11 @@
       <UiText size="lg" align="center" weight="semibold" color="yellow">
         {{ ticket.area.name }}, Ô {{ ticket.spot.code }}
       </UiText>
-      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer mt-1" color="rose" @click="modal = true">ĐỔI VỊ TRÍ</UiText>
+      <UiFlex class="mt-1 gap-4">
+        <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true">ĐỔI VỊ TRÍ</UiText>
+        -
+        <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
+      </UiFlex>
     </div>
 
     <div v-if="ticket.status == 2" class="w-full">
@@ -43,13 +47,23 @@
       </div>
     </div>
 
-    <UModal v-model="modal" prevent-close>
+    <UModal v-model="modal.spot" prevent-close>
       <UiContent title="Đổi Vị Trí Câu" sub="Bạn chỉ được phép đổi vị trí tối đa 1 lần" class="bg-card p-4 rounded-2xl">
         <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.spot = false"></UButton>
         </template>
 
         <DataTicketSpotChange :ticket="ticket" @done="onChange" />
+      </UiContent>
+    </UModal>
+
+    <UModal v-model="modal.shift" prevent-close :ui="{width: 'sm:max-w-xs max-w-xs'}">
+      <UiContent title="Nối Ca" sub="Thao tác nối ca câu" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.shift = false"></UButton>
+        </template>
+
+        <DataTicketShiftUp :ticket="ticket" @done="onChange" @close="modal.shift = false" />
       </UiContent>
     </UModal>
   </UiFlex>
@@ -63,10 +77,14 @@ const tab = ref(1)
 const starting = ref(false)
 const ending = ref(false)
 
-const modal = ref(false)
+const modal = ref({
+  spot: false,
+  shift: false
+})
 
 const onChange = () => {
-  modal.value = false
+  modal.value.spot = false
+  modal.value.shift = false
   emits('reload')
 }
 

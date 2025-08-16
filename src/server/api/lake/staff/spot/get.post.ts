@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
     const spot = await DB.LakeSpot.findOne({ _id: _id }) as IDBLakeSpot
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
-    if(spot.status == 0) throw 'Ô này đang trống, không thể xem'
+    if(spot.status == 0) throw 'Ô này đang trống, có thể thêm vé giấy nếu cần'
 
     const area = await DB.LakeArea.findOne({ _id: spot.area }) as IDBLakeArea
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'

@@ -4,8 +4,8 @@ import type { IDBConfig, IDBUser, IDBUserMember } from '~~/types'
 interface IBodyData {
   code: string,
   status: number,
-  money: number,
-  reason: string
+  money?: number,
+  reason?: string
 }
 
 export default async ({ code, status, money, reason } : IBodyData, verifier? : Types.ObjectId) : Promise<void> => {
@@ -16,10 +16,11 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
     || parseInt(String(status)) > 2
   ) throw 'Mã trạng thái không hợp lệ'
   if(
-    !!isNaN(parseInt(String(money))) 
-    || parseInt(String(money)) < 0 
+    !!money &&
+    (!!isNaN(parseInt(String(money))) || parseInt(String(money)) < 0 )
   ) throw 'Số tiền không hợp lệ'
   if(status == 2 && !reason) throw 'Không tìm thấy lý do từ chối'
+  if(status == 1 && !money) throw 'Không tìm thấy số tiền thanh toán'
 
   // Get Bot
   const bot = await DB.User.findOne({'phone': 'bot'}).select('name') as IDBUser
@@ -39,9 +40,9 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
   if(!user) throw 'Không tìm thấy thông tin tài khoản'
 
   // Set Real Value
-  const realMoney = parseInt(String(money))
-  const realStatus = realMoney < order.price ? 2 : status
-  const realReason = realMoney < order.price ? 'Số tiền không đủ' : reason || 'Giao dịch không hợp lệ'
+  const realMoney = status == 1 ? parseInt(String(money)) : 0
+  const realStatus = (status == 1 && realMoney < order.price) ? 2 : status
+  const realReason = (status == 1 && realMoney < order.price) ? 'Số tiền không đủ' : reason || 'Giao dịch không hợp lệ'
 
   // Update Order
   const time = new Date()

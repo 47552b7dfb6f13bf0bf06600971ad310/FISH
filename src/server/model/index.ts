@@ -6,7 +6,7 @@ import { DBUser, DBUserMemeber } from './user'
 import { DBItemCategory, DBItem, DBItemExport, DBItemImport } from './item'
 import { DBFishCategory, DBFish } from './fish'
 import { DBLakeArea, DBLakeSpot } from './lake'
-import { DBTicket, DBTicketOrder, DBTicketFish } from './ticket'
+import { DBTicket, DBTicketOrder, DBTicketFish, DBTicketConnect } from './ticket'
 import { DBVoucher, DBVoucherHistory } from './voucher'
 import { DBWheel, DBWheelHistory, DBWheelLucky } from './wheel'
 import { DBLogUser, DBLogAddVoucher } from './log'
@@ -33,6 +33,7 @@ export default (mongoose : Mongoose) : IGlobalDB => {
 
     Ticket: DBTicket(mongoose),
     TicketOrder: DBTicketOrder(mongoose),
+    TicketConnect: DBTicketConnect(mongoose),
     TicketFish: DBTicketFish(mongoose),
 
     Voucher: DBVoucher(mongoose),

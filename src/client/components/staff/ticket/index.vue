@@ -1,18 +1,28 @@
 <template>
-  <DataEmpty text="Không có thông tin" class="bg-card p-4 rounded-2xl min-h-[300px]" :loading="loading" v-if="!!loading || !(!!select.area && !!select.spot && !!select.ticket)" />
+  <DataEmpty text="Không có thông tin" class="bg-card p-4 rounded-2xl min-h-[300px]" :loading="loading" v-if="!!loading" />
 
-  <UiContent :title="`${select.area.name} - ${select.spot.code}`" color="yellow" sub="Thông tin chi tiết vé câu" class="bg-card p-4 rounded-2xl" v-else>
-    <template #more>
-      <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="emits('close')"></UButton>
-    </template>
+  <div v-else>
+    <UiContent title="Thêm Vé Giấy" color="yellow" sub="Thêm vé giấy cho ô này" class="bg-card p-4 rounded-2xl" v-if="!(!!select.area && !!select.spot && !!select.ticket)">
+      <template #more>
+        <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="emits('close')"></UButton>
+      </template>
 
-    <UTabs v-model="tab" :items="tabItems"></UTabs>
+      <StaffTicketSpotGuest :spot="spot" @close="emits('close')" @done="init"></StaffTicketSpotGuest>
+    </UiContent>
 
-    <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" @change="onChangeSpot" v-if="tab == 0" />
-    <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" v-if="tab == 1" />
-    <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
-    <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
-  </UiContent>
+    <UiContent :title="`${select.area.name} - ${select.spot.code}`" color="yellow" sub="Thông tin chi tiết vé câu" class="bg-card p-4 rounded-2xl" v-else>
+      <template #more>
+        <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="emits('close')"></UButton>
+      </template>
+
+      <UTabs v-model="tab" :items="tabItems"></UTabs>
+
+      <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" @change="onChangeSpot" v-if="tab == 0" />
+      <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" v-if="tab == 1" />
+      <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 2" />
+      <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
+    </UiContent>
+  </div>
 </template>
 
 <script setup>

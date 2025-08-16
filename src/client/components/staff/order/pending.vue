@@ -37,6 +37,16 @@
       </UiFlex>
     </div>
 
+    <USelectMenu v-model="pay_type" size="lg" value-attribute="value" class="mb-2" :options="[
+      { label: 'Tiền mặt', value: 'MONEY' },
+      { label: 'Chuyển khoản', value: 'BANK' }
+    ]">
+      <template #label>
+        <span v-if="!pay_type">Phương thức thanh toán</span>
+        <span v-else>{{ pay_type == 'MONEY' ? 'Tiền mặt' : 'Chuyển khoản' }}</span>
+      </template>
+    </USelectMenu>
+
     <UButton class="mb-0.5" block color="green" @click="onSuccess" :loading="successing">Xác Nhận Đã Giao Và Nhận Tiền</UButton>
     <UButton block color="rose" @click="onCancel" :loading="successing">Hủy Đơn Dịch Vụ</UButton>
   </div>
@@ -48,6 +58,7 @@ const emits = defineEmits(['done'])
 
 const successing = ref(false)
 const canceling = ref(false)
+const pay_type = ref(null)
 
 const minus = (item) => {
   return 
@@ -75,7 +86,7 @@ const add = (item) => {
 const onSuccess = async () => {
   try {
     successing.value = true
-    await useAPI('ticket/staff/order/success', { ticket: props.ticket.code, order: props.order.code })
+    await useAPI('ticket/staff/order/success', { ticket: props.ticket.code, order: props.order.code, pay_type: pay_type.value })
 
     successing.value = false
     emits('done')

@@ -29,12 +29,15 @@ const open = ref(false)
 const menuUser = computed(() => {
   const list = []
 
-  if(!!authStore.profile.type > 0){
+  if(authStore.profile.type > 1){
     list.push({
       label: 'Quản trị viên',
       icon: 'i-bx-shield-quarter',
       click: () => navigateTo('/manage/config/info')
     })
+  }
+
+  if(authStore.profile.type > 0){
     list.push({
       label: 'Nhân viên',
       icon: 'i-wpf-administrator',

@@ -51,6 +51,11 @@
         <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.pig) }}</UiText>
       </UiFlex>
 
+      <UiFlex justify="between" class="w-full" v-if="ticket.price.connect > 0">
+        <UiText weight="semibold" color="gray" size="sm">Giá nối ca</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.connect) }}</UiText>
+      </UiFlex>
+
       <UiFlex justify="between" class="w-full">
         <UiText weight="semibold" color="green" size="sm">Tổng hóa đơn</UiText>
         <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.total) }} VNĐ</UiText>

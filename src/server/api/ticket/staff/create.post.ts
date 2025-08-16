@@ -4,8 +4,10 @@ import md5 from "md5"
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
+    if(auth.type < 1) throw 'Chức năng này chỉ dành cho nhân viên'
+
     const body = await readBody(event)
-    const { area, spot, shift, lunch, pig, pay_type, voucher : voucherID } = body
+    const { phone, area, spot, shift, lunch, pig, pay_type } = body
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
@@ -20,7 +22,7 @@ export default defineEventHandler(async (event) => {
       if(now < create) throw 'Chưa tới thời gian mở bán vé'
     }
 
-    const user = await DB.User.findOne({ _id: auth._id }).select('name phone member vouchers statistic') as IDBUser
+    const user = await DB.User.findOne({ phone: phone }).select('name phone statistic') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
 
     const areaCheck = await DB.LakeArea.findOne({ _id: area }).select('pig name') as IDBLakeArea
@@ -34,48 +36,18 @@ export default defineEventHandler(async (event) => {
     if(!shiftCheck) throw 'Không tìm thấy dữ liệu ca câu'
 
     const ticketHas = await DB.Ticket.count({ 'user': user._id, 'cancel.status': false })
-    if(ticketHas > 0) throw 'Bạn đang có 1 vé đang hoạt động, không thể đặt thêm vé mới'
+    if(ticketHas > 0) throw 'Khách này đang có 1 vé đang hoạt động, không thể đặt thêm vé mới'
 
     // Check Heo
     let pigPrice = 0
     if(!!pig && areaCheck.pig.max > 0) pigPrice = areaCheck.pig.max
 
     // Check Voucher
-    let discountVoucher = 0
-    let voucherSelect
-    if(!!voucherID){
-      const voucher = await DB.Voucher.findOne({ _id: voucherID }).select('value limit expired') as IDBVoucher
-      if(!voucher) throw 'Thẻ giảm giá không tồn tại'
-      if(!user.vouchers.includes(voucher._id)) throw 'Thẻ giảm giá bạn dùng không có trong kho đồ'
-      if(voucher.limit > 0){
-        const countUse = await DB.VoucherHistory.count({ voucher: voucher._id })
-        if(countUse >= voucher.limit) throw 'Thẻ giảm giá đã đạt giới hạn sử dụng'
-      }
-      if(!!voucher.expired){
-        const now = DayJS().unix()
-        const expired = DayJS(voucher.expired).unix()
-        if(now > expired) throw 'hẻ giảm giá đã hết hạn sử dụng'
-      }
-      discountVoucher = voucher.value
-      voucherSelect = voucher
-    }
-
-    // Check Miss
-    let discountMiss = 0
-    if(!!config.miss && user.statistic.miss > 0){
-      const maxKey = Math.max(...Object.keys(config.miss).map(Number));
-      const key = user.statistic.miss >= maxKey ? maxKey : user.statistic.miss
-      // @ts-expect-error
-      const value = config.miss[key]
-      discountMiss = value || 0
-    }
-
-    // Make Discount Member 
-    const member = getMember(user.member)
-    const discountTime = !!member ? (member.data.free.time > shiftCheck.duration ? true : false) : false
-    const discountLunch = !!lunch ? (!!member ? (member.data.free.lunch > 0 ? true : false) : false) : false
-    // @ts-expect-error
-    const discountPrice = !!member ? config.member[member.type].discount : 0
+    const discountVoucher = 0
+    const discountMiss = 0
+    const discountTime = false
+    const discountLunch = false
+    const discountPrice = 0
 
     // Make Discount
     let discount = discountPrice + discountVoucher + discountMiss
@@ -133,7 +105,7 @@ export default defineEventHandler(async (event) => {
         lunch: discountLunch,
         price: discountPrice,
         miss: discountMiss,
-        voucher: !!voucherSelect ? voucherSelect._id : null
+        voucher: null
       },
       pay: {
         qrcode: qrcode,

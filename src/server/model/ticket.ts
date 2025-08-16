@@ -1,5 +1,5 @@
 import type { Mongoose } from 'mongoose'
-import type { IDBTicket, IDBTicketOrder, IDBTicketFish } from '~~/types'
+import type { IDBTicket, IDBTicketOrder, IDBTicketConnect, IDBTicketFish } from '~~/types'
 
 export const DBTicket = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBTicket>({ 
@@ -29,6 +29,7 @@ export const DBTicket = (mongoose : Mongoose) => {
       lunch: { type: Number, default: 0, index: true },
       item: { type: Number, default: 0, index: true },
       pig: { type: Number, default: 0, index: true },
+      connect: { type: Number, default: 0, index: true },
       total: { type: Number, default: 0, index: true },
     },
 
@@ -83,6 +84,7 @@ export const DBTicketOrder = (mongoose : Mongoose) => {
     }],
     
     total: { type: Number, index: true },
+    money: { type: Number, index: true },
 
     status: { type: Number, default: 0 },
 
@@ -90,7 +92,10 @@ export const DBTicketOrder = (mongoose : Mongoose) => {
       type: { type: String },
       qrcode: { type: String },
       token: { type: String },
+      time: { type: Date },
+      reason: { type: String },
     },
+    
 
     staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   }, {
@@ -100,6 +105,40 @@ export const DBTicketOrder = (mongoose : Mongoose) => {
   schema.index({ code: 'text' })
 
   const model = mongoose.model('TicketOrder', schema, 'TicketOrder')
+  return model 
+}
+
+export const DBTicketConnect = (mongoose : Mongoose) => {
+  const schema = new mongoose.Schema<IDBTicketConnect>({ 
+    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+
+    code: { type: String },
+
+    old: { type: mongoose.Schema.Types.ObjectId, ref: 'ConfigShift', index: true },
+    new: { type: mongoose.Schema.Types.ObjectId, ref: 'ConfigShift', index: true },
+    
+    total: { type: Number, index: true },
+    money: { type: Number, index: true },
+
+    status: { type: Number, default: 0 },
+
+    pay: {
+      type: { type: String },
+      qrcode: { type: String },
+      token: { type: String },
+      time: { type: Date },
+      reason: { type: String },
+    },
+    
+    staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+  }, {
+    timestamps: true
+  })
+
+  schema.index({ code: 'text' })
+
+  const model = mongoose.model('TicketConnect', schema, 'TicketConnect')
   return model 
 }
 

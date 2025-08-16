@@ -12,33 +12,7 @@ export default defineEventHandler(async (event) => {
     const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('cancel status shift spot code user') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
-    if(ticket.status == 0) throw 'Vé câu chưa được xác nhận đã thanh toán'
-
-    const shift = await DB.ConfigShift.findOne({ _id: ticket.shift }).select('duration') as IDBConfigShift
-    if(!shift) throw 'Không tìm thấy thời gian ca câu'
-
-    const start = new Date();
-    const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
-    const delay = new Date(end.getTime() + config.time.delay * 60 * 1000)
-
-    // Cập nhật trạng thái vé câu
-    await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
-      'time.start': start,
-      'time.end': end,
-      'time.delay': delay,
-      'status': 2
-    }})
-
-    // Cập nhật trạng thái ô câu
-    await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 3 })
-
-    // Log
-    await logUser({
-      user: ticket.user,
-      type: 'ticket.start',
-      action: `Xác nhận bắt đầu câu vé <b>${ticket.code}</b>`,
-    })
-
+    
     return resp(event, { result: true })
   } 
   catch (e:any) {

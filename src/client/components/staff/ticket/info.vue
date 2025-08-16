@@ -31,15 +31,29 @@
       <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
     </UiFlex> -->
 
-    <UiText size="sm" align="center" weight="semibold" class="cursor-pointer mt-4" color="rose" @click="modal = true">ĐỔI VỊ TRÍ</UiText>
+    <UiFlex class="mt-2 gap-4 w-full" justify="center">
+      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true">ĐỔI VỊ TRÍ</UiText>
+      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
+      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="orange" @click="addLunch" v-if="!!ticket.lunch && !ticket.lunch.has">ĐĂNG KÝ CƠM</UiText>
+    </UiFlex>
 
-    <UModal v-model="modal" prevent-close>
+    <UModal v-model="modal.spot" prevent-close>
       <UiContent title="Đổi Vị Trí Câu" sub="Bạn chỉ được phép đổi vị trí tối đa 1 lần" class="bg-card p-4 rounded-2xl">
         <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal = false"></UButton>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.spot = false"></UButton>
         </template>
 
         <StaffTicketSpotChange :ticket="ticket" @done="onChangeSpot" />
+      </UiContent>
+    </UModal>
+
+    <UModal v-model="modal.shift" prevent-close :ui="{width: 'sm:max-w-xs max-w-xs'}">
+      <UiContent title="Nối Ca" sub="Thao tác nối ca câu" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.shift = false"></UButton>
+        </template>
+
+        <StaffTicketShiftUp :ticket="ticket" @done="onChangeShift" @close="modal.shift = false" />
       </UiContent>
     </UModal>
   </div>
@@ -51,7 +65,10 @@ const emits = defineEmits(['reload', 'change'])
 
 const loading = ref(false)
 
-const modal = ref(false)
+const modal = ref({
+  spot: false,
+  shift: false
+})
 
 const statusTicket = {
   0: { label: 'Chưa Thanh Toán', color: 'gray' },
@@ -72,16 +89,24 @@ const statusLunch = computed(() => {
 })
 
 const onChangeSpot = () => {
-  modal.value = false
+  modal.value.spot = false
   emits('change')
 }
 
-const onCancel = async () => {
+const onChangeShift = () => {
+  modal.value.shift = false
+  emits('change')
+}
+
+const addLunch = async () => {
   try {
+    if(!!loading.value) return
+
     loading.value = true
-    const data = await useAPI('ticket/staff/cancel', { code: props.ticket.code })
+    await useAPI('ticket/staff/lunch/add', { code: props.ticket.code })
 
     loading.value = false
+    emits('reload')
   }
   catch(e){
     loading.value = false

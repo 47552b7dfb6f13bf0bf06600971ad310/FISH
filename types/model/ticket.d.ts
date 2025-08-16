@@ -31,6 +31,7 @@ export interface IDBTicket {
     lunch: number
     item: number
     pig: number
+    connect: number
     total: number
   }
 
@@ -84,6 +85,7 @@ export interface IDBTicketOrder {
   }>
 
   total: number
+  money: number
 
   status: number // 0 - Pending, 1 - Success
 
@@ -91,6 +93,41 @@ export interface IDBTicketOrder {
     type: string
     qrcode: string
     token: string
+    time: date
+    reason: string
+  }
+
+  staff: Types.ObjectId
+
+  save: {
+    () : void
+  }
+}
+
+export interface IDBTicketConnect {
+  _id: Types.ObjectId
+  createdAt: Date
+  updatedAt: Date
+
+  ticket: Types.ObjectId
+  user: Types.ObjectId
+  
+  code: string
+
+  old: Types.ObjectId
+  new: Types.ObjectId
+
+  total: number
+  money: number
+
+  status: number // 0 - Pending, 1 - Success, 2 - Cancel
+
+  pay: {
+    type: string
+    qrcode: string
+    token: string
+    time: date
+    reason: string
   }
 
   staff: Types.ObjectId

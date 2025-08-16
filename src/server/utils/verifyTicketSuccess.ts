@@ -18,7 +18,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   if(!bot) throw 'Không tìm thấy thông tin Bot'
 
   // Get Config
-  const config = await DB.Config.findOne().select('telegram') as IDBConfig
+  const config = await DB.Config.findOne().select('telegram time') as IDBConfig
   if(!config) throw 'Không tìm thấy cấu hình trang'
 
   // Get Ticket
@@ -47,7 +47,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   // Set Thời gian
   const start = new Date();
   const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
-  const delay = new Date(end.getTime() + 5 * 60 * 1000)
+  const delay = new Date(end.getTime() + config.time.delay * 60 * 1000)
   const timeFormat = formatDate(start)
 
   // Cập nhật trạng thái vé

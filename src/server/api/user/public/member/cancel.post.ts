@@ -13,8 +13,7 @@ export default defineEventHandler(async (event) => {
     await verifyUserMember({
       code: order.code,
       status: 2,
-      money: 0,
-      reason: 'Khách tự hủy'
+      reason: 'Khách hàng hủy'
     }, auth._id)
 
     return resp(event, { message: 'Hủy vé thành công' })
