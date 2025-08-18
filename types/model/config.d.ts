@@ -41,6 +41,10 @@ export interface IDBConfig {
     start: Date
     delay: number
     pay: number
+    night: {
+      start: string
+      end: string
+    }
   }
   member: {
     week: {
@@ -117,10 +121,14 @@ export interface IDBConfigStore {
     price: number
   }
   time: {
-    create: Date | null
-    start: Date | null
+    create: date | null
+    start: date | null
     delay: number
     pay: number
+    night: {
+      start: string
+      end: string
+    }
   }
   member: {
     week: {
@@ -162,4 +170,5 @@ export interface IDBConfigShift {
   duration: number
   price: number
   display: boolean
+  isNight: boolean
 }

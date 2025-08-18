@@ -35,6 +35,10 @@
           <UBadge :color="row.display ? 'green' : 'gray'" variant="soft">{{ row.display ? 'Hiện' : 'Ẩn' }}</UBadge>
         </template>
 
+        <template #isNight-data="{ row }">
+          <UBadge :color="row.isNight ? 'green' : 'gray'" variant="soft">{{ row.isNight ? 'Có' : 'Không' }}</UBadge>
+        </template>
+
         <template #actions-data="{ row }">
           <UDropdown :items="actions(row)">
             <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del"/>
@@ -68,6 +72,18 @@
           <UInput v-model="stateAdd.price" type="number" />
         </UFormGroup>
 
+        <UFormGroup label="Là ca đêm">
+          <USelectMenu v-model="stateAdd.isNight" size="lg" value-attribute="value" :options="[
+            { label: 'Hiện', value: true },
+            { label: 'Ẩn', value: false }
+          ]">
+            <template #label>
+              <span v-if="stateAdd.isNight === undefined">Chọn loại</span>
+              <span v-else>{{ stateAdd.isNight ? 'Có' : 'Không' }}</span>
+            </template>
+          </USelectMenu>
+        </UFormGroup>
+
         <UFormGroup label="Hiển thị">
           <USelectMenu v-model="stateAdd.display" size="lg" value-attribute="value" :options="[
             { label: 'Hiện', value: true },
@@ -75,7 +91,7 @@
           ]">
             <template #label>
               <span v-if="stateAdd.display === undefined">Chọn loại</span>
-              <span v-else>{{ stateAdd.display ? 'Hiện' : 'Ẩn' }}</span>
+              <span v-else>{{ stateAdd.display ? 'Có' : 'Không' }}</span>
             </template>
           </USelectMenu>
         </UFormGroup>
@@ -100,6 +116,18 @@
 
         <UFormGroup label="Giá bán">
           <UInput v-model="stateEdit.price" type="number" />
+        </UFormGroup>
+
+        <UFormGroup label="Là ca đêm">
+          <USelectMenu v-model="stateEdit.isNight" size="lg" value-attribute="value" :options="[
+            { label: 'Hiện', value: true },
+            { label: 'Ẩn', value: false }
+          ]">
+            <template #label>
+              <span v-if="stateEdit.isNight === undefined">Chọn loại</span>
+              <span v-else>{{ stateEdit.isNight ? 'Có' : 'Không' }}</span>
+            </template>
+          </USelectMenu>
         </UFormGroup>
 
         <UFormGroup label="Hiển thị">
@@ -144,6 +172,10 @@ const columns = [
     label: 'Giá bán',
     sortable: true
   },{
+    key: 'isNight',
+    label: 'Ca đêm',
+    sortable: true
+  },{
     key: 'display',
     label: 'Hiển thị',
     sortable: true
@@ -177,6 +209,7 @@ const stateAdd = ref({
   name: null,
   duration: null,
   price: null,
+  isNight: false,
   display: true
 })
 const stateEdit = ref({
@@ -184,6 +217,7 @@ const stateEdit = ref({
   name: null,
   duration: null,
   price: null,
+  isNight: null,
   display: null
 })
 
@@ -194,9 +228,11 @@ const modal = ref({
 })
 
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
+  area: null,
   name: null,
   duration: null,
   price: null,
+  isNight: false,
   display: true
 }))
 

@@ -43,7 +43,11 @@ export const useConfigStore = defineStore('config', () => {
       create: null,
       start: null,
       delay: 0,
-      pay: 0
+      pay: 0,
+      night: {
+        start: '',
+        end: ''
+      }
     },
 
     member: {

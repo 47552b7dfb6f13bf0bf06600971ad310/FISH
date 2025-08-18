@@ -27,14 +27,14 @@
       </UiFlex>
     </UiFlex>
 
-    <!-- <UiFlex class="gap-1 mt-4" justify="end">
-      <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
-    </UiFlex> -->
-
     <UiFlex class="mt-2 gap-4 w-full" justify="center">
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true">ĐỔI VỊ TRÍ</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="orange" @click="addLunch" v-if="!!ticket.lunch && !ticket.lunch.has">ĐĂNG KÝ CƠM</UiText>
+    </UiFlex>
+
+    <UiFlex class="gap-1 mt-4" justify="end">
+      <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
     </UiFlex>
 
     <UModal v-model="modal.spot" prevent-close>
@@ -107,6 +107,21 @@ const addLunch = async () => {
 
     loading.value = false
     emits('reload')
+  }
+  catch(e){
+    loading.value = false
+  }
+}
+
+const onCancel = async () => {
+  try {
+    if(!!loading.value) return
+
+    loading.value = true
+    await useAPI('ticket/staff/cancel', { code: props.ticket.code })
+
+    loading.value = false
+    emits('change')
   }
   catch(e){
     loading.value = false

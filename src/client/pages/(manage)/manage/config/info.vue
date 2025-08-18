@@ -120,6 +120,14 @@
               <UInput v-model="state.time.delay" type="number" />
             </UFormGroup>
 
+            <UFormGroup label="Thời gian bắt đầu tính ca đêm">
+              <UInput v-model="state.time.night.start" type="time" />
+            </UFormGroup>
+
+            <UFormGroup label="Thời gian kết thúc tính ca đêm">
+              <UInput v-model="state.time.night.end" type="time" />
+            </UFormGroup>
+
             <UiFlex justify="end" class="mt-4">
               <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
             </UiFlex>
@@ -190,7 +198,11 @@ const state = ref({
     create: null,
     start: null,
     delay: null,
-    pay: null
+    pay: null,
+    night: {
+      start: null,
+      end: null
+    }
   },
 
   telegram: {
@@ -212,6 +224,8 @@ const menu = [
 const getConfig = async () => {
   const config = await useAPI('config/manage/get')
   state.value = Object.assign(state.value, config)
+  state.value.time.night.start = config.time.night.start
+  state.value.time.night.end = config.time.night.end
   load.value = false
 }
 

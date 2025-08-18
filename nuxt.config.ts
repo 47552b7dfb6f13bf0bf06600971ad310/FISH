@@ -47,11 +47,12 @@ export default defineNuxtConfig({
   css: [ '@/app.sass' ],
 
   modules: [
-    '@pinia/nuxt', 
-    '@nuxt/image', 
-    '@nuxt/ui', 
+    '@pinia/nuxt',
+    '@nuxt/image',
+    '@nuxt/ui',
     '@nuxt/icon',
-    '@nuxtjs/google-fonts', 
+    '@nuxtjs/google-fonts',
+    '@vite-pwa/nuxt'
   ],
 
   googleFonts: {
@@ -84,6 +85,37 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    injectRegister: 'auto',
+    includeAssets: [
+      'favicon.ico', 
+      'pwa/apple-touch-icon.png'
+    ],
+    manifest: {
+      name: process.env.NAME,
+      short_name: process.env.SHORT_NAME,
+      description: process.env.DESCRIPTION,
+      theme_color: '#09121b',
+      background_color: '#09121b',
+      display: 'standalone',
+      start_url: '/',
+      orientation: "portrait",
+      lang: 'vi',
+      icons: [
+        { src: '/pwa/64.png', sizes: "64x64", type: 'image/png' },
+        { src: '/pwa/144.png', sizes: "144x144", type: 'image/png' },
+        { src: '/pwa/192.png', sizes: "192x192", type: 'image/png' },
+        { src: '/pwa/512.png', sizes: "512x512", type: 'image/png', purpose: 'any'  },
+        { src: '/pwa/512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      ]
+    },
+    workbox: {
+      sourcemap: true,
+      globPatterns: ['**/*.{js,css,html,png,svg}'],
+    }
   },
 
   compatibilityDate: '2025-06-01'

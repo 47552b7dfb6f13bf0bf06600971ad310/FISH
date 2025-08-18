@@ -41,6 +41,10 @@ export const DBConfig = (mongoose : Mongoose) => {
       start: { type: Date },
       delay: { type: Number, default: 10 },
       pay: { type: Number, default: 10 },
+      night: {
+        start: { type: String, default: '17:00' },
+        end: { type: String, default: '06:00' },
+      }
     },
     member: {
       week: {
@@ -111,6 +115,7 @@ export const DBConfigShift = (mongoose : Mongoose) => {
     duration: { type: Number, index: true },
     price: { type: Number, index: true },
     display: { type: Boolean, index: true, default: true },
+    isNight: { type: Boolean, index: true, default: false },
   })
 
   schema.index({ key: 'text' })
