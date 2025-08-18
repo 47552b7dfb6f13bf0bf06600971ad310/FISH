@@ -66,7 +66,11 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-4" justify="end" v-if="ticket.status == 0">
+    <UiFlex class="mt-4" type="col" v-if="ticket.status == 0">
+      <UFormGroup label="Thời gian vào thực tế" class="w-full">
+        <UInput v-model="start" type="time" />
+      </UFormGroup>
+
       <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
     </UiFlex>
   </div>
@@ -78,23 +82,12 @@ const emits = defineEmits(['reload'])
 
 const loading = ref(false)
 
-const total = computed(() => {
-  if(!props.ticket) return 0
-  if(!props.ticket.price) return 0
-  if(!props.ticket.discount) return 0
-
-  let total = props.ticket.price.spot + props.ticket.price.lunch
-  if(!!props.ticket.discount.time) total = total - props.ticket.price.spot
-  if(!!props.ticket.discount.lunch) total = total - props.ticket.price.lunch
-  if(props.ticket.discount.price > 0) total = total - Math.floor(total * props.ticket.discount.price / 100)
-  
-  return total
-})
+const start = ref()
 
 const paySuccess = async () => {
   try {
     loading.value = true
-    const data = await useAPI('ticket/staff/pay/success', { code: props.ticket.code })
+    const data = await useAPI('ticket/staff/pay/success', { code: props.ticket.code, start: start.value })
 
     loading.value = false
     emits('reload')
@@ -103,4 +96,17 @@ const paySuccess = async () => {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  if(!props.ticket) return null
+  if(!props.ticket.time) return null
+  if(!props.ticket.time.start) return null
+
+  const date = new Date(props.ticket.time.start)
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  const timeForInput = `${hours}:${minutes}`
+
+  start.value = timeForInput
+})
 </script>
