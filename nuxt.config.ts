@@ -37,7 +37,7 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
       ],
       link: [
-        { rel: 'apple-touch-icon', href: '/pwa/apple-touch-icon.png' },
+        { rel: 'apple-touch-icon', href: '/images/pwa/apple-touch-icon.png' },
         { rel: 'manifest', href: '/manifest.webmanifest' },
       ]
     },
@@ -92,7 +92,7 @@ export default defineNuxtConfig({
     injectRegister: 'auto',
     includeAssets: [
       'favicon.ico', 
-      'pwa/apple-touch-icon.png'
+      'images/pwa/apple-touch-icon.png'
     ],
     manifest: {
       name: process.env.NAME,
@@ -105,11 +105,11 @@ export default defineNuxtConfig({
       orientation: "portrait",
       lang: 'vi',
       icons: [
-        { src: '/pwa/64.png', sizes: "64x64", type: 'image/png' },
-        { src: '/pwa/144.png', sizes: "144x144", type: 'image/png' },
-        { src: '/pwa/192.png', sizes: "192x192", type: 'image/png' },
-        { src: '/pwa/512.png', sizes: "512x512", type: 'image/png', purpose: 'any'  },
-        { src: '/pwa/512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+        { src: '/images/pwa/64.png', sizes: "64x64", type: 'image/png' },
+        { src: '/images/pwa/144.png', sizes: "144x144", type: 'image/png' },
+        { src: '/images/pwa/192.png', sizes: "192x192", type: 'image/png' },
+        { src: '/images/pwa/512.png', sizes: "512x512", type: 'image/png', purpose: 'any'  },
+        { src: '/images/pwa/512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
       ]
     },
     workbox: {
