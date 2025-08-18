@@ -3,7 +3,10 @@
 
   <div v-else>
     <StaffTicketOrderPending :ticket="ticket" :order="order" @done="getOrder" v-if="!!order" />
-    <StaffTicketOrderList :ticket="ticket" :list="list" v-else />
+    <div v-else>
+      <StaffTicketOrderCreate :ticket="ticket" @done="getOrder" v-if="ticket.status > 0 && ticket.status < 4" />
+      <StaffTicketOrderList :ticket="ticket" :list="list" v-else/>
+    </div>
   </div>
 </template>
 
