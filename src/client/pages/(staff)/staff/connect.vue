@@ -1,5 +1,5 @@
 <template>
-  <UiContent title="Dịch Vụ Chưa Giao" sub="Danh sách các dịch vụ chưa xử lý">
+  <UiContent title="Đơn Đăng Ký Nối Ca" sub="Danh sách các đơn nối ca chờ xử lý">
     <UiFlex class="gap-1">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" />
     </UiFlex>

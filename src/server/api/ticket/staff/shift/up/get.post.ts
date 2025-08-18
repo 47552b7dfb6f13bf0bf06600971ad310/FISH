@@ -10,8 +10,6 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('area shift user status cancel') as IDBTicket
     if(!ticket) throw 'Vé câu không tồn tại'
-    if(!!ticket.cancel.status) throw 'Vé câu đã bị hủy'
-    if(ticket.status != 2) throw 'Không thể thao tác trên vé câu này'
 
     const area = await DB.LakeArea.findOne({ _id: ticket.area }).select('_id') as IDBLakeArea
     if(!area) throw 'Không tìm thấy mã khu vực'
@@ -34,6 +32,6 @@ export default defineEventHandler(async (event) => {
     return resp(event, { result: { list: list } })
   } 
   catch (e:any) {
-    return resp(event, { result: [] })
+    return resp(event, { code: 400, message: e.toString() })
   }
 })
