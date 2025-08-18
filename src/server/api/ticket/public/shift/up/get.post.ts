@@ -1,10 +1,32 @@
-import { IAuth, IDBConfigShift, IDBLakeArea, IDBTicket } from "~~/types"
+import { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBTicket } from "~~/types"
+
+function toMinutes(hhmm : any) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function isInNight(startStr : any, endStr : any) {
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const start = toMinutes(startStr);
+  const end = toMinutes(endStr);
+
+  if (start < end) {
+    return nowMinutes >= start && nowMinutes < end;
+  } else {
+    return nowMinutes >= start || nowMinutes < end;
+  }
+}
 
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
     const { ticket : ticketCode } = await readBody(event)
     if(!ticketCode) throw 'Không tìm mã vé câu'
+
+    const config = await DB.Config.findOne().select('time') as IDBConfig
+    if(!config) throw 'Không tìm thấy cấu hình'
 
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('area shift user status cancel') as IDBTicket
     if(!ticket) throw 'Vé câu không tồn tại'
@@ -21,11 +43,21 @@ export default defineEventHandler(async (event) => {
     const connect = await DB.TicketConnect.findOne({ ticket: ticket._id, user: auth._id, status: 0 }) 
     if(!!connect) return resp(event, { result: { connect: connect } })
 
-    const list = await DB.ConfigShift.find({ 
+    const match : any = { 
       area: area._id, 
       display: true,
+      isNight: false,
       duration: { "$gt": shift.duration }
-    })
+    }
+
+    const startNight = config.time.night.start
+    const endNight = config.time.night.end
+    if(!!startNight && !!endNight){
+      const isNight = isInNight(startNight, endNight)
+      if(!!isNight) match['isNight'] = true
+    }
+
+    const list = await DB.ConfigShift.find(match)
     
     return resp(event, { result: { list: list } })
   } 
