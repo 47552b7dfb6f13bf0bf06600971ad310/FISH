@@ -32,6 +32,10 @@
       </USelectMenu>
     </UFormGroup>
 
+    <UFormGroup label="Thời gian vào thực tế">
+      <UInput v-model="state.start" type="time" />
+    </UFormGroup>
+
     <UFormGroup>
       <DataTicketCreateShift :area="area" @select="selectShift" @close="emits('close')" />
     </UFormGroup>
@@ -50,6 +54,7 @@ const loading = ref(false)
 const reg = ref(false)
 
 const state = ref({
+  start: null,
   name: undefined,
   phone: undefined,
   area: area.value._id,

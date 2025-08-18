@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if(auth.type < 1) throw 'Chức năng này chỉ dành cho nhân viên'
 
     const body = await readBody(event)
-    const { phone, area, spot, shift, lunch, pig, pay_type } = body
+    const { phone, area, spot, shift, lunch, pig, pay_type, start } = body
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
@@ -81,6 +81,16 @@ export default defineEventHandler(async (event) => {
     const timePay = new Date(timeNow.getTime() + config.time.pay * 60 * 1000)
     const timeFormat = formatDate(timeNow)
 
+    // Set Start
+    let startTime : any = null
+    if(!!start){
+      const today = DayJS()
+      const [hours, minutes] = start.split(":")
+      if(!hours || !minutes) throw 'Định dạng thời gian không đúng'
+      const timeStartFormat = today.hour(parseInt(hours)).minute(parseInt(minutes)).second(0)
+      startTime = timeStartFormat.toDate()
+    }
+
     // Create
     const newTicket = await DB.Ticket.create({
       user: user._id,
@@ -92,6 +102,7 @@ export default defineEventHandler(async (event) => {
         has: !!lunch ? true : false,
       },
       time: {
+        start: startTime || null,
         pay: timePay,
       },
       price: {
@@ -137,6 +148,8 @@ export default defineEventHandler(async (event) => {
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
+
+    if(!!formatDate())
 
     // Success
     if(total == 0) await verifyTicketSuccess({ code: code, money: 0 })

@@ -45,7 +45,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   if(!user) throw 'Không tìm thấy tài khoản khách hàng'
 
   // Set Thời gian
-  const start = new Date();
+  const start = (ticket && ticket.time && ticket.time.start) ? new Date(ticket.time.start) : new Date();
   const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
   const delay = new Date(end.getTime() + config.time.delay * 60 * 1000)
   const timeFormat = formatDate(start)
