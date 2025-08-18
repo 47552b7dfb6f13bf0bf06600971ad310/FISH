@@ -84,7 +84,7 @@ const selectedColumns = ref([...columns])
 
 // Page
 const page = ref({
-  size: 10,
+  size: 100,
   current: 1,
   sort: {
     column: 'createdAt',

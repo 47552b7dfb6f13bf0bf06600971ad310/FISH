@@ -11,7 +11,7 @@
         </UFormGroup>
 
         <UiFlex justify="between" class="gap-1 mt-4">
-          <UButton color="gray" @click="navigateTo('/manage/user/voucher/history')">Xem lịch sử</UButton>
+          <UButton color="gray" @click="navigateTo('/manage/config/voucher/gift/history')">Xem lịch sử</UButton>
           <UButton color="yellow" @click="add" :loading="loading">Xác Nhận</UButton>
         </UiFlex>
       </UForm>

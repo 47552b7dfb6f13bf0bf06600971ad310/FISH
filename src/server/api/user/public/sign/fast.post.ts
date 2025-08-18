@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
     const { phone, name } = await readBody(event)
     if(!name) throw 'Vui lòng nhập họ và tên'
     if (!phone) throw 'Vui lòng nhập số điện thoại'
-    if (!phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g)) throw 'Định dạng số điện thoại không đúng'
 
     // Get Config
     const config = await DB.Config.findOne().select('reg') as IDBConfig

@@ -2,6 +2,8 @@
   <UiContent title="Cơm Chưa Giao" sub="Danh sách các vé đăng ký cơm chưa xử lý">
     <UiFlex class="gap-1">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" />
+
+      <UButton color="yellow" class="ml-auto">{{ count }} đơn</UButton>
     </UiFlex>
     
     <!-- Table -->
@@ -71,7 +73,7 @@ const selectedColumns = ref([...columns])
 
 // Page
 const page = ref({
-  size: 10,
+  size: 100,
   current: 1,
   sort: {
     column: 'createdAt',
@@ -97,6 +99,8 @@ const statusTicket = {
   3: { label: 'Sắp kết thúc', color: 'purple' },
   4: { label: 'Kết thúc', color: 'rose' },
 }
+
+const count = computed(() => list.value.length)
 
 // Fetch
 const getList = async () => {

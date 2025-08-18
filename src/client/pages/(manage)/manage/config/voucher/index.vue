@@ -1,8 +1,9 @@
 <template>
   <UiContent title="Voucher" sub="Quản lý các phiếu quà tặng">
-    <UiFlex class="mb-4">
+    <UiFlex class="mb-4 gap-1">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" class="mr-auto"/>
-      <UButton color="yellow" @click="modal.add = true">Thêm mới</UButton>
+      <UButton color="primary" @click="navigateTo('/manage/config/voucher/gift')">Tặng Voucher</UButton>
+      <UButton color="yellow" @click="modal.add = true">Thêm Mới</UButton>
     </UiFlex>
 
     <!-- Table -->

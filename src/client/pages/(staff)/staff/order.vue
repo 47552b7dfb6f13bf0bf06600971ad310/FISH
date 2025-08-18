@@ -2,6 +2,8 @@
   <UiContent title="Dịch Vụ Chưa Giao" sub="Danh sách các dịch vụ chưa xử lý">
     <UiFlex class="gap-1">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" />
+
+      <UButton @click="modal.create = true" color="yellow" class="ml-auto">Tạo Đơn Khách Ngoài</UButton>
     </UiFlex>
     
     <!-- Table -->
@@ -14,7 +16,8 @@
         :rows="list"
       >
         <template #ticket-data="{ row }">
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket)">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket)" v-if="row.ticket">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectOrder(row.code)" v-else>{{ row.code }}</UBadge>
         </template>
 
         <template #user-data="{ row }">
@@ -41,8 +44,19 @@
       <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="4" />
     </UiFlex>
 
-    <UModal v-model="modal">
-      <StaffTicket :ticket="select" @close="modal = false" type="ticket" />
+    <!-- Modal View Ticket -->
+    <UModal v-model="modal.ticket">
+      <StaffTicket :ticket="ticket" @close="modal.ticket = false" type="ticket"/>
+    </UModal>
+
+    <!-- Modal View Order -->
+    <UModal v-model="modal.order">
+      <StaffOrderView :code="order" @close="modal.order = false" />
+    </UModal>
+
+    <!-- Modal Create -->
+    <UModal v-model="modal.create">
+      <StaffOrderCreate @close="modal.create = false" />
     </UModal>
   </UiContent>
 </template>
@@ -55,7 +69,7 @@ const list = ref([])
 const columns = [
   {
     key: 'ticket',
-    label: 'Mã vé',
+    label: 'Xem đơn',
   },{
     key: 'code',
     label: 'Mã đơn',
@@ -77,7 +91,7 @@ const selectedColumns = ref([...columns])
 
 // Page
 const page = ref({
-  size: 10,
+  size: 100,
   current: 1,
   sort: {
     column: 'createdAt',
@@ -96,14 +110,25 @@ const loading = ref({
   action: false
 })
 
-const modal = ref(false)
+const modal = ref({
+  ticket: false,
+  order: false,
+  create: false
+})
 
-const select = ref()
+const ticket = ref()
+const order = ref()
 
-const selectTicket = (ticket) => {
-  select.value = ticket
-  modal.value = true
+const selectTicket = (data) => {
+  ticket.value = data
+  modal.value.ticket = true
 }
+
+const selectOrder = (code) => {
+  order.value = code
+  modal.value.order = true
+}
+
 
 // Fetch
 const getList = async () => {

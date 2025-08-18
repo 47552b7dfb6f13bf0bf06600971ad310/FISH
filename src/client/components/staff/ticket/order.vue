@@ -2,8 +2,8 @@
   <DataEmpty class="min-h-[300px]" text="Không có đơn hàng nào đang xử lý" :loading="loading" v-if="!!loading" />
 
   <div v-else>
-    <StaffOrderPending :ticket="ticket" :order="order" @done="getOrder" v-if="!!order" />
-    <StaffOrderList :ticket="ticket" :list="list" v-else />
+    <StaffTicketOrderPending :ticket="ticket" :order="order" @done="getOrder" v-if="!!order" />
+    <StaffTicketOrderList :ticket="ticket" :list="list" v-else />
   </div>
 </template>
 

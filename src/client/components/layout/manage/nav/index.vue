@@ -44,10 +44,10 @@ const menu = ref([
     { title: 'Thẻ Voucher', icon: 'i-mdi-voucher', to: `/manage/config/voucher` },
     { title: 'Vòng quay tuần', icon: 'i-mdi-wheel', to: `/manage/wheel` },
   ]},
-  { title: 'Tài khoản', child: [
-    { title: 'Danh sách', icon: 'i-bx-group', to: `/manage/user` },
+  { title: 'Quản lý', child: [
+    { title: 'Tài khoản', icon: 'i-bx-group', to: `/manage/user` },
     { title: 'Hội viên', icon: 'i-bxs-group', to: `/manage/user/member` },
-    { title: 'Tặng Voucher', icon: 'i-mdi-voucher', to: `/manage/user/voucher` },
+    { title: 'Vé câu', icon: 'i-mdi-ticket', to: `/manage/ticket` },
   ]},
   { title: 'Quản lý hồ', child: [
     { title: 'Khu vực', icon: 'i-ph-map-pin-simple-area-bold', to: `/manage/lake/area` },

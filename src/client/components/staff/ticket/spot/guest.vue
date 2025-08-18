@@ -55,7 +55,7 @@ const reg = ref(false)
 
 const state = ref({
   start: null,
-  name: undefined,
+  name: null,
   phone: undefined,
   area: area.value._id,
   spot: props.spot._id,
@@ -64,6 +64,15 @@ const state = ref({
   pig: true,
   pay_type: null
 })
+
+const randPhone = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const length = 8
+  const code = Array.from({ length })
+  .map(() => chars[Math.floor(Math.random() * chars.length)])
+  .join('')
+  return code
+}
 
 const selectShift = (data) => {
   if(!!loading.value) return 
@@ -104,4 +113,9 @@ const addAction = async () => {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  state.value.name = 'Vẵng Lai'
+  state.value.phone = randPhone()
+})
 </script>

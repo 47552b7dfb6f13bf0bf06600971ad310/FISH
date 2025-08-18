@@ -8,10 +8,13 @@ export default defineEventHandler(async (event) => {
     const ticket = await DB.Ticket.findOne({ 
       'user': auth._id, 
       'cancel.status': false 
-    }).select('code') as IDBTicket
+    })
+    .populate({ path: 'area', select: 'name' })
+    .populate({ path: 'spot', select: 'code' })
+    .select('code status time') as IDBTicket
     if(!ticket) throw true
 
-    return resp(event, { result: ticket.code })
+    return resp(event, { result: ticket })
   } 
   catch (e:any) {
     return resp(event, { result: null })
