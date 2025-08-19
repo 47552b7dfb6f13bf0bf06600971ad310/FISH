@@ -1,5 +1,5 @@
 <template>
-  <UiContent title="Vé Câu" sub="Quản lý danh sách vé câu">
+  <div>
     <UiFlex class="gap-1" wrap>
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]"/>
 
@@ -9,8 +9,6 @@
           <USelectMenu v-model="page.search.by" :options="['CODE', 'USER']" />
         </UiFlex>
       </UForm>
-
-      <SelectLakeArea v-model="page.area" size="sm" />
     </UiFlex>
     
     <!-- Table -->
@@ -79,10 +77,12 @@
     <UModal v-model="modal">
       <StaffTicket :ticket="stateView" @close="modal = false" type="ticket" />
     </UModal>
-  </UiContent>
+  </div>
 </template>
 
 <script setup>
+const props = defineProps(['fetchId'])
+
 // List
 const list = ref([])
 
@@ -128,13 +128,12 @@ const page = ref({
     by: 'CODE'
   },
   total: 0,
-  area: null
+  spot: props.fetchId
 })
 watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
-watch(() => page.value.area, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
 
 const statusTicket = {
@@ -167,7 +166,7 @@ const selectTicket = (ticket) => {
 const getList = async () => {
   try {
     loading.value.load = true
-    const data = await useAPI('ticket/manage/list', JSON.parse(JSON.stringify(page.value)))
+    const data = await useAPI('lake/manage/spot/ticket', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false
     list.value = data.list

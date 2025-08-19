@@ -2,6 +2,9 @@
   <UiContent title="Ô Câu" sub="Quản lý các ô câu cho thuê">
     <UiFlex class="gap-1">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" />
+      <UForm :state="page" @submit="page.current = 1, getList()">
+        <UInput v-model="page.search" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />
+      </UForm>
       <SelectLakeArea v-model="page.area" size="sm" class="mr-auto" />
       <UButton color="yellow" icon="i-bx-plus" @click="modal.add = true">Thêm mới</UButton>
     </UiFlex>
@@ -70,6 +73,17 @@
         </UiFlex>
       </UForm>
     </UModal>
+
+    <!-- Modal History -->
+    <UModal v-model="modal.history" preventClose :ui="{width: 'sm:max-w-[800px]'}">
+      <UiContent title="Lịch Sử Vé" sub="Các vé câu trên ô này" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.history = false"></UButton>
+        </template>
+
+        <ManageLakeSpotTicket :fetch-id="stateHistory" />
+      </UiContent>
+    </UModal>
   </UiContent>
 </template>
 
@@ -106,13 +120,15 @@ const page = ref({
     direction: 'desc'
   },
   total: 0,
-  area: null
+  area: null,
+  search: null
 })
 watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.area, () => getList())
+watch(() => page.value.search, (val) => (!val && getList()))
 
 // State
 const stateAdd = ref({
@@ -123,11 +139,13 @@ const stateEdit = ref({
   _id: null,
   code: null,
 })
+const stateHistory = ref()
 
 // Modal
 const modal = ref({
   add: false,
-  edit: false
+  edit: false,
+  history: false
 })
 
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
@@ -150,6 +168,14 @@ const actions = (row) => [
     click: () => {
       Object.keys(stateEdit.value).forEach(key => stateEdit.value[key] = row[key])
       modal.value.edit = true
+    }
+  }],
+  [{
+    label: 'Lịch sử vé',
+    icon: 'i-bx-time',
+    click: () => {
+      stateHistory.value = row._id
+      modal.value.history = true
     }
   }],
   // [{

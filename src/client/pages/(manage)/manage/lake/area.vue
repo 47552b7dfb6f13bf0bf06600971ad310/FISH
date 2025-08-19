@@ -131,6 +131,17 @@
         </UiFlex>
       </UForm>
     </UModal>
+
+    <!-- Modal History -->
+    <UModal v-model="modal.history" preventClose :ui="{width: 'sm:max-w-[800px]'}">
+      <UiContent title="Lịch Sử Vé" sub="Các vé câu trên khu vực này" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.history = false"></UButton>
+        </template>
+
+        <ManageLakeAreaTicket :fetch-id="stateHistory" />
+      </UiContent>
+    </UModal>
   </UiContent>
 </template>
 
@@ -205,11 +216,13 @@ const stateEdit = ref({
     max: null
   }
 })
+const stateHistory = ref()
 
 // Modal
 const modal = ref({
   add: false,
-  edit: false
+  edit: false,
+  history: false
 })
 
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
@@ -237,6 +250,14 @@ const loading = ref({
 
 // Actions
 const actions = (row) => [
+  [{
+    label: 'Lịch sử vé',
+    icon: 'i-bx-time',
+    click: () => {
+      stateHistory.value = row._id
+      modal.value.history = true
+    }
+  }],
   [{
     label: 'Sửa thông tin',
     icon: 'i-bx-pencil',
