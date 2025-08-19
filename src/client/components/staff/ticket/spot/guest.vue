@@ -21,15 +21,7 @@
     </UFormGroup>
     
     <UFormGroup label="Phương thức thanh toán">
-      <USelectMenu v-model="state.pay_type" size="lg" value-attribute="value" :options="[
-        { label: 'Tiền mặt', value: 'MONEY' },
-        { label: 'Chuyển khoản', value: 'BANK' }
-      ]">
-        <template #label>
-          <span v-if="!state.pay_type">Chọn loại</span>
-          <span v-else>{{ state.pay_type == 'MONEY' ? 'Tiền mặt' : 'Chuyển khoản' }}</span>
-        </template>
-      </USelectMenu>
+      <SelectPayType v-model="state.pay_type" />
     </UFormGroup>
 
     <UFormGroup label="Thời gian vào thực tế">
@@ -62,7 +54,7 @@ const state = ref({
   shift: null,
   lunch: false,
   pig: true,
-  pay_type: null
+  pay_type: 'MONEY'
 })
 
 const randPhone = () => {

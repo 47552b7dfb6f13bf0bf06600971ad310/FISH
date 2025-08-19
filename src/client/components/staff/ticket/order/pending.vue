@@ -13,7 +13,7 @@
         <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(order.total) }} VNĐ</UiText>
       </UiFlex>
 
-      <UiFlex justify="center" v-if="!!order.pay && !!order.pay.qrcode">
+      <UiFlex justify="center" v-if="!!order.pay && !!order.pay.qrcode && pay_type == 'BANK'">
         <UiImg :src="order.pay.qrcode" class="w-[200px] md:max-w-[200px]"/>
       </UiFlex>
     </UiFlex>
@@ -22,6 +22,8 @@
       <DataEmpty text="Giỏ hàng trống" v-if="!order.cart || order.cart.length == 0"></DataEmpty>
 
       <UiFlex type="col" class="gap-2" v-else>
+        <UiText size="lg" weight="semibold" class="w-full" color="orange">Sản phẩm</UiText>
+
         <UiFlex class="bg-gray rounded-2xl p-4 md:p-2 gap-4 w-full" v-for="product in order.cart" :key="product._id">
           <UiImg :src="product.item?.image" w="1" h="1" class="bg-gray-1000 rounded-xl max-w-[80px]"/>
           <div>
@@ -37,15 +39,7 @@
       </UiFlex>
     </div>
 
-    <USelectMenu v-model="pay_type" size="lg" value-attribute="value" class="mb-2" :options="[
-      { label: 'Tiền mặt', value: 'MONEY' },
-      { label: 'Chuyển khoản', value: 'BANK' }
-    ]">
-      <template #label>
-        <span v-if="!pay_type">Phương thức thanh toán</span>
-        <span v-else>{{ pay_type == 'MONEY' ? 'Tiền mặt' : 'Chuyển khoản' }}</span>
-      </template>
-    </USelectMenu>
+    <SelectPayType v-model="pay_type" class="mb-2" />
 
     <UButton class="mb-0.5" block color="green" @click="onSuccess" :loading="successing">Xác Nhận Đã Giao Và Nhận Tiền</UButton>
     <UButton block color="rose" @click="onCancel" :loading="successing">Hủy Đơn Dịch Vụ</UButton>

@@ -7,6 +7,8 @@
 </template>
 
 <script setup>
+const mode = useColorMode()
+const appConfig = useAppConfig()
 const runtimeConfig = useRuntimeConfig()
 const configStore = useConfigStore()
 
@@ -19,5 +21,11 @@ useSeoMeta({
   ogImage: () => new URL(configStore.config.image.banner || '/images/null.webp', runtimeConfig.public.clientURL), 
   ogImageAlt: () => configStore.config.name,
   ogType: 'website'
+})
+
+onMounted(() => {
+  mode.preference = 'dark'
+  // appConfig.ui.primary = 'sky'
+  // appConfig.ui.gray = 'cool'
 })
 </script>

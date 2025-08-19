@@ -1,5 +1,10 @@
 <template>
-  <UiFlex v-if="!!ticket" @click="goToTicket" class="gap-1 fixed bottom-0 bg-[#071b27] w-full px-4 py-3 rounded-t-2xl cursor-pointer max-w-[600px] mx-auto shadow-2xl">
+  <UiFlex 
+    v-if="!!ticket" 
+    @click="goToTicket" 
+    class="gap-1 fixed bottom-0 bg-gray-1000 w-full px-4 py-3 rounded-t-2xl cursor-pointer max-w-[600px] mx-auto shadow-2xl z-[10]"
+    style="box-shadow: 0px -2px 20px 1px rgb(0 0 0 / 30%)"
+  >
     <div class="mr-auto">
       <UiText weight="semibold" color="yellow">Vé của bạn</UiText>
       <UiText size="sm" v-if="!!ticket.area && !!ticket.spot">

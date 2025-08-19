@@ -102,15 +102,6 @@ export default async ({ code, status, money, reason } : IBodyData, verifier? : T
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
-
-    console.log(`
-      Đơn Hàng Nối Giờ Câu Được Chấp Thuận
-      » Khu vực: ${areaCheck.name} - ${spotCheck.code}
-      » Mã vé: ${ticket.code}
-      » Mã đơn: ${order.code}
-      » Đã thanh toán: ${order.total.toLocaleString('vi-VN')}
-      » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
-    `)
   }
   else {
     // Send Tele

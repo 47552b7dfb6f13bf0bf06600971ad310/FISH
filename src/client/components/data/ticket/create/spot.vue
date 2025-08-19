@@ -26,7 +26,7 @@
 
       <DataEmpty text="Không có dữ liệu ô câu" class="min-h-[300px]" :loading="loading" v-if="!!loading || list.length == 0" />
 
-      <UiFlex wrap class="gap-0.5 lg:px-8 px-0" justify="center" v-else>
+      <UiFlex wrap class="gap-0.5" justify="center" v-else>
         <UiFlex 
           type="col"
           v-for="spot in list" :key="spot._id" 

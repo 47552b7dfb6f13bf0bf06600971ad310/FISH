@@ -21,15 +21,7 @@
             </template>
           </URadioGroup>
 
-          <USelectMenu v-model="pay_type" size="lg" value-attribute="value" class="mb-2" :options="[
-            { label: 'Tiền mặt', value: 'MONEY' },
-            { label: 'Chuyển khoản', value: 'BANK' }
-          ]">
-            <template #label>
-              <span v-if="!pay_type">Phương thức thanh toán</span>
-              <span v-else>{{ pay_type == 'MONEY' ? 'Tiền mặt' : 'Chuyển khoản' }}</span>
-            </template>
-          </USelectMenu>
+          <SelectPayType v-model="pay_type" class="mb-2" />
 
           <UiFlex class="gap-1">
             <UButton color="yellow" class="grow justify-center" :loading="loading.action" @click="onAction">Xác Nhận</UButton>
