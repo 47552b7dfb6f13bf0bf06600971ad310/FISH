@@ -8,6 +8,7 @@
       <UButton color="yellow" class="w-[250px] justify-center" size="xl" icon="i-tdesign-fish-filled" @click="navigateTo('/create')">ĐẶT CHỖ NGAY</UButton>
       <UButton color="orange"  class="w-[250px] justify-center" size="xl" icon="i-bxl-vimeo" @click="navigateTo('/member')">NÂNG CẤP HỘI VIÊN</UButton>
       <UButton color="purple"  class="w-[250px] justify-center" size="xl" icon="i-mdi-wheel" @click="navigateTo('/wheel')" v-if="!!configStore.config.wheel.start">VÒNG QUAY TUẦN</UButton>
+      <DataDownload />
     </UiFlex>
 
     <DataLake class="my-4"/>

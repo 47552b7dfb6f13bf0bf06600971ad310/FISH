@@ -26,9 +26,9 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex type="col" class="gap-1 w-full mt-4">
-      <UButton color="green" block size="lg" :loading="starting" :disabled="!!canceling" @click="onSuccess">Xác Nhận Khách Đã Thanh Toán</UButton>
-      <UButton color="rose" block size="lg" :loading="canceling" :disabled="!!starting" @click="onCancel">Hủy Đơn Nối Ca</UButton>
+    <UiFlex class="gap-1 w-full mt-4">
+      <UButton color="green" class="grow justify-center" :loading="starting" :disabled="!!canceling" @click="onSuccess">Đã Thanh Toán</UButton>
+      <UButton color="rose" class="grow justify-center" :loading="canceling" :disabled="!!starting" @click="onCancel">Hủy Đơn</UButton>
     </UiFlex>
   </UiFlex>
 </template>

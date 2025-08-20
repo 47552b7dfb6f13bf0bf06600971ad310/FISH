@@ -41,8 +41,10 @@
 
     <SelectPayType v-model="pay_type" class="mb-2" />
 
-    <UButton class="mb-0.5" block color="green" @click="onSuccess" :loading="successing">Xác Nhận Đã Giao Và Nhận Tiền</UButton>
-    <UButton block color="rose" @click="onCancel" :loading="successing">Hủy Đơn Dịch Vụ</UButton>
+    <UiFlex class="gap-1 w-full">
+      <UButton color="green" class="grow justify-center" @click="onSuccess" :loading="successing">Đã Thanh Toán</UButton>
+      <UButton color="rose" class="grow justify-center" @click="onCancel" :loading="successing">Hủy Đơn</UButton>
+    </UiFlex>
   </div>
 </template>
 
