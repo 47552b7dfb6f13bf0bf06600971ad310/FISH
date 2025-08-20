@@ -59,6 +59,11 @@ export const DBTicket = (mongoose : Mongoose) => {
       staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     },
 
+    guest: {
+      status: { type: Boolean, default: false },
+      staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    },
+
     status: { type: Number, default: 0 }, // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
   }, {
     timestamps: true

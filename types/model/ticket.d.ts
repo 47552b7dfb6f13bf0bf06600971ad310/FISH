@@ -61,6 +61,11 @@ export interface IDBTicket {
     staff: Types.ObjectId
   }
 
+  guest: {
+    status: boolean
+    staff: Types.ObjectId
+  }
+
   status: number // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
 
   save: {

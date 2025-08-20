@@ -122,6 +122,10 @@ export default defineEventHandler(async (event) => {
         qrcode: qrcode,
         token: token,
         type: pay_type,
+      },
+      guest: {
+        status: true,
+        staff: auth._id
       }
     }) as IDBTicket
 
