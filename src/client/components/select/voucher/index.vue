@@ -1,37 +1,42 @@
 <template>
-  <USelectMenu
-    v-model="valueSelect"
-    :options="options"
-    size="lg"
-    by="_id"
-    :loading="loading"
-  >
-    <template #label>
-      <UiText mini>{{ select ? select.title : 'Chọn thẻ khuyến mãi' }}</UiText>
-    </template>
+  <UiFlex class="gap-1" wrap>
+    <DataEmpty text="Bạn không có thẻ khuyến mãi nào" :loading="loading" v-if="options.length == 0 || !!loading" />
 
-    <template #option="{ option: item }">
-      {{ item.title }}
-    </template>
-  </USelectMenu>
+    <UiFlex 
+      class="cursor-pointer rounded-2xl p-4 gap-2" 
+      v-for="item in options" :key="item._id" 
+      :class="{
+        'bg-gray-1000': !select || (!!select && select._id != item._id),
+        'bg-red-500': !!select && select._id == item._id
+      }" 
+      @click="onSelect(item)"
+    >
+      <UiIcon name="i-ic-baseline-discount" size="5"></UiIcon>
+      <UiText weight="semibold" size="sm" class="mr-auto">{{ item.title }}</UiText>  
+    </UiFlex>
+  </UiFlex>
 </template>
 
 <script setup>
 const props = defineProps({
-  modelValue: [ String, Array ],
+  modelValue: String,
   type: Array
 })
 
-const emit = defineEmits(['update:modelValue', 'update:voucherData'])
+const emit = defineEmits(['update:modelValue', 'update:voucherData', 'no'])
 
 const valueSelect = ref(props.modelValue)
 const options = ref([])
 const select = ref(null)
 const loading = ref(true)
 
+const onSelect = (item) => {
+  select.value = item
+  valueSelect.value = item
+}
+
 watch(valueSelect, val => {
-  select.value = val
-  if(!!val) return emit('update:modelValue', val._id)
+  if(!!val) return emit('update:modelValue', val)
   emit('update:modelValue', undefined)
 })
 
@@ -47,6 +52,15 @@ const fetch = async () => {
     
     options.value = list
     loading.value = false
+
+    if(options.value.length == 0) emit('no')
+    // if(options.value.length > 0){
+    //   select.value = options.value[0]
+    //   valueSelect.value = select.value._id
+    // }
+    // else {
+    //   emit('no')
+    // }
   }
   catch (e) {
     loading.value = false

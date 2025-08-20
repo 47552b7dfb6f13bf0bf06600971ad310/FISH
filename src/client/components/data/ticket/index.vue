@@ -24,16 +24,18 @@
     </UiFlex>
 
     <div class="my-6">
-      <UiText size="base" align="center" color="gray">Vị trí ngồi</UiText>
       <UiText size="lg" align="center" weight="semibold" color="yellow">
         {{ ticket.area.name }}, Ô {{ ticket.spot.code }}
       </UiText>
-      <UiFlex class="mt-1 gap-4">
-        <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true">ĐỔI VỊ TRÍ</UiText>
-        -
-        <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
-      </UiFlex>
+      <UiText align="center" weight="semibold" color="gray">
+        Từ {{ useDayJs().displayTime(ticket.time.start) }} đến {{ useDayJs().displayTime(ticket.time.end) }}
+      </UiText>
     </div>
+
+    <UiFlex class="gap-1 mb-2">
+      <UButton size="lg" class="justify-center grow" color="rose" @click="modal.spot = true">ĐỔI VỊ TRÍ</UButton>
+      <UButton size="lg" class="justify-center grow" color="primary" @click="modal.shift = true">NỐI CA</UButton>
+    </UiFlex>
 
     <div v-if="ticket.status == 2" class="w-full">
       <UiFlex class="gap-1 mb-4 w-full md:w-auto">

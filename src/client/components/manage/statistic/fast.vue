@@ -50,7 +50,7 @@
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Dịch Vụ Chuyển Khoản</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
-            <UiText v-else color="primary" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.bank) }}</UiText>
+            <UiText v-else color="yellow" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.bank) }}</UiText>
           </UiFlex>
         </UiFlex>
       </UCard>
@@ -61,7 +61,7 @@
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Dịch Vụ Tiền Mặt</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
-            <UiText v-else color="primary" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.money) }}</UiText>
+            <UiText v-else color="yellow" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.money) }}</UiText>
           </UiFlex>
         </UiFlex>
       </UCard>
@@ -72,7 +72,7 @@
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Tổng Dịch Vụ</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
-            <UiText v-else color="primary" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.money + data.item.bank) }}</UiText>
+            <UiText v-else color="yellow" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.item.money + data.item.bank) }}</UiText>
           </UiFlex>
         </UiFlex>
       </UCard>
@@ -83,7 +83,18 @@
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Hội Viên</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
-            <UiText v-else color="primary" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.member) }}</UiText>
+            <UiText v-else color="orange" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.member) }}</UiText>
+          </UiFlex>
+        </UiFlex>
+      </UCard>
+
+      <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.item && data.ticket">
+        <UiFlex justify="between">
+          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UiFlex type="col" items="end">
+            <UiText color="gray" align="right">Tổng Doanh Thu</UiText>
+            <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
+            <UiText v-else color="green" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.ticket.money + data.ticket.bank + data.item.money + data.item.bank + data.member) }}</UiText>
           </UiFlex>
         </UiFlex>
       </UCard>

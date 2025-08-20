@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const match : any = { _id: { $in: user.vouchers }}
     if(type) match['type'] = { $in: type }
 
-    const list = await DB.Voucher.find(match).select('title value type')
+    const list = await DB.Voucher.find(match).select('title value type').sort({ value: -1 })
     return resp(event, { result: list })
   } 
   catch (e:any) {

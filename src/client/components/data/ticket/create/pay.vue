@@ -24,17 +24,9 @@
         <UiText>Xác nhận dịch vụ</UiText>
       </UiFlex>
 
-      <UForm :validate="validate" :state="state" @submit="submit">
-        <UFormGroup label="Tên khách hàng" name="name">
-          <UInput icon="i-bxs-user" v-model="state.name" :disabled="!!authStore.isLogin" />
-        </UFormGroup>
-
-        <UFormGroup label="Số điện thoại" name="phone">
-          <UInput icon="i-bxs-phone" v-model="state.phone" :disabled="!!authStore.isLogin" />
-        </UFormGroup>
-
-        <UFormGroup label="Thẻ khuyến mãi" v-if="!!authStore.isLogin">
-          <SelectVoucher v-model="state.voucher" v-model:voucherData="voucher" :type="['DISCOUNT', 'DISCOUNT-PRICE']" />
+      <UForm :state="state" @submit="submit">
+        <UFormGroup label="Chọn thẻ khuyến mãi" v-if="!!authStore.isLogin && !!hasVoucher">
+          <SelectVoucher v-model="state.voucher" v-model:voucherData="voucher" @no="onNoVoucher" :type="['DISCOUNT', 'DISCOUNT-PRICE']" />
         </UFormGroup>
 
         <UFormGroup label="Bạn có chơi Heo không" v-if="!!area && !!area.pig && !!area.pig.max > 0">
@@ -48,6 +40,10 @@
             </template>
           </USelectMenu>
         </UFormGroup>
+
+        <!-- <UFormGroup label="Gọi thêm dịch vụ">
+          <DataTicketCreateOrder @done="onOrder" />
+        </UFormGroup> -->
 
         <UFormGroup label="Thông tin đơn hàng">
           <UiFlex type="col" class="mt-4 gap-4 relative bg-gray-1000 p-4 rounded-2xl">
@@ -74,6 +70,11 @@
             <UiFlex justify="between" class="w-full" v-if="!!props.lunch">
               <UiText weight="semibold" color="gray" size="sm">Phí cơm</UiText>
               <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(configStore.config.lunch.price) }}</UiText>
+            </UiFlex>
+
+            <UiFlex justify="between" class="w-full" v-if="!!cart && cart.total > 0">
+              <UiText weight="semibold" color="gray" size="sm">Gọi dịch vụ</UiText>
+              <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(cart.total) }}</UiText>
             </UiFlex>
 
             <UiFlex justify="between" class="w-full" v-if="!!area && !!area.pig && !!area.pig.max > 0 && !!state.pig">
@@ -146,29 +147,26 @@ const props = defineProps(['area', 'spot', 'shift', 'lunch'])
 const emits = defineEmits(['back'])
 
 const modal = ref(false)
+const hasVoucher = ref(true)
+const cart = ref()
 
 const state = ref({
-  name: authStore.isLogin ? authStore.profile.name : undefined,
-  phone: authStore.isLogin ? authStore.profile.phone : undefined,
   area: props.area._id,
   spot: props.spot._id,
   shift: props.shift._id,
   lunch: props.lunch,
   pig: true,
   pay_type: null,
-  voucher: null
+  voucher: null,
+  cart: null
 })
 
 const voucher = ref()
 
 const loading = ref(false)
 
-const validate = (state) => {
-  const errors = []
-  if (!state.name && !authStore.isLogin) errors.push({ path: 'name', message: 'Vui lòng nhập đầy đủ' })
-  if (!state.phone && !authStore.isLogin) errors.push({ path: 'phone', message: 'Vui lòng nhập đầy đủ' })
-  else if (!state.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g) && !authStore.isLogin) errors.push({ path: 'phone', message: 'Định dạng không đúng' })
-  return errors
+const onNoVoucher = () => {
+  hasVoucher.value = false
 }
 
 const discountTime = computed(() => {
@@ -227,6 +225,14 @@ const discountMiss = computed(() => {
   return value
 })
 
+const totalCart = computed(() => {
+  if(!cart.value) return 0
+  if(!cart.value.total) return 0
+  if(!cart.value.list) return 0
+  if(cart.value.list.length == 0) return 0
+  return cart.value.total
+})
+
 const totalPrice = computed(() => {
   if(!props.area) return 0
   if(!props.area.pig) return 0
@@ -246,8 +252,12 @@ const totalPrice = computed(() => {
   let discount = discountPriceValue + discountVoucherValue + discountMissValue
   discount = discount > 100 ? 100 : discount
   if(discount > 0) total = total - Math.floor(total * discount / 100)
-  return total + pig
+  return total + pig + totalCart.value
 })
+
+const onOrder = (data) => {
+  cart.value = data
+}
 
 const submit = async () => {
   if(totalPrice.value == 0) return await create('BANK')
@@ -258,6 +268,8 @@ const create = async (pay_type) => {
   try {
     loading.value = true
     state.value.pay_type = pay_type
+
+    if(!!cart.value && !!cart.list && cart.value.list.length > 0) state.value.cart = cart.value.list
     const code = await useAPI('ticket/public/create', JSON.parse(JSON.stringify(state.value)))
     navigateTo(`/ticket/${code}`)
   }

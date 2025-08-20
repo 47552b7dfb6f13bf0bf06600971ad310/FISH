@@ -6,6 +6,16 @@
         <UiText weight="semibold" size="sm" color="primary">{{ ticket.code }}</UiText>
       </UiFlex>
 
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.start">
+        <UiText weight="semibold" color="gray" size="sm">Bắt đầu</UiText>
+        <UiText weight="semibold" size="sm" color="green">{{ useDayJs().displayFull(ticket.time.start) }}</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.end">
+        <UiText weight="semibold" color="gray" size="sm">Kết thúc</UiText>
+        <UiText weight="semibold" size="sm" color="rose">{{ useDayJs().displayFull(ticket.time.end) }}</UiText>
+      </UiFlex>
+
       <UiFlex justify="between" class="w-full">
         <UiText weight="semibold" color="gray" size="sm">Người thuê</UiText>
         <UiText weight="semibold" size="sm">{{ ticket.user?.name }}</UiText>
@@ -27,13 +37,13 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="mt-2 gap-4 w-full" justify="center">
+    <UiFlex class="mt-8 gap-4 w-full" justify="center">
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true" v-if="!!ticket.cancel && !ticket.cancel.status">ĐỔI VỊ TRÍ</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="orange" @click="addLunch" v-if="(!!ticket.lunch && !ticket.lunch.has) && (!!ticket.cancel && !ticket.cancel.status)">ĐĂNG KÝ CƠM</UiText>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-4" justify="end" v-if="!!ticket.cancel && !ticket.cancel.status">
+    <UiFlex class="gap-1 mt-8" justify="end" v-if="!!ticket.cancel && !ticket.cancel.status">
       <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
     </UiFlex>
 
