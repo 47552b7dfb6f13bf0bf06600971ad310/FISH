@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
 
     // Make Total and Item
     const cartOrder : any = []
+    const cartName : any = []
     let total = 0
     await Promise.all(cart.map(async (product) => {
       const item = await DB.Item.findOne({ _id: product.item }).select('name price inventory display') as IDBItem
@@ -52,6 +53,8 @@ export default defineEventHandler(async (event) => {
         amount: product.amount,
         price: itemPrice
       })
+
+      cartName.push(`${item.name} x${product.amount}`)
 
       const price = product.amount * itemPrice
       total = total + price
@@ -94,6 +97,7 @@ export default defineEventHandler(async (event) => {
         Đơn Gọi Dịch Vụ Mới
         » Mã vé: ${codeOrder}
         » Khu vực: ${areaCheck.name} - ${spotCheck.code}
+        » Sản phẩm: ${cartName.join(' | ')}
         » Cần thanh toán: ${total.toLocaleString('vi-VN')}
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `

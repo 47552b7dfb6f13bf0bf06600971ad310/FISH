@@ -19,6 +19,10 @@
         </template>
       </USelectMenu>
     </UFormGroup>
+
+    <UFormGroup label="Gọi thêm dịch vụ">
+      <StaffTicketSpotOrder @done="onOrder" />
+    </UFormGroup>
     
     <UFormGroup label="Phương thức thanh toán">
       <SelectPayType v-model="state.pay_type" />
@@ -44,6 +48,7 @@ const area = computed(() => {
 
 const loading = ref(false)
 const reg = ref(false)
+const cart = ref()
 
 const state = ref({
   start: null,
@@ -54,8 +59,13 @@ const state = ref({
   shift: null,
   lunch: false,
   pig: true,
-  pay_type: 'MONEY'
+  pay_type: 'MONEY',
+  cart: null
 })
+
+const onOrder = (data) => {
+  cart.value = data
+}
 
 const randPhone = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -96,6 +106,9 @@ const fastRegister = async () => {
 const addAction = async () => {
   try {
     loading.value = true
+
+    if(!!cart.value && !!cart.value.list && cart.value.list.length > 0) state.value.cart = cart.value.list
+    else state.value.cart = null
     const code = await useAPI('ticket/staff/create', JSON.parse(JSON.stringify(state.value)))
 
     emits('done')

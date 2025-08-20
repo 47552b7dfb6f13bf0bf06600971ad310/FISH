@@ -41,9 +41,9 @@
           </USelectMenu>
         </UFormGroup>
 
-        <!-- <UFormGroup label="Gọi thêm dịch vụ">
+        <UFormGroup label="Gọi thêm dịch vụ">
           <DataTicketCreateOrder @done="onOrder" />
-        </UFormGroup> -->
+        </UFormGroup>
 
         <UFormGroup label="Thông tin đơn hàng">
           <UiFlex type="col" class="mt-4 gap-4 relative bg-gray-1000 p-4 rounded-2xl">
@@ -269,7 +269,9 @@ const create = async (pay_type) => {
     loading.value = true
     state.value.pay_type = pay_type
 
-    if(!!cart.value && !!cart.list && cart.value.list.length > 0) state.value.cart = cart.value.list
+    if(!!cart.value && !!cart.value.list && cart.value.list.length > 0) state.value.cart = cart.value.list
+    else state.value.cart = null
+    
     const code = await useAPI('ticket/public/create', JSON.parse(JSON.stringify(state.value)))
     navigateTo(`/ticket/${code}`)
   }

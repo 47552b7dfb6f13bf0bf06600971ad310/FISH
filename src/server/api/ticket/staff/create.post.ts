@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser, IDBVoucher } from "~~/types"
+import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser, IDBItem } from "~~/types"
 import md5 from "md5"
 
 export default defineEventHandler(async (event) => {
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if(auth.type < 1) throw 'Chức năng này chỉ dành cho nhân viên'
 
     const body = await readBody(event)
-    const { phone, area, spot, shift, lunch, pig, pay_type, start } = body
+    const { phone, area, spot, shift, lunch, pig, pay_type, start, cart } = body
     if(!area) throw 'Không tìm thấy dữ liệu khu vực'
     if(!spot) throw 'Không tìm thấy dữ liệu ô câu'
     if(!shift) throw 'Không tìm thấy dữ liệu ca câu'
@@ -53,13 +53,44 @@ export default defineEventHandler(async (event) => {
     let discount = discountPrice + discountVoucher + discountMiss
     discount = discount > 100 ? 100 : discount
 
+    // Check Cart
+    const cartOrder : any = []
+    const cartName : any = []
+    let totalItem = 0
+    let hasOrder = false
+    if(!!cart && cart.length > 0){
+      await Promise.all(cart.map(async (product : any) => {
+        const item = await DB.Item.findOne({ _id: product.item }).select('name price inventory display') as IDBItem
+        if(!item) throw 'Có 1 sản phẩm không tồn tại'
+        if(!item.display || item.inventory == 0) throw `${item.name} hiện đã hết hàng`
+        if(item.inventory < product.amount) throw `${item.name} chỉ còn ${item.inventory} sản phẩm trong kho, vui lòng chọn lại số lượng`
+  
+        let itemPrice = item.price
+        if(discountPrice > 0) itemPrice = itemPrice - Math.floor(itemPrice * discountPrice / 100)
+  
+        cartOrder.push({
+          item: item._id,
+          amount: product.amount,
+          price: itemPrice
+        })
+
+        cartName.push(`${item.name} x${product.amount}`)
+  
+        const price = product.amount * itemPrice
+        totalItem = totalItem + price
+      }))
+
+      hasOrder = true
+    }
+
     // Make Total
     let total = shiftCheck.price
     if(!!lunch) total = total + config.lunch.price
     if(!!discountTime) total = total - shiftCheck.price
     if(!!discountLunch) total = total - config.lunch.price
     if(discount > 0) total = total - Math.floor(total * discount / 100)
-    total = total + pigPrice
+    if(pigPrice > 0) total = total + pigPrice
+    if(!!hasOrder) total = total + totalItem
 
     // Make Code, Token
     const countTick = await DB.Ticket.count()
@@ -108,6 +139,7 @@ export default defineEventHandler(async (event) => {
       price: {
         spot: shiftCheck.price,
         lunch: !!lunch ? config.lunch.price : 0,
+        item: totalItem,
         pig: pigPrice,
         total: total,
       },
@@ -132,6 +164,25 @@ export default defineEventHandler(async (event) => {
     // Update Spot
     await DB.LakeSpot.updateOne({ _id: spotCheck._id }, { status: 1 })
 
+    // Update Order
+    if(!!hasOrder){
+      const countOrder = await DB.TicketOrder.count()
+      const codeOrder = 'SENOD' + (countOrder > 9 ? countOrder : `0${countOrder}`) +  Math.floor(Math.random() * (99 - 10) + 10)
+      const tokenOrder = md5(`${codeOrder}-${Date.now()}`)
+
+      await DB.TicketOrder.create({
+        ticket: newTicket._id,
+        user: user._id,
+        code: codeOrder,
+        cart: cartOrder,
+        total: totalItem,
+        pay: {
+          token: tokenOrder,
+        },
+        status: 0
+      })
+    }
+
     // Log User
     await logUser({
       user: user._id,
@@ -148,12 +199,11 @@ export default defineEventHandler(async (event) => {
         » Khu vực: ${areaCheck.name} - ${spotCheck.code}
         » Khách hàng: ${user.name} - ${user.phone}
         » Cần thanh toán: ${total.toLocaleString('vi-VN')}
+        » Gọi dịch vụ: ${cartName.length > 0 ? cartName.join(' | ') : 'Không'}
         » Phương thức: ${pay_type}
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
-
-    if(!!formatDate())
 
     // Success
     if(total == 0) await verifyTicketSuccess({ code: code, money: 0 })

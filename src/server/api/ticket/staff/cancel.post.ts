@@ -22,6 +22,14 @@ export default defineEventHandler(async (event) => {
     // Cập nhật trạng thái ô câu
     await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
 
+    // Cập nhật vé có gọi thêm dịch vụ
+    if(ticket.status == 0){
+      await DB.TicketOrder.updateMany({ ticket: ticket._id }, { $set: {
+        'staff': auth._id,
+        'status': 2
+      }})
+    }
+
     // Cập nhật Miss
     if(ticket.fish.amount > 0) await DB.User.updateOne(
       { _id: ticket.user }, 

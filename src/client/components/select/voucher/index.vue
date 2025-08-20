@@ -3,7 +3,7 @@
     <DataEmpty text="Bạn không có thẻ khuyến mãi nào" :loading="loading" v-if="options.length == 0 || !!loading" />
 
     <UiFlex 
-      class="cursor-pointer rounded-2xl p-4 gap-2" 
+      class="cursor-pointer rounded-2xl p-4 gap-2 select-none" 
       v-for="item in options" :key="item._id" 
       :class="{
         'bg-gray-1000': !select || (!!select && select._id != item._id),
@@ -31,8 +31,14 @@ const select = ref(null)
 const loading = ref(true)
 
 const onSelect = (item) => {
-  select.value = item
-  valueSelect.value = item
+  if(!!select.value && select.value._id == item._id){
+    select.value = null
+    valueSelect.value = null
+  }
+  else {
+    select.value = item
+    valueSelect.value = item
+  }
 }
 
 watch(valueSelect, val => {
