@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('code lunch status cancel') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
+    if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(!!ticket.lunch.has) throw 'Vé này đã đăng ký cơm'
 
     await DB.Ticket.updateOne({ _id: ticket._id }, { 
