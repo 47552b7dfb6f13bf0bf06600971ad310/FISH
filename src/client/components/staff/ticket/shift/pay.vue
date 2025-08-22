@@ -21,7 +21,7 @@
         <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(connect.total) }} VNĐ</UiText>
       </UiFlex>
 
-      <UiFlex justify="center" v-if="!!connect.pay && !!connect.pay.qrcode">
+      <UiFlex justify="center" v-if="!!connect.pay && !!connect.pay.qrcode && connect.pay.type == 'BANK'">
         <UiImg :src="connect.pay.qrcode" class="w-[200px] md:max-w-[200px]"/>
       </UiFlex>
     </UiFlex>

@@ -19,9 +19,6 @@ export default async (now : Date)  => {
 
   if(!!config && !!config.telegram.ticket && list.length > 0) await sendTele({
     url: config.telegram.ticket,
-    message: `
-      Các Vé Câu Sắp Hết Giờ
-      ${list.join('\n')}
-    `
+    message: `Các Vé Câu Sắp Hết Giờ\n${list.join('\n')}`
   })
 }

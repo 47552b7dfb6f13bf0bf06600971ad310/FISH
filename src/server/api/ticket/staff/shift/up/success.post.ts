@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       code: connect.code,
       status: 1,
       money: connect.total
-    })
+    }, auth._id)
     
     return resp(event, { message: 'Thao tác thành công' })
   } 
