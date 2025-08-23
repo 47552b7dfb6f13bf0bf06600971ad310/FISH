@@ -1,4 +1,4 @@
-import type { IAuth, IDBTicket } from "~~/types"
+import type { IAuth, IDBLakeSpot, IDBTicket } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,11 +8,11 @@ export default defineEventHandler(async (event) => {
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code }).select('spot user') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code }).select('area spot user') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
 
-    // Cập nhật trạng thái ô câu
-    await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
+    const ticketNow = await DB.Ticket.findOne({ 'area': ticket.area, 'spot': ticket.spot, 'cancel.status': false }) as IDBTicket
+    if(!ticketNow) await DB.LakeSpot.updateOne({ _id: ticket.spot }, { status: 0 })
 
     // Xóa dữ liệu
     await DB.TicketOrder.deleteMany({ ticket: ticket._id })
