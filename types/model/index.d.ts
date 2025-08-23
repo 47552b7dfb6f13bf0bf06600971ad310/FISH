@@ -9,6 +9,7 @@ export { IDBTicket, IDBTicketConnect, IDBTicketOrder, IDBTicketFish } from './ti
 export { IDBVoucher, IDBVoucherHistory } from './voucher'
 export { IDBWheel, IDBWheelHistory } from './wheel'
 export { IDBLogUser, IDBLogAddVoucher } from './log'
+export { IDBSpend } from './spend'
 
 export interface IGlobalDB {
   Config: Model<IDBConfig>
@@ -41,4 +42,6 @@ export interface IGlobalDB {
 
   LogUser: Model<IDBLogUser>
   LogAddVoucher: Model<IDBLogAddVoucher>
+
+  Spend: Model<IDBSpend>
 }

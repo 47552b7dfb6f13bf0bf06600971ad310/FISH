@@ -9,16 +9,11 @@
         { label: 'Tổng' }
       ]" />
     </UiFlex>
-
-    <UiFlex class="mb-2 max-w-[300px] w-full">
-      <SelectUserStaff v-model="staff" class="w-full" />
-    </UiFlex>
     
-    <UiTitle name="Vé Câu" icon="i-bx-stats" class="mb-1"></UiTitle>
     <div class="grid grid-cols-12 gap-2 mb-2">
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.ticket">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-money-withdraw" size="2xl" class="mr-4" />
+          <UAvatar icon="i-mdi-ticket" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Vé Chuyển Khoản</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -29,7 +24,7 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.ticket">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-money-withdraw" size="2xl" class="mr-4" />
+          <UAvatar icon="i-mdi-ticket" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Vé Tiền Mặt</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -40,7 +35,7 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.ticket">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-money-withdraw" size="2xl" class="mr-4" />
+          <UAvatar icon="i-mdi-ticket" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Tổng Vé</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -50,7 +45,6 @@
       </UCard>
     </div>
 
-    <UiTitle name="Dịch Vụ" icon="i-bx-stats" class="mb-1"></UiTitle>
     <div class="grid grid-cols-12 gap-2 mb-2">
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.item">
         <UiFlex justify="between">
@@ -86,11 +80,10 @@
       </UCard>
     </div>
 
-    <UiTitle name="Nối Ca" icon="i-bx-stats" class="mb-1"></UiTitle>
     <div class="grid grid-cols-12 gap-2 mb-2">
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.connect">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-carbon-connect" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Nối Ca Chuyển Khoản</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -101,7 +94,7 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.connect">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-carbon-connect" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Nối Ca Tiền Mặt</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -112,7 +105,7 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.connect">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-carbon-connect" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Tổng Nối Ca</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -122,11 +115,10 @@
       </UCard>
     </div>
 
-    <UiTitle name="Tổng" icon="i-bx-stats" class="mb-1"></UiTitle>
-    <div class="grid grid-cols-12 gap-2">
+    <div class="grid grid-cols-12 gap-2 mb-2">
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-solar-money-bag-bold" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Doanh Thu Chuyển Khoản</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -137,7 +129,7 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-solar-money-bag-bold" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Doanh Thu Tiền Mặt</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
@@ -148,11 +140,46 @@
 
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
         <UiFlex justify="between">
-          <UAvatar icon="i-bx-cart-alt" size="2xl" class="mr-4" />
+          <UAvatar icon="i-solar-money-bag-bold" size="2xl" class="mr-4" />
+          <UiFlex type="col" items="end">
+            <UiText color="gray" align="right">Doanh Thu Hội Viên</UiText>
+            <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
+            <UiText v-else color="green" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.member) }}</UiText>
+          </UiFlex>
+        </UiFlex>
+      </UCard>
+    </div>
+
+    <div class="grid grid-cols-12 gap-2">
+      <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
+        <UiFlex justify="between">
+          <UAvatar icon="i-solar-money-bag-bold" size="2xl" class="mr-4" />
           <UiFlex type="col" items="end">
             <UiText color="gray" align="right">Tổng Doanh Thu</UiText>
             <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
-            <UiText v-else color="green" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.ticket.bank + data.item.bank+ data.connect.bank + data.ticket.money + data.item.money + data.connect.money) }}</UiText>
+            <UiText v-else color="green" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">{{ toMoney(data.ticket.bank + data.item.bank+ data.connect.bank + data.ticket.money + data.item.money + data.connect.money + data.member) }}</UiText>
+          </UiFlex>
+        </UiFlex>
+      </UCard>
+
+      <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
+        <UiFlex justify="between">
+          <UAvatar icon="i-bx-money-withdraw" size="2xl" class="mr-4" />
+          <UiFlex type="col" items="end">
+            <UiText color="gray" align="right">Chi Tiêu</UiText>
+            <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
+            <UiText v-else color="red" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">- {{ toMoney(data.spend) }}</UiText>
+          </UiFlex>
+        </UiFlex>
+      </UCard>
+
+      <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }">
+        <UiFlex justify="between">
+          <UAvatar icon="i-game-icons-profit" size="2xl" class="mr-4" />
+          <UiFlex type="col" items="end">
+            <UiText color="gray" align="right">Lợi Nhuận</UiText>
+            <USkeleton v-if="!!loading" class="w-28 h-7 md:h-8 xl:h-9" />
+            <UiText v-else color="pink" align="right" weight="bold" class="text-xl md:text-2xl xl:text-3xl">+ {{ toMoney(data.ticket.bank + data.item.bank+ data.connect.bank + data.ticket.money + data.item.money + data.connect.money + data.member - data.spend) }}</UiText>
           </UiFlex>
         </UiFlex>
       </UCard>
@@ -165,16 +192,24 @@ const { toMoney } = useMoney()
 
 const loading = ref(false)
 const tab = ref(0)
-const staff = ref()
 const data = ref({
-  payment: 0,
-  spend: 0,
-  signin: 0,
-  signup: 0
+  ticket: {
+    bank: 0,
+    money: 0
+  },
+  item: {
+    bank: 0,
+    money: 0
+  },
+  connect: {
+    bank: 0,
+    money: 0
+  },
+  member: 0,
+  spend: 0
 })
 
 watch(tab, () => getData())
-watch(staff, () => getData())
 
 const type = computed(() => {
   if(tab.value == 0) return 'today'
@@ -187,9 +222,8 @@ const type = computed(() => {
 const getData = async () => {
   try {
     loading.value = true
-    const get = await useAPI('statistic/fast', { 
-      type: type.value,
-      staff: staff.value
+    const get = await useAPI('statistic/lake', { 
+      type: type.value
     })
 
     data.value = get

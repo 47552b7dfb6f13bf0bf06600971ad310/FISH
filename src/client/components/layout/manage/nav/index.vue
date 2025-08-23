@@ -44,7 +44,12 @@ const menu = ref([
     { title: 'Thẻ Voucher', icon: 'i-mdi-voucher', to: `/manage/config/voucher` },
     { title: 'Vòng quay tuần', icon: 'i-mdi-wheel', to: `/manage/wheel` },
   ]},
+  { title: 'Thống kê', child: [
+    { title: 'Hồ câu', icon: 'i-mdi-lake', to: `/manage` },
+    { title: 'Nhân viên', icon: 'i-wpf-administrator', to: `/manage/statistic/staff` },
+  ]},
   { title: 'Quản lý', child: [
+    { title: 'Chi tiêu', icon: 'i-game-icons-pay-money', to: `/manage/spend` },
     { title: 'Tài khoản', icon: 'i-bx-group', to: `/manage/user` },
     { title: 'Hội viên', icon: 'i-bxs-group', to: `/manage/user/member` },
     { title: 'Vé câu', icon: 'i-mdi-ticket', to: `/manage/ticket` },

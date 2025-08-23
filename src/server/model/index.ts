@@ -10,6 +10,7 @@ import { DBTicket, DBTicketOrder, DBTicketFish, DBTicketConnect } from './ticket
 import { DBVoucher, DBVoucherHistory } from './voucher'
 import { DBWheel, DBWheelHistory } from './wheel'
 import { DBLogUser, DBLogAddVoucher } from './log'
+import { DBSpend } from './spend'
 
 
 export default (mongoose : Mongoose) : IGlobalDB => {
@@ -43,6 +44,8 @@ export default (mongoose : Mongoose) : IGlobalDB => {
     WheelHistory: DBWheelHistory(mongoose),
 
     LogUser: DBLogUser(mongoose),
-    LogAddVoucher: DBLogAddVoucher(mongoose)
+    LogAddVoucher: DBLogAddVoucher(mongoose),
+
+    Spend: DBSpend(mongoose)
   }
 }

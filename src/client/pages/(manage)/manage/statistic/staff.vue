@@ -1,6 +1,6 @@
 <template>
-  <UiContent title="Số Liệu Hồ Câu" sub="Thống kê số liệu hồ câu">
-    <ManageStatisticLake class="mb-4"/>
+  <UiContent title="Số Liệu Nhân Viên" sub="Thống kê các số liệu của nhân viên">
+    <ManageStatisticStaff class="mb-4"/>
   </UiContent>
 </template>
 
