@@ -4,9 +4,10 @@
 
     <UTable :columns="columns" :rows="list" class="BoxBlock rounded-xl">
       <template #name-data="{ row }">
-        <UiText color="rose" weight="semibold" v-if="row.percent == 0">{{ row.name }}</UiText>
-        <UiText color="green" v-else-if="row.percent < 1">{{ row.name }}</UiText>
-        <UiText v-else>{{ row.name }}</UiText>
+        <UiText color="rose" weight="semibold" v-if="row.amount == 0">{{ row.name }} </UiText>
+        <UiText color="gray" weight="semibold" :class="{
+          'Lucky': row.percent <= 10
+        }" v-else>{{ row.name }}</UiText>
       </template>
     </UTable>
   </div>

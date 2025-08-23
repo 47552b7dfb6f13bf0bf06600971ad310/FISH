@@ -6,7 +6,8 @@
     placeholder="Chọn loại quà"
     :options="[
       { label: 'Mất lượt', value: 0 },
-      { label: 'Vật phẩm ', value: 1 },
+      { label: 'Hiện vật', value: 1 },
+      { label: 'Voucher ', value: 2 },
     ]"
   >
     <template #label>
@@ -32,5 +33,6 @@ const type = computed({
 const typeFormat = {
   0: { label: 'Mất lượt' },
   1: { label: 'Vật phẩm' },
+  2: { label: 'Voucher' },
 }
 </script>

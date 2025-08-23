@@ -16,7 +16,7 @@
         :rows="list"
       > 
         <template #type-data="{ row }">
-          <UBadge variant="soft" :color="row.type == 0 ? 'rose' : 'primary'">{{ typeFormat[row.type]['label'] }}</UBadge>
+          <UBadge variant="soft" :color="row.type == 0 ? 'rose' : row.type == 1 ? 'primary' : 'green'">{{ typeFormat[row.type]['label'] }}</UBadge>
         </template>
 
         <template #amount-data="{ row }">{{ toMoney(row.amount) }}</template>
@@ -42,6 +42,10 @@
       <UForm :state="stateAdd" @submit="addAction" class="bg-card rounded-2xl p-4">
         <UFormGroup label="Loại quà">
           <SelectWheelType v-model="stateAdd.type" />
+        </UFormGroup>
+
+        <UFormGroup label="Chọn thẻ Voucher" v-if="stateAdd.type == 2">
+          <SelectVoucherManage v-model="stateAdd.voucher" />
         </UFormGroup>
 
         <UFormGroup label="Tên quà">
@@ -133,6 +137,7 @@ watch(() => page.value.sort.direction, () => getList())
 // State
 const stateAdd = ref({
   type: 1,
+  voucher: null,
   name: null,
   amount: null,
   percent: null,
@@ -152,6 +157,7 @@ const modal = ref({
 
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   type: 1,
+  voucher: null,
   name: null,
   amount: null,
   percent: null,
@@ -168,6 +174,7 @@ const loading = ref({
 const typeFormat = {
   0: { label: 'Mất lượt' },
   1: { label: 'Vật phẩm' },
+  2: { label: 'Voucher' },
 }
 
 // Actions

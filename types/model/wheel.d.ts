@@ -6,6 +6,7 @@ export interface IDBWheel {
   updatedAt: Date
 
   type: number
+  voucher: Types.ObjectId
   name: string
   amount: number
   percent: number
@@ -19,23 +20,15 @@ export interface IDBWheelHistory {
   user: Types.ObjectId
 
   type: number
+  voucher: Types.ObjectId
   name: string
   amount: number
   percent: number
 
   received: boolean
   giver: Types.ObjectId
-}
 
-export interface IDBWheelLucky {
-  _id: Types.ObjectId
-  createdAt: Date
-  updatedAt: Date
-
-  user: Types.ObjectId
-
-  type: number
-  name: string
-  amount: number
-  percent: number
+  save: {
+    () : void
+  }
 }

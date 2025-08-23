@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
 
     const num = Math.floor(user.statistic.payweek / config.wheel.price)
-    if(num <= 0) throw 'Bạn không có điểm tích lũy đủ để quy đổi vòng quay'
+    if(num <= 0) throw `Bạn không đủ ${config.wheel.price.toLocaleString('vi-VN')} điểm tích lũy tuần để quy đổi vòng quay`
 
     await DB.User.updateOne({ _id: user._id }, {
       $inc: { 'currency.wheel': num },

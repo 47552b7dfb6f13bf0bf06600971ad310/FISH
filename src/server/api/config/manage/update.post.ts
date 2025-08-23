@@ -6,13 +6,6 @@ export default defineEventHandler(async (event) => {
     if(auth.type < 3) throw 'Chỉ ADMIN mới có thể thao tác'
 
     const body = await readBody(event)
-    if(!body.time.night.start && !body.time.night.end){
-      body.time.night = {
-        start: '',
-        end: ''
-      }
-    }
-    
     await DB.Config.updateMany({}, body)
     return resp(event, { message: 'Cập nhật thành công' })
   } 

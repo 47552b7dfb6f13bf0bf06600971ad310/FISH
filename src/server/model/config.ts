@@ -44,6 +44,10 @@ export const DBConfig = (mongoose : Mongoose) => {
       night: {
         start: { type: String, default: '17:00' },
         end: { type: String, default: '06:00' },
+      },
+      ticket: {
+        start: { type: String, default: '04:00' },
+        end: { type: String, default: '20:00' },
       }
     },
     member: {

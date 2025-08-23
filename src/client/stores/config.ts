@@ -47,6 +47,10 @@ export const useConfigStore = defineStore('config', () => {
       night: {
         start: '',
         end: ''
+      },
+      ticket: {
+        start: '',
+        end: ''
       }
     },
 

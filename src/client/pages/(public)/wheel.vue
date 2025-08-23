@@ -3,7 +3,7 @@
     <UiFlex type="col" justify="center" class="mb-6">
       <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Vòng Quay May Mắn</UiText>
       <UiText color="gray" class="text-base md:text-xl mb-4" align="center">
-        Quy đổi <b class="text-primary">1</b> lượt quay với mỗi <b class="text-primary">{{ useMoney().toMoney(500000) }} VNĐ</b> chi tiêu trong tuần
+        Quy đổi <b class="text-primary">1</b> lượt quay với mỗi <b class="text-primary">{{ useMoney().toMoney(configStore.config.wheel.price) }} VNĐ</b> chi tiêu trong tuần
       </UiText>
       <div class="ribbon" v-if="!!authStore.isLogin">
         <b class="font-bold">{{ authStore.profile.currency.wheel }}</b> lượt
@@ -21,11 +21,10 @@
     </UiFlex>
 
     <UiFlex type="col" class="my-6 gap-1">
-      <UiText size="sm">
-        Bạn đang có <span class="text-yellow-500">{{ useMoney().toMoney(authStore.profile.statistic.payweek) }}</span> điểm tích lũy tuần này
+      <UiText size="sm" class="mb-4 px-16" align="center" v-if="!!wheelFuture">
+        Bạn đang dư <span class="text-yellow-500 font-semibold">{{ useMoney().toMoney(wheelFuture.money) }}</span> điểm tích lũy tuần này. Có thể quy đổi được <span class="text-yellow-500 font-semibold">{{ wheelFuture.wheel }}</span> lượt quay
       </UiText>
-      
-      <UButton icon="i-bx-plus" variant="soft" :loading="loading.add" @click="addWheel">Quy Đổi Lượt Quay</UButton>
+      <UButton icon="i-bx-plus" variant="soft" :loading="loading.add" @click="addWheel" v-if="!!wheelFuture">Quy Đổi Ngay</UButton>
       <UButton icon="i-bx-search" variant="soft" @click="view = true">Xem Giải Thưởng</UButton>
     </UiFlex>
 
@@ -35,7 +34,7 @@
         Danh sách những người nhận thưởng
       </UiText>
 
-      <DataWheelLucky class="w-full" />
+      <DataWheelHistory class="w-full" />
     </UiFlex>
 
     <UModal v-model="modal" :ui="{width: 'sm:max-w-[250px] max-w-[250px]'}">
@@ -71,6 +70,19 @@ const colors = [
 
 const size = computed(() => {
   return 350
+})
+
+const wheelFuture = computed(() => {
+  if(!authStore.isLogin) return null
+  if(!authStore.profile) return null
+  if(!authStore.profile.statistic) return null
+  if(!authStore.profile.statistic.payweek) return null
+  if(!configStore.config.wheel) return null
+  if(!configStore.config.wheel.price) return null
+  return {
+    money: authStore.profile.statistic.payweek,
+    wheel: Math.floor(authStore.profile.statistic.payweek / configStore.config.wheel.price)
+  }
 })
 
 const modal = ref(false)
@@ -240,6 +252,16 @@ onMounted(() => setTimeout(() => (initCanvas(), getList()), 1))
 
 .Slogan
   background: linear-gradient(to right,#FFFFFF 10%, #ffffff00 50%, #FFFFFF 60%)
+  background-size: auto auto
+  background-clip: border-box
+  background-size: 200% auto
+  background-clip: text
+  text-fill-color: transparent
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
+  animation: textclip 2s linear infinite
+.Lucky
+  background: linear-gradient(to right, #ffd100 10%, rgba(255, 255, 255, 0) 50%, #ffd600 60%)
   background-size: auto auto
   background-clip: border-box
   background-size: 200% auto

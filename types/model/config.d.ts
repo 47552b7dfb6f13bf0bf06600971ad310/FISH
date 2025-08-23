@@ -38,10 +38,13 @@ export interface IDBConfig {
   }
   time: {
     create: Date
-    start: Date
     delay: number
     pay: number
     night: {
+      start: string
+      end: string
+    }
+    ticket: {
       start: string
       end: string
     }
@@ -122,10 +125,13 @@ export interface IDBConfigStore {
   }
   time: {
     create: date | null
-    start: date | null
     delay: number
     pay: number
     night: {
+      start: string
+      end: string
+    }
+    ticket: {
       start: string
       end: string
     }

@@ -37,14 +37,15 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="mt-8 gap-4 w-full" justify="center">
-      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="rose" @click="modal.spot = true" v-if="!!ticket.cancel && !ticket.cancel.status">ĐỔI VỊ TRÍ</UiText>
+    <UiFlex class="mt-8 gap-6 w-full" justify="center">
+      <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="pink" @click="modal.spot = true" v-if="!!ticket.cancel && !ticket.cancel.status">ĐỔI VỊ TRÍ</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="primary" @click="modal.shift = true">NỐI CA</UiText>
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="orange" @click="addLunch" v-if="(!!ticket.lunch && !ticket.lunch.has) && (!!ticket.cancel && !ticket.cancel.status)">ĐĂNG KÝ CƠM</UiText>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-8" justify="end" v-if="!!ticket.cancel && !ticket.cancel.status">
-      <UButton color="red" @click="onCancel" :loading="loading" block>Hủy Vé Câu</UButton>
+    <UiFlex class="gap-1 mt-8" justify="center" v-if="!!ticket.cancel && !ticket.cancel.status">
+      <UButton color="purple" class="grow justify-center" @click="onCancel" :loading="loading">Kết Thúc Sớm</UButton>
+      <UButton color="red" class="grow justify-center" @click="onDel" :loading="loading">Hủy Vé Câu</UButton>
     </UiFlex>
 
     <UModal v-model="modal.spot" prevent-close>
@@ -129,6 +130,21 @@ const onCancel = async () => {
 
     loading.value = true
     await useAPI('ticket/staff/cancel', { code: props.ticket.code })
+
+    loading.value = false
+    emits('change')
+  }
+  catch(e){
+    loading.value = false
+  }
+}
+
+const onDel = async () => {
+  try {
+    if(!!loading.value) return
+
+    loading.value = true
+    await useAPI('ticket/staff/del', { code: props.ticket.code })
 
     loading.value = false
     emits('change')

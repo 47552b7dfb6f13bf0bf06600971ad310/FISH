@@ -104,13 +104,23 @@
       <template #time>
         <UCard>
           <UForm :state="state">
-            <UFormGroup label="Thời gian mở đặt vé">
+            <UFormGroup label="Bảo trì">
               <SelectDate time v-model="state.time.create" />
             </UFormGroup>
 
-            <!-- <UFormGroup label="Thời gian bắt đầu">
-              <SelectDate time v-model="state.time.start" />
-            </UFormGroup> -->
+            <UFormGroup label="Giờ đặt vé">
+              <UiFlex class="gap-1">
+                <UInput v-model="state.time.ticket.start" type="time" class="grow" />
+                <UInput v-model="state.time.ticket.end" type="time" class="grow" />
+              </UiFlex>
+            </UFormGroup>
+
+            <UFormGroup label="Giờ tính ca đêm">
+              <UiFlex class="gap-1">
+                <UInput v-model="state.time.night.start" type="time" class="grow" />
+                <UInput v-model="state.time.night.end" type="time" class="grow" />
+              </UiFlex>
+            </UFormGroup>
 
             <UFormGroup label="Thời gian chờ thanh toán (Phút)">
               <UInput v-model="state.time.pay" type="number" />
@@ -118,14 +128,6 @@
 
             <UFormGroup label="Thời gian chờ dọn đồ (Phút)">
               <UInput v-model="state.time.delay" type="number" />
-            </UFormGroup>
-
-            <UFormGroup label="Thời gian bắt đầu tính ca đêm">
-              <UInput v-model="state.time.night.start" type="time" />
-            </UFormGroup>
-
-            <UFormGroup label="Thời gian kết thúc tính ca đêm">
-              <UInput v-model="state.time.night.end" type="time" />
             </UFormGroup>
 
             <UiFlex justify="end" class="mt-4">
@@ -165,7 +167,7 @@
 </template>
 
 <script setup>
-import { SelectDate } from '#components'
+import { SelectDate, UiFlex } from '#components'
 
 const { bootConfig } = useConfigStore()
 
@@ -202,6 +204,10 @@ const state = ref({
     night: {
       start: null,
       end: null
+    },
+    ticket: {
+      start: null,
+      end: null
     }
   },
 
@@ -224,8 +230,6 @@ const menu = [
 const getConfig = async () => {
   const config = await useAPI('config/manage/get')
   state.value = Object.assign(state.value, config)
-  state.value.time.night.start = config.time.night.start
-  state.value.time.night.end = config.time.night.end
   load.value = false
 }
 

@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig, IDBUser, IDBWheel } from "~~/types"
+import type { IAuth, IDBConfig, IDBUser, IDBWheel, IDBWheelHistory } from "~~/types"
 
 const getRandomGift = (list : Array<IDBWheel>) : IDBWheel => {
   let totalPercent = 0
@@ -48,24 +48,26 @@ export default defineEventHandler(async (event) => {
     const gift = await DB.Wheel.findOneAndUpdate({ _id: resultGift._id }, { '$inc' : { amount: -1 }}, { new: true }) as IDBWheel
     if(!gift) throw 'Có lỗi xảy ra, vui lòng thử lại sau'
 
-    const historyCreate = {
+    const historyCreate : any = {
       user: user._id,
       type: gift.type,
       name: gift.name,
       amount: gift.amount,
       percent: gift.percent
     }
+    if(gift.type == 2 && !!gift.voucher) historyCreate['voucher'] = gift.voucher
 
     // History
-    await DB.WheelHistory.create(historyCreate)
-    
-    // Lucky User
-    if(gift.type != 0 && gift.percent <= 1){
-      await DB.WheelLucky.create(historyCreate)
-    }
+    const history = await DB.WheelHistory.create(historyCreate) as IDBWheelHistory
 
     // Update User
     await DB.User.updateOne({ _id: user._id }, { $inc: { 'currency.wheel': -1 }})
+    if(!!historyCreate['voucher']){
+      await DB.User.updateOne({ _id: user._id }, { $push: { vouchers: historyCreate['voucher'] } })
+      history.received = true
+      history.giver = auth._id
+      await history.save()
+    }
 
     return resp(event, { result: gift })
   } 

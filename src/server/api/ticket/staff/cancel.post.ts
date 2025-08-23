@@ -3,7 +3,7 @@ import type { IAuth, IDBTicket } from "~~/types"
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
-    if(auth.type < 3) throw 'Bạn không có quyền thao tác'
+    if(auth.type < 1) throw 'Bạn không có quyền thao tác'
 
     const { code } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
@@ -31,11 +31,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // Cập nhật Miss
-    if(ticket.fish.amount > 0) await DB.User.updateOne(
+    if(ticket.status != 0 && ticket.fish.amount > 0) await DB.User.updateOne(
       { _id: ticket.user }, 
       { $set: { 'statistic.miss': 0 }}
     )
-    if(ticket.fish.amount <= 0 && ticket.status == 3) await DB.User.updateOne(
+    if(ticket.status != 0 && ticket.fish.amount <= 0 && ticket.status == 3) await DB.User.updateOne(
       { _id: ticket.user }, 
       { $inc: { 'statistic.miss': 1 }}
     )

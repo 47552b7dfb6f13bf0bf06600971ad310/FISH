@@ -1,23 +1,5 @@
 import { IDBConfig } from "~~/types"
 
-function toMinutes(hhmm : any) {
-  const [h, m] = hhmm.split(":").map(Number);
-  return h * 60 + m;
-}
-
-function isInNight(startStr : any, endStr : any) {
-  const now = new Date();
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-  const start = toMinutes(startStr);
-  const end = toMinutes(endStr);
-
-  if (start < end) {
-    return nowMinutes >= start && nowMinutes < end;
-  } else {
-    return nowMinutes >= start || nowMinutes < end;
-  }
-}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -32,7 +14,7 @@ export default defineEventHandler(async (event) => {
     const startNight = config.time.night.start
     const endNight = config.time.night.end
     if(!!startNight && !!endNight){
-      const isNight = isInNight(startNight, endNight)
+      const isNight = isInTime(startNight, endNight)
       if(!!isNight) match['isNight'] = true
     }
 

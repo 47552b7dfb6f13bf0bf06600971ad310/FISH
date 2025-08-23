@@ -22,7 +22,7 @@
         </template>
 
         <template #type-data="{ row }">
-          <UBadge variant="soft" :color="row.type == 0 ? 'rose' : 'primary'">{{ typeFormat[row.type]['label'] }}</UBadge>
+          <UBadge variant="soft" :color="row.type == 0 ? 'rose' : row.type == 1 ? 'primary' : 'green'">{{ typeFormat[row.type]['label'] }}</UBadge>
         </template>
 
         <template #amount-data="{ row }">{{ toMoney(row.amount) }}</template>
@@ -106,6 +106,7 @@ const loading = ref({
 const typeFormat = {
   0: { label: 'Mất lượt' },
   1: { label: 'Vật phẩm' },
+  2: { label: 'Voucher' },
 }
 
 // Fetch

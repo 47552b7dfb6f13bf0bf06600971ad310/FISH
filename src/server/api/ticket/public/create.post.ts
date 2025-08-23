@@ -19,6 +19,10 @@ export default defineEventHandler(async (event) => {
       const create = DayJS(config.time.create).unix()
       if(now < create) throw 'Chưa tới thời gian mở bán vé'
     }
+    if(!!config.time.ticket.start && !!config.time.ticket.end){
+      const isOpenLake = isInTime(config.time.ticket.start, config.time.ticket.end)
+      if(!isOpenLake) throw 'Hồ câu chưa mở, vui lòng quay lại sau'
+    }
 
     const user = await DB.User.findOne({ _id: auth._id }).select('name phone member vouchers statistic') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'

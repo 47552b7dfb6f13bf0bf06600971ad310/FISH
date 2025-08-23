@@ -58,7 +58,7 @@ watch(() => page.value.sort.direction, () => getList())
 const getList = async () => {
   try {
     loading.value = true
-    const data = await useAPI('wheel/public/lucky', JSON.parse(JSON.stringify(page.value)))
+    const data = await useAPI('wheel/public/history', JSON.parse(JSON.stringify(page.value)))
     
     list.value = data.list
     page.value.total = data.total

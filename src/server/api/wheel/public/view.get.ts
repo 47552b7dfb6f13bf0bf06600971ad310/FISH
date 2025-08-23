@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   try {
-    const list = await DB.Wheel.find({ type: 1 })
-    .sort({ percent: 'desc' })
+    const list = await DB.Wheel.find({ type: { $gt: 0 } })
+    .sort({ percent: 'asc' })
     return resp(event, { result: list })
   } 
   catch (e:any) {
