@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
     if(spot.status > 0) throw 'Ô này đã có người đặt'
 
     ticket.spot = spot._id
+    ticket.area = spot.area
     spot.status = nowSpot.status
     nowSpot.status = 0
 
