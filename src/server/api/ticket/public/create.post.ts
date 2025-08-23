@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser, IDBVoucher, IDBItem } from "~~/types"
+import type { IAuth, IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser, IDBVoucher, IDBItem, IDBTicketOrder } from "~~/types"
 import md5 from "md5"
 
 export default defineEventHandler(async (event) => {
@@ -187,7 +187,7 @@ export default defineEventHandler(async (event) => {
       const codeOrder = 'SENOD' + (countOrder > 9 ? countOrder : `0${countOrder}`) +  Math.floor(Math.random() * (99 - 10) + 10)
       const tokenOrder = md5(`${codeOrder}-${Date.now()}`)
 
-      await DB.TicketOrder.create({
+      const newOrder = await DB.TicketOrder.create({
         ticket: newTicket._id,
         user: user._id,
         code: codeOrder,
@@ -197,7 +197,10 @@ export default defineEventHandler(async (event) => {
           token: tokenOrder,
         },
         status: 0
-      })
+      }) as IDBTicketOrder
+
+      newTicket.withOrder = newOrder._id
+      await newTicket.save()
     }
 
     // Log User

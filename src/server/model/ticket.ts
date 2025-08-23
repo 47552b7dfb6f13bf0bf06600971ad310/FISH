@@ -65,6 +65,8 @@ export const DBTicket = (mongoose : Mongoose) => {
     },
 
     status: { type: Number, default: 0 }, // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
+
+    withOrder: { type: mongoose.Schema.Types.ObjectId, ref: 'TicketOrder', index: true },
   }, {
     timestamps: true
   })

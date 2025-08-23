@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if(!orderCode) throw 'Không tìm mã giao dịch'
     if(!pay_type) throw "Vui lòng chọn phương thức thanh toán"
 
-    const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('user code cancel') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('user code cancel price withOrder') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
 
@@ -47,13 +47,13 @@ export default defineEventHandler(async (event) => {
     }))
 
     // Update Ticket
-    await DB.Ticket.updateOne({ _id: ticket._id }, { $inc: { 
+    if(ticket.withOrder.toString() != order._id.toString() && order.total > 0) await DB.Ticket.updateOne({ _id: ticket._id }, { $inc: { 
       'price.total': order.total,
       'price.item': order.total,
     }})
 
     // Update User Statistic
-    if(order.total > 0) await DB.User.updateOne({ _id: ticket.user }, { $inc: {
+    if(ticket.withOrder.toString() != order._id.toString() && order.total > 0) await DB.User.updateOne({ _id: ticket.user }, { $inc: {
       'statistic.pay': order.total,
       'statistic.payweek': order.total,
     }})

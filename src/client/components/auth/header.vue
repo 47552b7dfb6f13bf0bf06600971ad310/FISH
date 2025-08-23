@@ -45,6 +45,14 @@ const menuUser = computed(() => {
     })
   }
 
+  // if(authStore.profile.type > 0){
+  //   list.push({
+  //     label: 'Giao ca',
+  //     icon: 'i-material-symbols-assignment',
+  //     click: () => navigateTo('/staff/giaoca')
+  //   })
+  // }
+
   return [
     ...list,
     {

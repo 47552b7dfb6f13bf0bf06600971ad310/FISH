@@ -68,6 +68,8 @@ export interface IDBTicket {
 
   status: number // 0: Pay Waiting, 1: Pay Success, 2: Start, 3: Before End, 4: End
 
+  withOrder: Types.ObjectId
+
   save: {
     () : void
   }
