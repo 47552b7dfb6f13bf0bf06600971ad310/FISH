@@ -4,16 +4,20 @@
 
     <UTable v-model:sort="page.sort" :columns="columns" :rows="list" class="BoxBlock rounded-xl">
       <template #user-data="{ row }">
-        {{ row.user.name }}
+        {{ row.user ? row.user.name : 'Không xác định' }}
+      </template>
+
+      <template #name-data="{ row }">
+        <UiText color="yellow" weight="semibold">{{ row.name }}</UiText>
       </template>
 
       <template #createdAt-data="{ row }">
-        {{ useDayJs().displayFull(row.createdAt) }}
+        {{ useDayJs().fromTime(row.createdAt) }}
       </template>
     </UTable>
 
-    <UiFlex justify="end" class="mt-4">
-      <UPagination class="ml-auto" v-model="page.current" :page-count="page.size" :total="page.total" :max="5" />
+    <UiFlex justify="center" class="mt-4">
+      <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="5" size="xs" />
     </UiFlex>
   </div>
 </template>
@@ -27,7 +31,7 @@ const list = ref([])
 const columns = [
   {
     key: 'user',
-    label: 'Tài khoản',
+    label: 'Khách',
   },{
     key: 'name',
     label: 'Phần thưởng',
@@ -38,7 +42,7 @@ const columns = [
 ]
 
 const page = ref({
-  size: 5,
+  size: 10,
   current: 1,
   sort: {
     column: 'createdAt',

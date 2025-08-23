@@ -1,5 +1,5 @@
 <template>
-  <UiFlex type="col" justify="center" class="w-full max-w-[800px] mx-auto px-4">
+  <UiFlex type="col" justify="center" class="w-full px-4">
     <UiFlex type="col" justify="center" class="mb-6">
       <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Vòng Quay May Mắn</UiText>
       <UiText color="gray" class="text-base md:text-xl mb-4" align="center">
@@ -21,20 +21,22 @@
     </UiFlex>
 
     <UiFlex type="col" class="my-6 gap-1">
+      <UiText size="sm">
+        Bạn đang có <span class="text-yellow-500">{{ useMoney().toMoney(authStore.profile.statistic.payweek) }}</span> điểm tích lũy tuần này
+      </UiText>
+      
       <UButton icon="i-bx-plus" variant="soft" :loading="loading.add" @click="addWheel">Quy Đổi Lượt Quay</UButton>
       <UButton icon="i-bx-search" variant="soft" @click="view = true">Xem Giải Thưởng</UButton>
     </UiFlex>
 
-    <!-- <UiFlex type="col" justify="center" class="mt-24 mb-6">
-      <UiText weight="bold" align="center" class="text-3xl md:text-5xl md:mb-3 mb-2 Slogan">Lucky</UiText>
+    <UiFlex type="col" justify="center" class="w-full mt-10">
+      <UiText weight="bold" align="center" class="uppercase text-[1.5rem] md:text-[2rem] mb-2 Slogan">Trúng Thưởng</UiText>
       <UiText color="gray" class="text-sm md:text-lg mb-1" align="center">
-        Danh sách những người may mắn
+        Danh sách những người nhận thưởng
       </UiText>
-    </UiFlex>
 
-    <div class="w-full max-w-[800px]">
-      <DataWheelLucky />
-    </div> -->
+      <DataWheelLucky class="w-full" />
+    </UiFlex>
 
     <UModal v-model="modal" :ui="{width: 'sm:max-w-[250px] max-w-[250px]'}">
       <UiFlex type="col" class="bg-card rounded-2xl py-12 px-4 cursor-pointer" justify="center" v-if="gift" @click="modal = false">

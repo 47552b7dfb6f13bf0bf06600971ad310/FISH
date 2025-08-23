@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     const sorting : any = { }
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
-    const match : any = { percent: { $lt: 3 } }
+    const match : any = { type: { $ne: 0 }}
+    // const match : any = { percent: { $lt: 3 } }
 
     const list = await DB.WheelHistory
     .find(match)

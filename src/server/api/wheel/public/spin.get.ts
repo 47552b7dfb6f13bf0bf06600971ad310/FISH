@@ -1,4 +1,4 @@
-import type { IAuth, IDBUser, IDBWheel } from "~~/types"
+import type { IAuth, IDBConfig, IDBUser, IDBWheel } from "~~/types"
 
 const getRandomGift = (list : Array<IDBWheel>) : IDBWheel => {
   let totalPercent = 0
@@ -31,6 +31,10 @@ const getRandomGift = (list : Array<IDBWheel>) : IDBWheel => {
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
+
+    const config = await DB.Config.findOne().select('wheel') as IDBConfig
+    if(!config) throw 'Hệ thống hiện tại chưa sẵn sàng'
+    if(!config.wheel.start) throw 'Vòng quay hiện tại chưa mở'
 
     const user = await DB.User.findOne({ _id: auth._id }).select('currency') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'

@@ -1,6 +1,6 @@
 <template>
-  <div v-if="!!show">
-    <UButton color="green"  class="w-[250px] justify-center" size="xl" icon="i-mdi-download" @click="modal = true">TẢI ỨNG DỤNG</UButton>
+  <div>
+    <UButton color="green" class="w-full justify-center" size="xl" icon="i-mdi-download" @click="action">TẢI ỨNG DỤNG</UButton>
 
     <UModal v-model="modal" preventClose :ui="{ width: 'sm:max-w-[400px]' }">
       <UiContent title="Tải Ứng Dụng" sub="Chọn hệ điều hành của bạn" class="bg-card rounded-2xl p-4">
@@ -48,7 +48,11 @@
 const configStore = useConfigStore()
 const iosPWA = ref(false)
 const modal = ref(false)
-const show = ref(true)
+
+const action = () => {
+  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return useNotify('Bạn đã tải ứng dụng rồi')
+  modal.value = true
+}
 
 const downloadAndroid = async () => {
   if(!!configStore.installPrompt){
@@ -61,7 +65,4 @@ const downloadAndroid = async () => {
   }
 }
 
-onMounted(() => {
-  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) show.value = false
-})
 </script>
