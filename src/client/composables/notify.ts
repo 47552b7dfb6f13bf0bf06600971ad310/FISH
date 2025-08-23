@@ -21,5 +21,15 @@ export const useNotify = () => {
     })
   }
 
-  return { error, success }
+  function info(text : string) {
+    toast.add({
+      title: 'Thông báo',
+      color: 'yellow',
+      icon: 'i-bxs-info-square',
+      description: text,
+      timeout: 5000
+    })
+  }
+
+  return { error, success, info }
 }

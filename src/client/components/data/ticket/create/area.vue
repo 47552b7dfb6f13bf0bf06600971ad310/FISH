@@ -8,7 +8,7 @@
     <DataEmpty text="Không có dữ liệu khu vực" class="min-h-[300px]" :loading="loading" v-if="!!loading || list.length == 0" />
 
     <UiFlex type="col" class="gap-2" v-else>
-      <UiFlex type="col" v-for="area in list" :key="area._id" class="bg-gray-1000 w-full rounded-2xl overflow-hidden">
+      <UiFlex type="col" v-for="area in list" :key="area._id" class="bg-gray-1000 w-full rounded-2xl overflow-hidden cursor-pointer" @click="select(area)">
         <UiImg :src="area.image" w="16" h="9" class="w-full" />
         <UiFlex class="w-full p-4 gap-4">
           <div class="mr-auto">

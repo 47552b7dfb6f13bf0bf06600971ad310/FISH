@@ -45,6 +45,9 @@ const isOpenBook = computed(() => {
 
 const toCreate = () => {
   if(!isOpenBook.value) return useNotify().error('Hồ câu chưa mở, vui lòng quay lại sau')
-  else navigateTo('/create')
+  else {
+    useNotify().info('Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ')
+    navigateTo('/create')
+  }
 }
 </script>

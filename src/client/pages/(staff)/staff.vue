@@ -19,7 +19,7 @@ const tabRoute = {
   '/staff': 0,
   '/staff/order': 1,
   '/staff/lunch': 2,
-  '/staff/connect': 3,
+  '/staff/connect': 3
 }
 const tab = ref(tabRoute[route.fullPath])
 const tabs = [

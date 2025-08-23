@@ -7,6 +7,11 @@
       </UiFlex>
 
       <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.start">
+        <UiText weight="semibold" color="gray" size="sm">Ngày tạo</UiText>
+        <UiText weight="semibold" size="sm" color="gray">{{ useDayJs().displayFull(ticket.createdAt) }}</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.start">
         <UiText weight="semibold" color="gray" size="sm">Bắt đầu</UiText>
         <UiText weight="semibold" size="sm" color="green">{{ useDayJs().displayFull(ticket.time.start) }}</UiText>
       </UiFlex>

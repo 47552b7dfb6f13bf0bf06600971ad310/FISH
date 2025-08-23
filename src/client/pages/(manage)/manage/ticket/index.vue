@@ -111,6 +111,10 @@ const columns = [
     key: 'status',
     label: 'Trạng thái',
     sortable: true
+  },{
+    key: 'createdAt',
+    label: 'Ngày tạo',
+    sortable: true
   }
 ]
 const selectedColumns = ref([...columns])
