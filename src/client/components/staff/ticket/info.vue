@@ -43,7 +43,7 @@
       <UiText size="sm" align="center" weight="semibold" class="cursor-pointer " color="orange" @click="addLunch" v-if="(!!ticket.lunch && !ticket.lunch.has) && (!!ticket.cancel && !ticket.cancel.status)">ĐĂNG KÝ CƠM</UiText>
     </UiFlex>
 
-    <UiFlex class="gap-1 mt-8" justify="center" v-if="!!ticket.cancel && !ticket.cancel.status">
+    <UiFlex class="gap-1 mt-8" justify="center">
       <UButton color="purple" class="grow justify-center" @click="onCancel" :loading="loading">Kết Thúc Sớm</UButton>
       <UButton color="red" class="grow justify-center" @click="onDel" :loading="loading">Hủy Vé Câu</UButton>
     </UiFlex>
