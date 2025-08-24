@@ -16,5 +16,6 @@ node_modules
 image-*
 excel-*
 json-*
+package-lock.json
 
 
