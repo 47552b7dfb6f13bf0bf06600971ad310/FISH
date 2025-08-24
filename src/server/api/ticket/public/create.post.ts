@@ -218,6 +218,7 @@ export default defineEventHandler(async (event) => {
         Vé Câu Mới Được Tạo
         » Mã vé: ${code}
         » Khu vực: ${areaCheck.name} - ${spotCheck.code}
+        » Ca đăng ký: ${shiftCheck.duration} tiếng
         » Khách hàng: ${user.name} - ${user.phone}
         » Cần thanh toán: ${total.toLocaleString('vi-VN')}
         » Gọi dịch vụ: ${cartName.length > 0 ? cartName.join(' | ') : 'Không'}
@@ -225,6 +226,9 @@ export default defineEventHandler(async (event) => {
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
+
+    // Talk
+    await talk([`${areaCheck.name}`, `${spotCheck.code}`, 'tạo vé mới', `ca${shiftCheck.duration}`, `thanh toán ${pay_type=='BANK' ? 'chuyển khoản' : 'tiền mặt'}`])
 
     // Success
     if(total == 0) await verifyTicketSuccess({ code: code, money: 0 })

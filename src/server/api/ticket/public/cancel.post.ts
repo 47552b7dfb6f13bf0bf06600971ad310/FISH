@@ -1,4 +1,4 @@
-import type { IAuth, IDBConfig, IDBTicket } from "~~/types"
+import type { IAuth, IDBConfig, IDBTicket, IDBLakeArea, IDBLakeSpot } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,10 +9,16 @@ export default defineEventHandler(async (event) => {
     const config = await DB.Config.findOne({}).select('telegram') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
 
-    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('user cancel status code spot') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code, user: auth._id }).select('area spot user cancel status code spot') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé câu'
     if(ticket.status > 0) throw 'Không thể hủy vé câu đã thanh toán'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
+
+    const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('name') as IDBLakeArea
+    if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
+
+    const spotCheck = await DB.LakeSpot.findOne({ _id: ticket.spot }).select('code') as IDBLakeSpot
+    if(!spotCheck) throw 'Không tìm thấy dữ liệu ô câu'
 
     // Cập nhật trạng thái vé câu
     await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
@@ -40,6 +46,9 @@ export default defineEventHandler(async (event) => {
       type: 'ticket.cancel',
       action: `Hủy thanh toán vé câu <b>${ticket.code}</b>`,
     })
+
+    // Talk
+    await talk([`${areaCheck.name}`, `${spotCheck.code}`, 'đã hủy', 'bởi', 'khách hàng'])
 
     return resp(event, { message: `Đã hủy vé ${ticket.code}` })
   } 

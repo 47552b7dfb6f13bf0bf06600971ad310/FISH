@@ -103,6 +103,8 @@ export default defineEventHandler(async (event) => {
       `
     })
 
+    await talk([`${areaCheck.name}`, `${spotCheck.code}`, 'gọi dịch vụ'])
+
     return resp(event, { message: 'Gọi dịch vụ thành công' })
   } 
   catch (e:any) {

@@ -85,6 +85,8 @@ export default defineEventHandler(async (event) => {
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
+
+    await talk([`${area.name}`, `${spot.code}`, 'đăng ký nối ca', `ca${newShift.duration}`, `thanh toán ${pay_type=='BANK' ? 'chuyển khoản' : 'tiền mặt'}`])
     
     return resp(event, { result: order })
   } 

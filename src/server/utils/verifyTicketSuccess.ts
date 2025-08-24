@@ -106,6 +106,9 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
     `
   })
 
+  // Talk
+  await talk([`${areaCheck.name}`, `${spotCheck.code}`, 'đã thanh toán và bắt đầu câu'])
+
   // Update Lake Info
   await socketUpdateLakeInfo()
 }

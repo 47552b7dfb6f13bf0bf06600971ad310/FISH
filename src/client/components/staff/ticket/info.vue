@@ -23,7 +23,7 @@
 
       <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.end">
         <UiText weight="semibold" color="gray" size="sm">Kết thúc</UiText>
-        <UiText weight="semibold" size="sm" color="rose">{{ useDayJs().displayFull(ticket.time.end) }}</UiText>
+        <UiText weight="semibold" size="sm" class="cursor-pointer" color="rose" @click="modal.time = true">{{ useDayJs().displayFull(ticket.time.end) }}</UiText>
       </UiFlex>
 
       <UiFlex justify="between" class="w-full">
@@ -77,6 +77,15 @@
         <StaffTicketShiftUp :ticket="ticket" @done="onChangeShift" @close="modal.shift = false" />
       </UiContent>
     </UModal>
+
+    <UModal v-model="modal.time" prevent-close :ui="{width: 'sm:max-w-xs max-w-xs'}">
+      <UiContent title="Thời gian kết thúc" sub="Thao tác thêm thời gian kết thúc" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.time = false"></UButton>
+        </template>
+
+      </UiContent>
+    </UModal>
   </div>
 </template>
 
@@ -88,7 +97,8 @@ const loading = ref(false)
 
 const modal = ref({
   spot: false,
-  shift: false
+  shift: false,
+  time: false
 })
 
 const statusTicket = {

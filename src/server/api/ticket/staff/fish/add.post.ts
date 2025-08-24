@@ -1,4 +1,4 @@
-import type { IAuth, IDBFish, IDBFishCategory, IDBLakeArea, IDBTicket } from "~~/types"
+import type { IAuth, IDBFish, IDBFishCategory, IDBLakeSpot, IDBLakeArea, IDBTicket } from "~~/types"
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
@@ -12,10 +12,16 @@ export default defineEventHandler(async (event) => {
     if(!kg) throw 'Vui lòng thêm cân nặng ước tính'
     if(!isNumber(kg) || kg < 1) throw 'Cân nặng không hợp lệ'
 
-    const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('area code user cancel status') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('area spot code user cancel status') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
     if(!!ticket.cancel.status) throw 'Vé này đã bị hủy'
     if(ticket.status != 2) throw 'Vé này không còn khả dụng'
+
+    const areaCheck = await DB.LakeArea.findOne({ _id: ticket.area }).select('name') as IDBLakeArea
+    if(!areaCheck) throw 'Không tìm thấy dữ liệu khu vực'
+
+    const spotCheck = await DB.LakeSpot.findOne({ _id: ticket.spot }).select('code') as IDBLakeSpot
+    if(!spotCheck) throw 'Không tìm thấy dữ liệu ô câu'
 
     const categoryFish = await DB.FishCategory.findOne({ _id: category }).select('_id') as IDBFishCategory
     if(!categoryFish) throw 'Không tìm thấy dữ liệu loại cá'
@@ -61,6 +67,9 @@ export default defineEventHandler(async (event) => {
 
     // Update Lake Info
     await socketUpdateLakeInfo()
+
+    // Talk
+    talk([`${areaCheck.name}`, `${spotCheck.code}`, 'báo cá'])
 
     return resp(event, { message: 'Thao tác thành công' })
   } 

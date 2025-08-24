@@ -46,6 +46,8 @@ export default defineEventHandler(async (event) => {
         » Thời gian: ${timeFormat.day}/${timeFormat.month}/${timeFormat.year} - ${timeFormat.hour}:${timeFormat.minute}
       `
     })
+
+    await talk([`${areaCheck.name}`, `${nowSpot.code}`, 'đổi vị trí', 'sang', `${spot.code}`])
     
     return resp(event, { result: ticket })
   } 
