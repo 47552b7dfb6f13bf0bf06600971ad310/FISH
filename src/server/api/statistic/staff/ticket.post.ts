@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const sorting : any = {}
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
-    const match : any = { 'pay.staff': staff }
+    const match : any = { 'pay.staff': staff, 'pay.complete': true }
     if(!!area) match['area'] = area
     if(!!search.key){
       if(search.by == 'USER'){
