@@ -68,7 +68,7 @@
 
     <UiFlex class="mt-4" type="col" v-if="ticket.status == 0">
       <UFormGroup label="Thời gian vào thực tế" class="w-full">
-        <UInput v-model="start" type="time" />
+        <SelectDate time v-model="start" />
       </UFormGroup>
 
       <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
@@ -82,7 +82,7 @@ const emits = defineEmits(['reload'])
 
 const loading = ref(false)
 
-const start = ref()
+const start = ref(null)
 
 const paySuccess = async () => {
   try {
@@ -102,11 +102,6 @@ onMounted(() => {
   if(!props.ticket.time) return null
   if(!props.ticket.time.start) return null
 
-  const date = new Date(props.ticket.time.start)
-  const hours = String(date.getHours()).padStart(2, "0")
-  const minutes = String(date.getMinutes()).padStart(2, "0")
-  const timeForInput = `${hours}:${minutes}`
-
-  start.value = timeForInput
+  start.value = props.ticket.time.start
 })
 </script>

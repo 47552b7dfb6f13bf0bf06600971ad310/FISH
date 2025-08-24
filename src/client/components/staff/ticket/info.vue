@@ -84,6 +84,15 @@
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.time = false"></UButton>
         </template>
 
+        <UFormGroup>
+          <USelectMenu size="lg" v-model="timeend" :options="timeends" />
+        </UFormGroup>
+
+        <UiFlex class="gap-1">
+          <UButton color="green" class="grow justify-center" @click="addTimeEnd">Cộng</UButton>
+          <UButton color="rose" class="grow justify-center" @click="minusTimeEnd">Trừ</UButton>
+        </UiFlex>
+        
       </UiContent>
     </UModal>
   </div>
@@ -109,6 +118,20 @@ const statusTicket = {
   4: { label: 'Kết thúc', color: 'red' },
 }
 
+const timeend = ref()
+const timeends = [
+  0.5,
+  1,1.5,
+  2,2.5,
+  3,3.5,
+  4,4.5,
+  5,5.5,
+  6,6.5,
+  7,7.5,
+  8,8.5,
+  9,9.5,
+  10,10.5
+]
 
 const statusLunch = computed(() => {
   if(!props.ticket) return null
@@ -171,6 +194,26 @@ const onDel = async () => {
   }
   catch(e){
     loading.value = false
+  }
+}
+
+const addTimeEnd = async () => {
+  try {
+    await useAPI('ticket/staff/time/add', { code: props.ticket.code, add: timeend.value })
+    modal.value.time = false
+    emits('reload')
+  }
+  catch(e){
+  }
+}
+
+const minusTimeEnd = async () => {
+  try {
+    await useAPI('ticket/staff/time/minus', { code: props.ticket.code, minus: timeend.value })
+    modal.value.time = false
+    emits('reload')
+  }
+  catch(e){
   }
 }
 

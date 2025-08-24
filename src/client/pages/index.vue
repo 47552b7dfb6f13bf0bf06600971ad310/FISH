@@ -13,11 +13,21 @@
 
     <DataLake class="my-4"/>
     <DataRank class="my-4" />
+
+    <UModal v-model="modal" prevent-close :ui="{width: 'max-w-[300px]'}">
+      <UiFlex type="col" justify="center" class="bg-card rounded-2xl p-6">
+        <UiIcon name="i-bxs-info-circle" size="20" color="yellow" class="mb-4" />
+        <UiText weight="bold" align="center" size="3xl" class="mb-2">CHÚ Ý</UiText>
+        <UiText color="gray" align="center" class="mb-4">Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ</UiText>
+        <UButton color="gray" @click="navigateTo('/create')">Tôi Đồng Ý</UButton>
+      </UiFlex>
+    </UModal>
   </div>
 </template>
 
 <script setup>
 const configStore = useConfigStore()
+const modal = ref(false)
 
 const isOpenBook = computed(() => {
   if(!configStore.config.time.ticket) return true
@@ -45,9 +55,6 @@ const isOpenBook = computed(() => {
 
 const toCreate = () => {
   if(!isOpenBook.value) return useNotify().error('Hồ câu chưa mở, vui lòng quay lại sau')
-  else {
-    useNotify().info('Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ')
-    navigateTo('/create')
-  }
+  else modal.value = true
 }
 </script>

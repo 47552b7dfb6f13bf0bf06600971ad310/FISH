@@ -29,7 +29,7 @@
     </UFormGroup>
 
     <UFormGroup label="Thời gian vào thực tế">
-      <UInput v-model="state.start" type="time" />
+      <SelectDate time v-model="state.start" />
     </UFormGroup>
 
     <UFormGroup>

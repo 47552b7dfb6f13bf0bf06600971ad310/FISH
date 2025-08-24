@@ -10,14 +10,10 @@ export default defineEventHandler(async (event) => {
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('price time pay') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé'
-    if(ticket.pay.type == 'BANK') throw 'Vé chuyển khoản, vui lòng đưa QR cho khách để quyét, hệ thống tự động xác nhận'
+    if(auth.type < 2 && ticket.pay.type == 'BANK') throw 'Vé chuyển khoản, vui lòng đưa QR cho khách để quyét, hệ thống tự động xác nhận'
 
     if(!!start){
-      const today = DayJS()
-      const [hours, minutes] = start.split(":")
-      if(!hours || !minutes) throw 'Định dạng thời gian không đúng'
-      const timeStartFormat = today.hour(parseInt(hours)).minute(parseInt(minutes)).second(0)
-      ticket.time.start = timeStartFormat.toDate()
+      ticket.time.start = start
       await ticket.save()
     }
 

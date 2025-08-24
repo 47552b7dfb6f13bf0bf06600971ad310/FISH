@@ -16,11 +16,6 @@ export default defineEventHandler(async (event) => {
     const config = await DB.Config.findOne({}).select('lunch gate member time miss telegram') as IDBConfig
     if(!config) throw 'Hệ thống đang gặp sự cố, vui lòng thử lại sau'
     if(!config.gate.qr) throw 'Hệ thống thanh toán chưa sẵn sàng, vui lòng thử lại sau'
-    if(!!config.time.create){
-      const now = DayJS(Date.now()).unix()
-      const create = DayJS(config.time.create).unix()
-      if(now < create) throw 'Chưa tới thời gian mở bán vé'
-    }
 
     const user = await DB.User.findOne({ phone: phone }).select('name phone statistic') as IDBUser
     if(!user) throw 'Không tìm thấy thông tin tài khoản'
@@ -112,16 +107,6 @@ export default defineEventHandler(async (event) => {
     const timePay = new Date(timeNow.getTime() + config.time.pay * 60 * 1000)
     const timeFormat = formatDate(timeNow)
 
-    // Set Start
-    let startTime : any = null
-    if(!!start){
-      const today = DayJS()
-      const [hours, minutes] = start.split(":")
-      if(!hours || !minutes) throw 'Định dạng thời gian không đúng'
-      const timeStartFormat = today.hour(parseInt(hours)).minute(parseInt(minutes)).second(0)
-      startTime = timeStartFormat.toDate()
-    }
-
     // Create
     const newTicket = await DB.Ticket.create({
       user: user._id,
@@ -133,7 +118,7 @@ export default defineEventHandler(async (event) => {
         has: !!lunch ? true : false,
       },
       time: {
-        start: startTime || null,
+        start: start || null,
         pay: timePay,
       },
       price: {
