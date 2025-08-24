@@ -65,12 +65,34 @@ const show = computed(() => {
 </script>
 
 <style lang="sass">
+:root
+  --vc-gray-50: rgb(var(--color-gray-50))
+  --vc-gray-100: rgb(var(--color-gray-100))
+  --vc-gray-200: rgb(var(--color-gray-200))
+  --vc-gray-300: rgb(var(--color-gray-300))
+  --vc-gray-400: rgb(var(--color-gray-400))
+  --vc-gray-500: rgb(var(--color-gray-500))
+  --vc-gray-600: rgb(var(--color-gray-600))
+  --vc-gray-700: rgb(var(--color-gray-700))
+  --vc-gray-800: rgb(var(--color-gray-800))
+  --vc-gray-900: rgb(var(--color-gray-900))
+  --vc-accent-50: rgb(var(--color-primary-50))
+  --vc-accent-100: rgb(var(--color-primary-100))
+  --vc-accent-200: rgb(var(--color-primary-200))
+  --vc-accent-300: rgb(var(--color-primary-300))
+  --vc-accent-400: rgb(var(--color-primary-400))
+  --vc-accent-500: rgb(var(--color-primary-500))
+  --vc-accent-600: rgb(var(--color-primary-600))
+  --vc-accent-700: rgb(var(--color-primary-700))
+  --vc-accent-800: rgb(var(--color-primary-800))
+  --vc-accent-900: rgb(var(--color-primary-900))
+  
+
+.vc-time-select-group
+  --vc-time-select-group-bg: rgb(var(--color-gray-900))
+  
 .vc-date-picker-content
-  background: #fff
+  background: radial-gradient(72.12% 50% at 50% 0, rgba(26, 168, 229, 0.2) 0, transparent 100%), linear-gradient(173deg, #18223380 1.04%, #0a132580 94.54%), #000 !important
   border-radius: 12px
-  border-color: rgb(var(--color-gray-300))
-.dark
-  .vc-date-picker-content
-    background: rgb(var(--color-gray-900))
-    border-color: rgb(var(--color-gray-700))
+  box-shadow: 0 0 10px 10px rgba(0,0,0,0.5)
 </style>
