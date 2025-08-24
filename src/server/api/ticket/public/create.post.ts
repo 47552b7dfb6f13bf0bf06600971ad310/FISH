@@ -195,6 +195,7 @@ export default defineEventHandler(async (event) => {
         total: totalItem,
         pay: {
           token: tokenOrder,
+          type: pay_type
         },
         status: 0
       }) as IDBTicketOrder

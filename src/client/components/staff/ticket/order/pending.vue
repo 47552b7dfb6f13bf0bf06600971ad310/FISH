@@ -54,7 +54,7 @@ const emits = defineEmits(['done'])
 
 const successing = ref(false)
 const canceling = ref(false)
-const pay_type = ref(null)
+const pay_type = ref(props.order?.pay?.type)
 
 const minus = (item) => {
   return 

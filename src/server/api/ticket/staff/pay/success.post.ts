@@ -8,8 +8,9 @@ export default defineEventHandler(async (event) => {
     const { code, start } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
-    const ticket = await DB.Ticket.findOne({ code: code }).select('price time') as IDBTicket
+    const ticket = await DB.Ticket.findOne({ code: code }).select('price time pay') as IDBTicket
     if(!ticket) throw 'Không tìm thấy dữ liệu vé'
+    if(ticket.pay.type == 'BANK') throw 'Vé chuyển khoản, vui lòng đưa QR cho khách để quyét, hệ thống tự động xác nhận'
 
     if(!!start){
       const today = DayJS()

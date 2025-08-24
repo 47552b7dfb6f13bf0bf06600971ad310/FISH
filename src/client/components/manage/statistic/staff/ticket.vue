@@ -1,5 +1,5 @@
 <template>
-  <UiContent title="Vé Câu" sub="Quản lý danh sách vé câu">
+  <div>
     <UiFlex class="gap-1" wrap>
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]"/>
 
@@ -83,10 +83,12 @@
     <UModal v-model="modal">
       <StaffTicket :ticket="stateView" @close="modal = false" type="ticket" />
     </UModal>
-  </UiContent>
+  </div>
 </template>
 
 <script setup>
+const props = defineProps(['staff'])
+
 // List
 const list = ref([])
 
@@ -139,7 +141,8 @@ const page = ref({
     by: 'CODE'
   },
   total: 0,
-  area: null
+  area: null,
+  staff: props.staff
 })
 watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
@@ -147,6 +150,7 @@ watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.area, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
+watch(() => props.staff, () => getList())
 
 const statusTicket = {
   0: { label: 'Chưa Thanh Toán', color: 'gray' },
@@ -178,7 +182,8 @@ const selectTicket = (ticket) => {
 const getList = async () => {
   try {
     loading.value.load = true
-    const data = await useAPI('ticket/manage/list', JSON.parse(JSON.stringify(page.value)))
+    page.value.staff = props.staff
+    const data = await useAPI('statistic/staff/ticket', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false
     list.value = data.list
@@ -190,4 +195,5 @@ const getList = async () => {
 }
 
 getList()
+
 </script>

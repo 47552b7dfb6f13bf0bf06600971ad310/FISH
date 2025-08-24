@@ -59,7 +59,7 @@ const state = ref({
   shift: null,
   lunch: false,
   pig: true,
-  pay_type: 'MONEY',
+  pay_type: null,
   cart: null
 })
 

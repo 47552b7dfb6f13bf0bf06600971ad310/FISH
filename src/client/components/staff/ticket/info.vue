@@ -6,8 +6,13 @@
         <UiText weight="semibold" size="sm" color="primary">{{ ticket.code }}</UiText>
       </UiFlex>
 
-      <UiFlex justify="between" class="w-full" v-if="!!ticket.time && ticket.time.start">
-        <UiText weight="semibold" color="gray" size="sm">Ngày tạo</UiText>
+      <UiFlex justify="between" class="w-full" v-if="ticket.shift">
+        <UiText weight="semibold" color="gray" size="sm">Ca câu</UiText>
+        <UiText weight="semibold" size="sm" color="yellow">{{ ticket.shift.name }} - {{ ticket.shift.duration }}h</UiText>
+      </UiFlex>
+
+      <UiFlex justify="between" class="w-full">
+        <UiText weight="semibold" color="gray" size="sm">Tạo</UiText>
         <UiText weight="semibold" size="sm" color="gray">{{ useDayJs().displayFull(ticket.createdAt) }}</UiText>
       </UiFlex>
 

@@ -12,9 +12,10 @@ export default defineEventHandler(async (event) => {
     const ticket = await DB.Ticket.findOne({ code: ticketCode }).select('user code') as IDBTicket
     if(!ticket) throw 'Vé này không còn tồn tại'
 
-    const connect = await DB.TicketConnect.findOne({ ticket: ticket._id, code: connectCode }).select('code status total') as IDBTicketOrder
+    const connect = await DB.TicketConnect.findOne({ ticket: ticket._id, code: connectCode }).select('code status total pay') as IDBTicketOrder
     if(!connect) throw 'Đơn hàng còn tồn tại'
     if(connect.status > 0) throw 'Không thể thao tác trên đơn này'
+    if(connect.pay.type == 'BANK') throw 'Đơn chuyển khoản, vui lòng đưa QR cho khách để quyét, hệ thống tự động xác nhận'
 
     await verifyTicketConnect({
       code: connect.code,

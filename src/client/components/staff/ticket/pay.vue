@@ -61,7 +61,7 @@
         <UiText weight="semibold" size="sm" color="green">{{ useMoney().toMoney(ticket.price.total) }} VNĐ</UiText>
       </UiFlex>
 
-      <UiFlex justify="center" v-if="!!ticket.pay && !!ticket.pay.qrcode && ticket.status == 0">
+      <UiFlex justify="center" v-if="!!ticket.pay && !!ticket.pay.qrcode && ticket.status == 0 && ticket.pay.type == 'BANK'">
         <UiImg :src="ticket.pay.qrcode" class="w-[200px] md:max-w-[200px]"/>
       </UiFlex>
     </UiFlex>
