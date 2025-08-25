@@ -137,6 +137,32 @@
         </UCard>
       </template>
 
+      <template #charity>
+        <UCard>
+          <UForm :state="state">
+            <UFormGroup label="Bắt đầu">
+              <SelectDate time v-model="state.charity.start" />
+            </UFormGroup>
+
+            <UFormGroup label="Kết thúc">
+              <SelectDate time v-model="state.charity.end" />
+            </UFormGroup>
+
+            <UFormGroup label="Hũ hiện tại">
+              <UInput v-model="state.charity.money" type="number" />
+            </UFormGroup>
+
+            <UFormGroup label="Số tiền cắt mỗi vé">
+              <UInput v-model="state.charity.ticket" type="number" />
+            </UFormGroup>
+
+            <UiFlex justify="end" class="mt-4">
+              <UButton color="yellow" @click="update()" :loading="updating">Cập nhật</UButton>
+            </UiFlex>
+          </UForm>
+        </UCard>
+      </template>
+
       <template #tele>
         <UCard>
           <UForm :state="state">
@@ -216,6 +242,13 @@ const state = ref({
     order: '',
     payment: '',
     member: '',
+  },
+
+  charity: {
+    start: null,
+    end: null,
+    money: null,
+    ticket: null
   }
 })
 
@@ -224,6 +257,7 @@ const menu = [
   { label: 'Liên hệ', slot: 'contact' },
   { label: 'Mạng xã hội', slot: 'social' },
   { label: 'Thời gian', slot: 'time' },
+  { label: 'Từ thiện', slot: 'charity' },
   { label: 'Telegram', slot: 'tele' },
 ]
 

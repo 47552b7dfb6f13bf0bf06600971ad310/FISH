@@ -195,3 +195,28 @@ body
   background: linear-gradient(90deg, rgb(219 78 238) 0%, rgb(100 17 248) 50%, rgb(109 152 253) 100%)
   background-size: 200% 100%
   animation: bg-anim 1s ease infinite alternate
+
+// Text
+.Slogan
+  background: linear-gradient(to right,#FFFFFF 10%, #ffffff00 50%, #FFFFFF 60%)
+  background-size: auto auto
+  background-clip: border-box
+  background-size: 200% auto
+  background-clip: text
+  text-fill-color: transparent
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
+  animation: textclip 2s linear infinite
+.Lucky
+  background: linear-gradient(to right, #ffd100 10%, rgba(255, 255, 255, 0) 50%, #ffd600 60%)
+  background-size: auto auto
+  background-clip: border-box
+  background-size: 200% auto
+  background-clip: text
+  text-fill-color: transparent
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
+  animation: textclip 2s linear infinite
+@keyframes textclip
+  to
+    background-position: -200% center

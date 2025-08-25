@@ -84,6 +84,13 @@ export const useConfigStore = defineStore('config', () => {
     wheel: {
       price: 0,
       start: false
+    },
+
+    charity: {
+      start: null,
+      end: null,
+      money: 0,
+      ticket: 0
     }
   })
 

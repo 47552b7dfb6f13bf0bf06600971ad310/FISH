@@ -25,6 +25,12 @@ export const DBUser = (mongoose : Mongoose) => {
       miss: { type: Number, default: 0, index: true },
     },
 
+    charity: {
+      week: { type: Number, default: 0, index: true },
+      month: { type: Number, default: 0, index: true },
+      total: { type: Number, default: 0, index: true },
+    },
+
     member: {
       week: {
         enable: { type: Boolean, default: false },
@@ -50,7 +56,9 @@ export const DBUser = (mongoose : Mongoose) => {
 
     login: {
       update: { type: Date, default: Date.now }
-    }
+    },
+
+    guestauto: { type: Boolean, default: false }
   }, {
     timestamps: true
   })

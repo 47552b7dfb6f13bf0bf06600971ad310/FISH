@@ -62,6 +62,7 @@
 
 <script setup>
 const { $socket } = useNuxtApp()
+const configStore = useConfigStore()
 const lake = ref(null)
 const getLake = async () => {
   try {
@@ -87,6 +88,10 @@ const getFuture = (area) => {
 onMounted(() => {
   setTimeout(() => getLake(), 1)
 
-  $socket.on('update-lake-info', (data) => !!data && (lake.value = data))
+  $socket.on('update-lake-info', async (data) => {
+    if(!data) return
+    lake.value = data
+    await configStore.bootConfig()
+  })
 })
 </script>

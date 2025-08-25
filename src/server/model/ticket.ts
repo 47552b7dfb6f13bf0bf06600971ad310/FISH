@@ -30,6 +30,7 @@ export const DBTicket = (mongoose : Mongoose) => {
       item: { type: Number, default: 0, index: true },
       pig: { type: Number, default: 0, index: true },
       connect: { type: Number, default: 0, index: true },
+      charity: { type: Number, default: 0, index: true },
       total: { type: Number, default: 0, index: true },
     },
 

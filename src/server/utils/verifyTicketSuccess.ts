@@ -18,7 +18,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   if(!bot) throw 'Không tìm thấy thông tin Bot'
 
   // Get Config
-  const config = await DB.Config.findOne().select('telegram time') as IDBConfig
+  const config = await DB.Config.findOne().select('telegram time charity') as IDBConfig
   if(!config) throw 'Không tìm thấy cấu hình trang'
 
   // Get Ticket
@@ -41,7 +41,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   if(!shift) throw 'Không tìm thấy thời gian ca câu'
 
   // Get User
-  const user = await DB.User.findOne({ _id: ticket.user }).select('vouchers member') as IDBUser
+  const user = await DB.User.findOne({ _id: ticket.user }).select('vouchers member guestauto') as IDBUser
   if(!user) throw 'Không tìm thấy tài khoản khách hàng'
 
   // Set Thời gian
@@ -49,6 +49,15 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
   const end = new Date(start.getTime() + shift.duration * 60 * 60 * 1000)
   const delay = new Date(end.getTime() + config.time.delay * 60 * 1000)
   const timeFormat = formatDate(start)
+
+  // Set Từ Thiện
+  let charity = 0
+  if(!!config.charity.end && !!config.charity.start && config.charity.ticket > 0 && !user.guestauto && ticket.price.total > 0){
+    const nowCharity = DayJS(Date.now()).unix()
+    const startCharity = DayJS(config.charity.start).unix()
+    const endCharity = DayJS(config.charity.end).unix()
+    if(startCharity < nowCharity && nowCharity < endCharity) charity = config.charity.ticket
+  }
 
   // Cập nhật trạng thái vé
   await DB.Ticket.updateOne({ _id: ticket._id }, { $set: {
@@ -58,6 +67,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
     'time.delay': delay,
     'pay.complete': true,
     'pay.staff': !!verifier ? verifier : bot._id,
+    'price.charity': charity,
     'status': 2
   }})
 
@@ -85,6 +95,16 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
     { _id: areaCheck._id }, 
     { $inc: { 'pig.money': areaCheck.pig.max }}
   )
+
+  // Cập nhật từ thiện nếu có
+  if(charity > 0){
+    await DB.Config.updateMany({}, { $inc: { 'charity.money': charity }})
+    await DB.User.updateOne({ _id: user._id }, { $inc: { 
+      'charity.week': charity,
+      'charity.month': charity,
+      'charity.total': charity
+    }})
+  }
 
   // Log User
   logUser({

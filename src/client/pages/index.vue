@@ -11,6 +11,7 @@
       <DataDownload class="col-span-6" />
     </div>
 
+    <DataCharity class="my-4" />
     <DataLake class="my-4"/>
     <DataRank class="my-4" />
 

@@ -27,6 +27,12 @@ export interface IDBUser {
     miss: number
   }
 
+  charity: {
+    week: number
+    month: number
+    total: number
+  }
+
   member: {
     week: {
       enable: boolean
@@ -53,6 +59,8 @@ export interface IDBUser {
   login: {
     update: date
   }
+
+  guestauto: boolean
 
   save: {
     () : void

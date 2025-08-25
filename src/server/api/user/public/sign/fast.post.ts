@@ -20,18 +20,9 @@ export default defineEventHandler(async (event) => {
       phone: phone,
       password: md5(phone),
       name: name,
-      key: formatVNString(name, '-')
+      key: formatVNString(name, '-'),
+      guestauto: true
     }) as IDBUser
-
-    // Make Voucher Reg
-    if(!!config.reg.voucher.source && config.reg.voucher.amount > 0) user.vouchers = Array(config.reg.voucher.amount).fill(config.reg.voucher.source)
-
-    // Log User
-    await logUser({
-      user: user._id,
-      type: 'register',
-      action: `Đăng ký tài khoản với số điện thoại ${phone}`,
-    })
 
     return resp(event, { result: true })
   } 

@@ -32,6 +32,7 @@ export interface IDBTicket {
     item: number
     pig: number
     connect: number
+    charity: number
     total: number
   }
 

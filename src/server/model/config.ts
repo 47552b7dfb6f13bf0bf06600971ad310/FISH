@@ -90,6 +90,12 @@ export const DBConfig = (mongoose : Mongoose) => {
       order: { type: String, default: '' },
       payment: { type: String, default: '' },
       member: { type: String, default: '' },
+    },
+    charity: {
+      start: { type: Date },
+      end: { type: Date },
+      money: { type: Number, default: 0 },
+      ticket: { type: Number, default: 10000 },
     }
   })
 

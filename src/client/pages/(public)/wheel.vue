@@ -249,29 +249,4 @@ onMounted(() => setTimeout(() => (initCanvas(), getList()), 1))
   clip-path: polygon(0 100%, var(--s) 100%, calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(100% - var(--s)) 100%, 100% 100%, calc(100% - var(--c)) calc(50% + var(--d)/2), 100% var(--d), calc(100% - var(--s)) var(--d), calc(100% - var(--s) - var(--d)) 0, calc(var(--s) + var(--d)) 0, var(--s) var(--d), 0 var(--d), var(--c) calc(50% + var(--d)/2))
   background-color: rgb(var(--color-primary-500))
   width: fit-content
-
-.Slogan
-  background: linear-gradient(to right,#FFFFFF 10%, #ffffff00 50%, #FFFFFF 60%)
-  background-size: auto auto
-  background-clip: border-box
-  background-size: 200% auto
-  background-clip: text
-  text-fill-color: transparent
-  -webkit-background-clip: text
-  -webkit-text-fill-color: transparent
-  animation: textclip 2s linear infinite
-.Lucky
-  background: linear-gradient(to right, #ffd100 10%, rgba(255, 255, 255, 0) 50%, #ffd600 60%)
-  background-size: auto auto
-  background-clip: border-box
-  background-size: 200% auto
-  background-clip: text
-  text-fill-color: transparent
-  -webkit-background-clip: text
-  -webkit-text-fill-color: transparent
-  animation: textclip 2s linear infinite
-
-@keyframes textclip
-  to
-    background-position: -200% center
 </style>

@@ -90,6 +90,12 @@ export interface IDBConfig {
     payment: string
     member: string
   }
+  charity: {
+    start: date
+    end: date
+    money: number
+    ticket: number
+  }
 }
 
 export interface IDBConfigStore {
@@ -164,6 +170,12 @@ export interface IDBConfigStore {
   wheel: {
     price: number
     start: boolean
+  }
+  charity: {
+    start: date
+    end: date
+    money: number
+    ticket: number
   }
 }
 
