@@ -68,7 +68,7 @@
 
     <UiFlex class="mt-4" type="col" v-if="ticket.status == 0">
       <UFormGroup label="Thời gian vào thực tế" class="w-full">
-        <SelectDate time v-model="start" />
+        <UInput type="datetime-local" v-model="start" />
       </UFormGroup>
 
       <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
