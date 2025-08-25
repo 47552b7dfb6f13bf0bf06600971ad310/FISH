@@ -2,8 +2,11 @@
   <UiFlex type="col" class="p-4">
     <h1 class="text-xl font-bold mb-4">Thông Báo Giọng Nói</h1>
     
-    <UButton v-if="!audioUnlocked" @click="unlockAudio">
+    <UButton v-if="!audioUnlocked" @click="unlockAudio" color="green">
       Bật Âm Thanh
+    </UButton>
+    <UButton v-if="!!audioUnlocked" @click="talkLunch" color="orange" class="mb-2">
+      Gọi Khách Cơm Trưa
     </UButton>
     <UiText v-if="!!audioUnlocked" color="green">✅ Đã bật quyền phát âm thanh</UiText>
     <UiText v-if="!!activeWakeLock" color="green">✅ Đã bật quyền sáng màn hình</UiText>
@@ -14,7 +17,7 @@
 </template>
 
 <script setup>
-import { UiText } from '#components'
+const { $socket } = useNuxtApp()
 import { useWakeLock } from '@vueuse/core'
 
 definePageMeta({
@@ -76,7 +79,11 @@ const playNextAudio = () => {
   }
 }
 
-const { $socket } = useNuxtApp()
+const talkLunch = () => {
+  const audio = new Audio('/audio/lunch.mp3')
+  audio.play()
+}
+
 onMounted(() => {
   $socket.on('bot-talk', (data) => {
     audioQueue.value.push(data)
