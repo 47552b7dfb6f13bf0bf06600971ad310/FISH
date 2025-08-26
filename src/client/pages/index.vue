@@ -18,9 +18,9 @@
     <UModal v-model="modal" prevent-close :ui="{width: 'max-w-[300px]'}">
       <UiFlex type="col" justify="center" class="bg-card rounded-2xl p-6">
         <UiIcon name="i-bxs-info-circle" size="20" color="yellow" class="mb-4" />
-        <UiText weight="bold" align="center" size="3xl" class="mb-2">CHÚ Ý</UiText>
-        <UiText color="gray" align="center" class="mb-4">Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ</UiText>
-        <UButton color="gray" @click="navigateTo('/create')">Tôi Đồng Ý</UButton>
+        <UiText weight="bold" align="center" size="3xl" class="mb-4">CHÚ Ý</UiText>
+        <UiText color="yellow" align="center" size="lg" weight="semibold" class="mb-2">Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ</UiText>
+        <UButton color="gray" @click="successRead" variant="link">Tự động chuyển sau {{ num }}s</UButton>
       </UiFlex>
     </UModal>
   </div>
@@ -28,7 +28,10 @@
 
 <script setup>
 const configStore = useConfigStore()
+
 const modal = ref(false)
+const num = ref(5)
+const anim = ref(null)
 
 const isOpenBook = computed(() => {
   if(!configStore.config.time.ticket) return true
@@ -56,6 +59,19 @@ const isOpenBook = computed(() => {
 
 const toCreate = () => {
   if(!isOpenBook.value) return useNotify().error('Hồ câu chưa mở, vui lòng quay lại sau')
-  else modal.value = true
+  else {
+    modal.value = true
+    num.value = 5
+    anim.value = setInterval(() => {
+      num.value = num.value - 1
+      if(num.value == 0) successRead()
+    }, 1000)
+  }
+}
+
+const successRead = () => {
+  if(num.value != 0) return
+  if(anim.value) clearInterval(anim.value), anim.value = null
+  navigateTo('/create')
 }
 </script>

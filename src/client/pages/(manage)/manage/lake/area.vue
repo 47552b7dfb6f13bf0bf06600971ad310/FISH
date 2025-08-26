@@ -23,7 +23,7 @@
         </template>
 
         <template #[`future.price-data`]="{ row }">
-          {{ row.future ? useMoney().toMoney(row.future.price) : '0' }} VNĐ /Kg
+          {{ row.future ? useMoney().toMoney(row.future.price) : '0' }} VNĐ / Kg
         </template>
 
         <template #[`future.percent-data`]="{ row }">

@@ -9,6 +9,11 @@
         { label: 'Tổng' }
       ]" />
     </UiFlex>
+
+    <UiFlex v-if="type == 'total'" class="gap-1 mb-2" wrap>
+      <SelectDate v-model="range.start" placeholder="Bắt đầu" size="lg" />
+      <SelectDate v-model="range.end" placeholder="Kết thúc" size="lg" />
+    </UiFlex>
     
     <div class="grid grid-cols-12 gap-2 mb-2">
       <UCard class="lg:col-span-4 sm:col-span-12 col-span-12" :ui="{ body: { padding: 'px-4 md:px-8 py-6 md:py-8' } }" v-if="data.ticket">
@@ -209,8 +214,6 @@ const data = ref({
   spend: 0
 })
 
-watch(tab, () => getData())
-
 const type = computed(() => {
   if(tab.value == 0) return 'today'
   if(tab.value == 1) return 'yesterday'
@@ -218,13 +221,27 @@ const type = computed(() => {
   if(tab.value == 3) return 'lastmonth'
   if(tab.value == 4) return 'total'
 })
+const range = ref({
+  start: null,
+  end: null
+})
+watch(() => type.value, () => getData())
+watch(() => range.value.start, (val) => {
+  if(!!val && !!range.value.end) return getData()
+  if(!val && !range.value.end) return getData()
+})
+watch(() => range.value.end, (val) => {
+  if(!!val && !!range.value.start) return getData()
+  if(!val && !range.value.start) return getData()
+})
 
 const getData = async () => {
   try {
     loading.value = true
-    const get = await useAPI('statistic/lake', { 
-      type: type.value
-    })
+    const get = await useAPI('statistic/lake', JSON.parse(JSON.stringify({ 
+      type: type.value,
+      range: range.value
+    })))
 
     data.value = get
     loading.value = false

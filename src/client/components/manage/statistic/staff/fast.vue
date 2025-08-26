@@ -10,8 +10,10 @@
       ]" />
     </UiFlex>
 
-    <UiFlex class="mb-2 max-w-[300px] w-full">
-      <SelectUserStaff v-model="staff" class="w-full" />
+    <UiFlex class="mb-2 w-full gap-1" wrap>
+      <SelectUserStaff v-model="staff" class="w-full max-w-[300px] " />
+      <SelectDate v-model="range.start" placeholder="Bắt đầu" size="lg" v-if="type == 'total'" />
+      <SelectDate v-model="range.end" placeholder="Kết thúc" size="lg" v-if="type == 'total'" />
     </UiFlex>
     
     <div class="mb-2">
@@ -196,9 +198,6 @@ const tabMoreList = [
   { label: 'Nối ca', key: 'connect' },
 ]
 
-watch(tab, () => getData())
-watch(staff, () => getData())
-
 const type = computed(() => {
   if(tab.value == 0) return 'today'
   if(tab.value == 1) return 'yesterday'
@@ -206,13 +205,28 @@ const type = computed(() => {
   if(tab.value == 3) return 'lastmonth'
   if(tab.value == 4) return 'total'
 })
+const range = ref({
+  start: null,
+  end: null
+})
+watch(staff, () => getData())
+watch(() => type.value, () => getData())
+watch(() => range.value.start, (val) => {
+  if(!!val && !!range.value.end) return getData()
+  if(!val && !range.value.end) return getData()
+})
+watch(() => range.value.end, (val) => {
+  if(!!val && !!range.value.start) return getData()
+  if(!val && !range.value.start) return getData()
+})
 
 const getData = async () => {
   try {
     loading.value = true
     const get = await useAPI('statistic/staff/fast', { 
       type: type.value,
-      staff: staff.value
+      staff: staff.value,
+      range: range.value
     })
 
     data.value = get
