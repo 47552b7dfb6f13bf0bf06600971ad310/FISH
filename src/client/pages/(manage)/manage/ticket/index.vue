@@ -46,6 +46,10 @@
           {{ row.pay.type == 'BANK' ? 'Chuyển khoản' : 'Tiền Mặt' }}
         </template>
 
+        <template #[`pay.complete-data`]="{ row }">
+         <UBadge variant="soft" :color="!!row.pay.complete ? 'green' : 'gray'">{{ !!row.pay.complete ? 'Xong' : 'Chưa' }}</UBadge>
+        </template>
+
         <template #time-data="{ row }">
           <UiText v-if="row.time" :color="statusTicket[row.status]['color']">
             <UiCountdown :time="row.time.pay" v-if="row.status == 0"></UiCountdown>
@@ -111,6 +115,9 @@ const columns = [
   },{
     key: 'pay.type',
     label: 'Phương thức'
+  },{
+    key: 'pay.complete',
+    label: 'Thanh toán'
   },{
     key: 'time',
     label: 'Đếm ngược'
