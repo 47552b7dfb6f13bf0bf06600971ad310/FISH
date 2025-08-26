@@ -48,7 +48,6 @@ export default defineEventHandler(async (event) => {
     const matchItem : any = { 'status': { $eq: 1 } }
     const matchConnect : any = { 'status': { $eq: 1 } }
     const matchMember : any = { 'status': { $eq: 1 } }
-    const matchSpend : any = {}
 
     // Not Total
     if(type != 'total'){
@@ -307,7 +306,6 @@ export default defineEventHandler(async (event) => {
       ])
 
       spend = await DB.Spend.aggregate([
-        { $match: matchMember },
         {
           $project: {
             money: 1
