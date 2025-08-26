@@ -41,13 +41,13 @@
         <UiText weight="semibold" color="yellow">{{ useMoney().toMoney(area.revenue) }}</UiText>
       </UiFlex> -->
 
-      <UiFlex justify="between" class="mb-1" v-if="!!area.pig && area.pig.money > 0">
+      <!-- <UiFlex justify="between" class="mb-1" v-if="!!area.pig && area.pig.money > 0">
         <UiText size="sm" color="yellow">Hũ Heo</UiText>
         <UiFlex class="gap-1">
           <UiText weight="semibold" color="pink" size="lg">{{ useMoney().toMoney(area.pig.money) }}</UiText> 
           <UiText weight="semibold" size="sm">VNĐ</UiText> 
         </UiFlex>  
-      </UiFlex>
+      </UiFlex> -->
 
       <UiFlex justify="between">
         <UiText size="sm" color="yellow">Ước tính bồi ngày mai</UiText>
