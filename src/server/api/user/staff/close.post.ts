@@ -18,12 +18,10 @@ export default defineEventHandler(async (event) => {
     if(start.unix() > now.unix()) throw 'Thời gian bắt đầu ca không hợp lệ'
 
     // Check Has
-    const countHas = await DB.UserShift.count([
-      { $match: { 
-        user: auth._id,
-        createdAt: { $gte: new Date(start['$d']), $lte: new Date(now['$d']) }
-      }}
-    ])
+    const countHas = await DB.UserShift.count({ 
+      user: auth._id,
+      createdAt: { $gte: new Date(start['$d']), $lte: new Date(now['$d']) }
+    })
     if(countHas > 0) throw 'Bạn đã có 1 đơn giao ca trong thời gian này'
 
     // Check Stock

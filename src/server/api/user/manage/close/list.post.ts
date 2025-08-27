@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     const list = await DB.UserShift
     .find(match)
-    .populate({ path: 'user', select: 'phone' })
+    .populate({ path: 'user', select: 'name' })
     .sort(sorting)
     .skip((current - 1) * size)
     .limit(size)

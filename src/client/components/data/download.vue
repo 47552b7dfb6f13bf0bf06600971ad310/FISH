@@ -24,7 +24,7 @@
 
     <UModal v-model="iosPWA" :ui="{ width: 'sm:max-w-[400px]' }">
       <UiContent title="IPhone" sub="Hướng dẫn cài đặt ứng dụng cho IPhone và IPad" class="bg-card rounded-2xl p-4">
-          <template #more>
+        <template #more>
           <UButton icon="i-bx-x" color="gray" class="ml-auto" size="2xs" square @click="iosPWA = false"></UButton>
         </template>
 
@@ -50,7 +50,7 @@ const iosPWA = ref(false)
 const modal = ref(false)
 
 const action = () => {
-  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return useNotify('Bạn đã tải ứng dụng rồi')
+  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return useNotify().info('Bạn đã tải ứng dụng này rồi')
   modal.value = true
 }
 

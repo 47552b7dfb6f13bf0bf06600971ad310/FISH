@@ -19,7 +19,7 @@
         :rows="list"
       >
         <template #user-data="{ row }">
-          {{ row.user ? row.user.phone || '...' : '...' }}
+          {{ row.user ? row.user.name || '...' : '...' }}
         </template>
 
         <template #[`time.start-data`]="{ row }">
@@ -31,7 +31,7 @@
         </template>
 
         <template #stock-data="{ row }">
-          <UButton size="xs" color="gray" @click="viewShift">Xem chi tiết</UButton>
+          <UButton size="xs" color="gray" @click="viewShift(row._id)">Xem chi tiết</UButton>
         </template>
 
         <template #cashInDrawer-data="{ row }">
@@ -51,8 +51,14 @@
     </UiFlex>
 
     <!-- Modal View -->
-    <UModal v-model="modal.view">
+    <UModal v-model="modal.view" prevent-close :ui="{width: 'sm:max-w-[800px]'}">
+      <UiContent title="Chi Tiết" sub="Thông tin kho giao ca" class="bg-card p-4 rounded-2xl">
+        <template #more>
+          <UButton icon="i-bx-x" color="gray" class="ml-auto" size="2xs" square @click="modal.view = false"></UButton>
+        </template>
 
+        <ManageUserCloseView :fetch-id="stateView" />
+      </UiContent>
     </UModal>
   </UiContent>
 </template>
@@ -90,7 +96,7 @@ const page = ref({
   size: 10,
   current: 1,
   sort: {
-    column: 'time.start',
+    column: 'time.end',
     direction: 'desc'
   },
   search: null,

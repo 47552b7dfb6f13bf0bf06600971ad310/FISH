@@ -95,7 +95,7 @@ const submit = async () => {
     await useAPI('user/staff/close', JSON.parse(JSON.stringify(state.value)))
 
     loading.value.submit = false
-    emit('close')
+    emits('close')
   }
   catch (e) {
     loading.value.submit = false
