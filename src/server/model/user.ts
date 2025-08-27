@@ -1,5 +1,5 @@
 import type { Mongoose } from 'mongoose'
-import type { IDBUser, IDBUserMember } from '~~/types'
+import type { IDBUser, IDBUserMember, IDBUserShift } from '~~/types'
 
 export const DBUser = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBUser>({ 
@@ -101,4 +101,30 @@ export const DBUserMemeber = (mongoose : Mongoose) => {
   schema.index({ code: 'text' })
   const model = mongoose.model('UserMember', schema, 'UserMember')
   return model 
+}
+
+export const DBUserShift = (mongoose: Mongoose) => {
+  const schema = new mongoose.Schema<IDBUserShift>({ 
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
+    time: {
+      start: { type: Date },
+      end: { type: Date },
+    },
+
+    stock: [{
+      item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
+      quantity: { type: Number, required: true }
+    }],
+
+    cashInDrawer: { type: Number, default: 0 },
+    cashReported: { type: Number, default: 0 },
+
+    note: { type: String }
+  }, {
+    timestamps: true
+  })
+
+  const model = mongoose.model('UserShift', schema, 'UserShift')
+  return model
 }

@@ -90,3 +90,30 @@ export interface IDBUserMember {
     () : void
   }
 }
+
+export interface IDBUserShift {
+  _id: Types.ObjectId
+  createdAt: date
+  updatedAt: date
+
+  user: Types.ObjectId
+
+  time: {
+    start: date
+    end: date
+  }
+
+  stock: [{
+    item: Types.ObjectId
+    quantity: number
+  }],
+
+  cashInDrawer: number
+  cashReported: number
+
+  note: string
+
+  save: {
+    () : void
+  }
+}

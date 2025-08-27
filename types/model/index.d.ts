@@ -1,7 +1,7 @@
 import type { Model } from 'mongoose'
 
 export { IDBConfig, IDBConfigShift, IDBConfigStore } from './config'
-export { IDBUser, IDBUserMember } from './user'
+export { IDBUser, IDBUserMember, IDBUserShift } from './user'
 export { IDBItemCategory, IDBItem, IDBItemImport, IDBItemExport } from './item'
 export { IDBFishCategory, IDBFish } from './fish'
 export { IDBLakeArea, IDBLakeSpot } from './lake'
@@ -17,6 +17,7 @@ export interface IGlobalDB {
 
   User: Model<IDBUser>
   UserMember: Model<IDBUserMember>
+  UserShift: Model<IDBUserShift>
 
   ItemCategory: Model<IDBItemCategory>
   Item: Model<IDBItem>

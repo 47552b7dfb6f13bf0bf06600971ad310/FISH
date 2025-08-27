@@ -53,6 +53,7 @@ const menu = ref([
     { title: 'Tài khoản', icon: 'i-bx-group', to: `/manage/user` },
     { title: 'Hội viên', icon: 'i-bxs-group', to: `/manage/user/member` },
     { title: 'Vé câu', icon: 'i-mdi-ticket', to: `/manage/ticket` },
+    { title: 'Giao ca', icon: 'i-material-symbols-stockpot', to: `/manage/user/close` },
   ]},
   { title: 'Quản lý hồ', child: [
     { title: 'Khu vực', icon: 'i-ph-map-pin-simple-area-bold', to: `/manage/lake/area` },

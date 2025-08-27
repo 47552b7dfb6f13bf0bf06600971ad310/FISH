@@ -2,7 +2,7 @@ import type { IGlobalDB } from '~~/types'
 import type { Mongoose } from 'mongoose'
 
 import { DBConfig, DBConfigShift } from './config'
-import { DBUser, DBUserMemeber } from './user'
+import { DBUser, DBUserMemeber, DBUserShift } from './user'
 import { DBItemCategory, DBItem, DBItemExport, DBItemImport } from './item'
 import { DBFishCategory, DBFish } from './fish'
 import { DBLakeArea, DBLakeSpot } from './lake'
@@ -20,6 +20,7 @@ export default (mongoose : Mongoose) : IGlobalDB => {
 
     User: DBUser(mongoose),
     UserMember: DBUserMemeber(mongoose),
+    UserShift: DBUserShift(mongoose),
 
     ItemCategory: DBItemCategory(mongoose),
     Item: DBItem(mongoose),

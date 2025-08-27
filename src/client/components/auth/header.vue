@@ -18,6 +18,10 @@
         </div>
       </template>
     </UPopover>
+    
+    <UModal v-model="modal" prevent-close>
+      <DataUserClose @close="modal = false"/>
+    </UModal>
   </UiFlex>
 </template>
 
@@ -25,6 +29,7 @@
 const authStore = useAuthStore()
 
 const open = ref(false)
+const modal = ref(false)
 
 const menuUser = computed(() => {
   const list = []
@@ -45,13 +50,13 @@ const menuUser = computed(() => {
     })
   }
 
-  // if(authStore.profile.type > 0){
-  //   list.push({
-  //     label: 'Giao ca',
-  //     icon: 'i-material-symbols-assignment',
-  //     click: () => navigateTo('/staff/giaoca')
-  //   })
-  // }
+  if(authStore.profile.type > 0){
+    list.push({
+      label: 'Giao ca',
+      icon: 'i-material-symbols-assignment',
+      click: () => modal.value = true
+    })
+  }
 
   return [
     ...list,
