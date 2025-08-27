@@ -9,8 +9,8 @@ export default defineNitroPlugin(() => {
     await cancelTicketBeforeEnd(now)
   })
 
-  // Chạy mỗi 5 phút
-  cron.schedule('*/5 * * * *', async () => {
+  // Chạy mỗi 10 phút
+  cron.schedule('*/10 * * * *', async () => {
     const now = new Date()
     await teleTicketToEnd(now)
   })
