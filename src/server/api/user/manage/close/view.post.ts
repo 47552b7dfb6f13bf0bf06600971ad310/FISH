@@ -26,10 +26,26 @@ export default defineEventHandler(async (event) => {
         createdAt: { $gte: current.time.start, $lte: current.time.end },
         staff: current.user
       }},
-      { $group: { _id: "$item", totalSold: { $sum: "$amount" } } }
+      {
+        $lookup: {
+          from: "Item",
+          localField: "item",
+          foreignField: "_id",
+          pipeline: [{
+            $project: { name: 1 }
+          }],
+          as: "itemData"
+        }
+      },
+      { $unwind: { path: "$itemData", preserveNullAndEmptyArrays: true } },
+      { $group: { 
+        _id: "$item",  
+        name: { $first: '$itemData.name' },
+        totalSold: { $sum: "$amount" } 
+      }}
     ])
 
-    const soldMap = new Map(soldAgg.map(s => [s._id.toString(), s.totalSold]))
+    const soldMap = new Map(soldAgg.map(s => [s._id.toString(), { name: s.name, value: s.totalSold}]))
     const prevMap = new Map(prevStock.map((s : any) => [s.item._id.toString(), { name: s.item.name, quantity: s.quantity }]))
     const currMap = new Map(currentStock.map((s : any) => [s.item._id.toString(), { name: s.item.name, quantity: s.quantity }]))
     const allIds = new Set([...prevMap.keys(), ...currMap.keys(), ...soldMap.keys()])
@@ -42,11 +58,11 @@ export default defineEventHandler(async (event) => {
       return {
         item: {
           _id: id,
-          name: curr?.name || prev?.name || 'N/A'
+          name: curr?.name || prev?.name || sold?.name || 'N/A'
         },
         previous: prev?.quantity || 0,
         current: curr?.quantity || 0,
-        sold: sold || 0,
+        sold: sold?.value || 0,
         diff: (curr?.quantity || 0) - (prev?.quantity || 0)
       }
     })
