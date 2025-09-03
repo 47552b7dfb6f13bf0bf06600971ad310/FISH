@@ -50,7 +50,7 @@
         </UFormGroup>
 
         <UFormGroup label="Số ô">
-          <UInput v-model="stateAdd.code" />
+          <UInput v-model="stateAdd.code" type="number" />
         </UFormGroup>
 
         <UiFlex justify="end" class="gap-1">
@@ -64,7 +64,7 @@
     <UModal v-model="modal.edit" preventClose>
       <UForm :state="stateEdit" @submit="editAction" class="bg-card rounded-2xl p-4">
         <UFormGroup label="Số ô">
-          <UInput v-model="stateEdit.code" />
+          <UInput v-model="stateEdit.code" type="number" />
         </UFormGroup>
 
         <UiFlex justify="end" class="gap-1">

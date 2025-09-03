@@ -10,6 +10,10 @@
       ]" />
     </UiFlex>
 
+    <UiFlex class="mb-2">
+      <SelectLakeArea v-model="area" size="lg" />
+    </UiFlex>
+
     <UiFlex v-if="type == 'total'" class="gap-1 mb-2" wrap>
       <SelectDate v-model="range.start" placeholder="Bắt đầu" size="lg" />
       <SelectDate v-model="range.end" placeholder="Kết thúc" size="lg" />
@@ -225,7 +229,10 @@ const range = ref({
   start: null,
   end: null
 })
+const area = ref()
+
 watch(() => type.value, () => getData())
+watch(() => area.value, () => getData())
 watch(() => range.value.start, (val) => {
   if(!!val && !!range.value.end) return getData()
   if(!val && !range.value.end) return getData()
@@ -240,7 +247,8 @@ const getData = async () => {
     loading.value = true
     const get = await useAPI('statistic/lake', JSON.parse(JSON.stringify({ 
       type: type.value,
-      range: range.value
+      range: range.value,
+      area: area.value
     })))
 
     data.value = get

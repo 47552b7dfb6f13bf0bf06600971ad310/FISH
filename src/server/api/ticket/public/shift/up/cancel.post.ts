@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
       code: connect.code,
       status: 2,
       reason: 'Khách hàng hủy'
-    })
+    }, auth._id)
 
     await talk([`${areaCheck.name}`, `${spotCheck.code}`, 'hủy đơn nối ca'])
     

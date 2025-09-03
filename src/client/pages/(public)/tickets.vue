@@ -15,13 +15,28 @@
           </div>
           <UBadge variant="soft" :color="statusTicket[ticket.status]['color']">{{ statusTicket[ticket.status]['label'] }}</UBadge>
         </UiFlex>
+
+        <UiFlex justify="between" class="mb-1.5">
+          <UiText color="gray" size="sm">Tạo</UiText>
+          <UiText weight="semibold" size="xs" color="gray">{{ useDayJs().displayFull(ticket.createdAt) }}</UiText>
+        </UiFlex>
+
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.time && ticket.time.start">
+          <UiText color="gray" size="sm">Bắt đầu</UiText>
+          <UiText weight="semibold" size="xs" color="green">{{ useDayJs().displayFull(ticket.time.start) }}</UiText>
+        </UiFlex>
+
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.time && ticket.time.end">
+          <UiText color="gray" size="sm">Kết thúc</UiText>
+          <UiText weight="semibold" size="xs" color="rose">{{ useDayJs().displayFull(ticket.time.end) }}</UiText>
+        </UiFlex>
         
-        <UiFlex justify="between" class="mb-1" v-if="!!ticket.lunch">
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.lunch">
           <UiText size="sm" color="gray">Báo cơm</UiText>
           <UiText weight="semibold" size="xs" :color="statusLunch(ticket.lunch)['color']">{{ statusLunch(ticket.lunch)['label'] }}</UiText>
         </UiFlex>
 
-        <UiFlex justify="between" class="mb-1" v-if="!!ticket.shift">
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.shift">
           <UiText size="sm" color="gray">Thời gian câu</UiText>
           <UiFlex class="gap-1">
             <UiText weight="semibold" color="primary">{{ useMoney().toMoney(ticket.shift.duration) }}</UiText>
@@ -29,7 +44,7 @@
           </UiFlex>  
         </UiFlex>
 
-        <UiFlex justify="between" class="mb-1" v-if="!!ticket.price">
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.price">
           <UiText size="sm" color="gray">Tổng hóa đơn</UiText>
           <UiFlex class="gap-1">
             <UiText weight="semibold" color="green">{{ useMoney().toMoney(ticket.price.total) }}</UiText> 
@@ -37,7 +52,7 @@
           </UiFlex>  
         </UiFlex>
 
-        <UiFlex justify="between" class="mb-1" v-if="!!ticket.fish">
+        <UiFlex justify="between" class="mb-1.5" v-if="!!ticket.fish">
           <UiText size="sm" color="gray">Số cá câu</UiText>
           <UiFlex class="gap-1">
             <UiText weight="semibold" color="pink">{{ useMoney().toMoney(ticket.fish.amount) }}</UiText> 

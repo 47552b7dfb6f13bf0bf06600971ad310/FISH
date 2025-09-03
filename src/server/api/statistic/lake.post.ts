@@ -3,7 +3,7 @@ import type { IAuth } from '~~/types'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { type, range } = await readBody(event)
+    const { type, range, area } = await readBody(event)
     if(!type) throw 'Dữ liệu đầu vào không đủ'
     if(type == 'total' && !range) throw 'Dữ liệu đầu vào không đủ'
 
@@ -60,10 +60,16 @@ export default defineEventHandler(async (event) => {
     const matchMember : any = { 'status': { $eq: 1 } }
     const match : any = {}
     if(!!start && !!end) match['time'] = { $gte: new Date(start['$d']), $lte: new Date(end['$d']) }
+    if(!!area){
+      matchTicket['area'] = new Types.ObjectId(area)
+      const tickets = await DB.Ticket.find(matchTicket).select('_id')
+      matchItem['ticket'] = { $in: tickets.map(i => i._id) }
+      matchConnect['ticket'] = { $in: tickets.map(i => i._id) }
+    }
 
     // Get Data
     const ticket = await DB.Ticket.aggregate([
-      { $match: matchTicket},
+      { $match: matchTicket },
       {
         $project: {
           createdAt: 1,
@@ -256,8 +262,8 @@ export default defineEventHandler(async (event) => {
           bank: connect[0] ? connect[0]['bank'] : 0,
           money: connect[0] ? connect[0]['money'] : 0,
         },
-        member: member[0] ? member[0]['money'] : 0,
-        spend: spend[0] ? spend[0]['money'] : 0,
+        member: !area ? member[0] ? member[0]['money'] : 0 : 0,
+        spend: !area ? spend[0] ? spend[0]['money'] : 0 : 0,
       }
     })
   } 
