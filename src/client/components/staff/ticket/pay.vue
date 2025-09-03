@@ -1,6 +1,11 @@
 <template>
   <div v-if="!!area && !!spot && !!ticket">
     <UiFlex type="col" class="gap-4">
+      <UiFlex justify="between" class="w-full" v-if="!!ticket.pay && !ticket.pay.complete">
+        <UiText weight="semibold" color="gray" size="sm">Thanh Toán</UiText>
+        <UBadge size="sm" color="red" variant="soft" class="cursor-pointer" @click="changeSuccess">Chưa thanh toán</UBadge>
+      </UiFlex>
+
       <UiFlex justify="between" class="w-full" v-if="!!ticket.pay">
         <UiText weight="semibold" color="gray" size="sm">Phương thức</UiText>
         <UiText weight="semibold" size="sm">{{ ticket.pay.type == 'BANK' ? 'Chuyển Khoản' : 'Tiền Mặt' }}</UiText>
@@ -66,31 +71,51 @@
       </UiFlex>
     </UiFlex>
 
-    <UiFlex class="mt-4" type="col" v-if="ticket.status == 0">
+    <UiFlex class="mt-4" type="col gap-1.5" v-if="ticket.status == 0">
       <UFormGroup label="Thời gian vào thực tế" class="w-full">
         <UInput type="datetime-local" v-model="start" />
       </UFormGroup>
-
-      <UButton color="yellow" @click="paySuccess" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
+      
+      <UButton color="yellow" @click="paySuccess(true)" :loading="loading" block>Xác Nhận Đã Thanh Toán</UButton>
+      <UButton color="orange" @click="paySuccess(false)" :loading="loading" block>Câu Trước Thanh Toán Sau</UButton>
     </UiFlex>
   </div>
 </template>
 
 <script setup>
 const props = defineProps(['area', 'spot', 'ticket'])
-const emits = defineEmits(['reload'])
+const emits = defineEmits(['reload', 'change'])
 
 const loading = ref(false)
 
 const start = ref(null)
 
-const paySuccess = async () => {
+const paySuccess = async (complete) => {
   try {
     loading.value = true
-    const data = await useAPI('ticket/staff/pay/success', { code: props.ticket.code, start: start.value })
+    const data = await useAPI('ticket/staff/pay/success', { 
+      code: props.ticket.code,
+      start: start.value,
+      complete: complete
+    })
 
     loading.value = false
     emits('reload')
+  }
+  catch(e){
+    loading.value = false
+  }
+}
+
+const changeSuccess = async () => {
+  try {
+    loading.value = true
+    const data = await useAPI('ticket/staff/pay/change', { 
+      code: props.ticket.code
+    })
+
+    loading.value = false
+    emits('change')
   }
   catch(e){
     loading.value = false

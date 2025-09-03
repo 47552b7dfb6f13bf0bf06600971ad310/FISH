@@ -3,10 +3,11 @@ import { IDBConfig, IDBConfigShift, IDBLakeArea, IDBLakeSpot, IDBTicket, IDBUser
 
 interface IBodyData {
   code: string,
-  money: number
+  money: number,
+  complete: boolean
 }
 
-export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) : Promise<void> => {
+export default async ({ code, money, complete = true } : IBodyData, verifier? : Types.ObjectId) : Promise<void> => {
   if(!code) throw 'Không tìm thấy mã vé'
   if(
     !!isNaN(parseInt(String(money))) 
@@ -65,7 +66,7 @@ export default async ({ code, money } : IBodyData, verifier? : Types.ObjectId) :
     'time.start': start,
     'time.end': end,
     'time.delay': delay,
-    'pay.complete': true,
+    'pay.complete': complete,
     'pay.staff': !!verifier ? verifier : bot._id,
     'price.charity': charity,
     'status': 2

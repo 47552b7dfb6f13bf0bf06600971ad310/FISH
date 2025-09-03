@@ -18,7 +18,7 @@
       <UTabs v-model="tab" :items="tabItems"></UTabs>
 
       <StaffTicketInfo :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" @change="onChangeSpot" v-if="tab == 0" />
-      <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" v-if="tab == 1" />
+      <StaffTicketPay :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" @change="onChangeSpot" v-if="tab == 1" />
       <StaffTicketOrder :area="select.area" :spot="select.spot" :ticket="select.ticket" @reload="init" v-if="tab == 2" />
       <StaffTicketFish :area="select.area" :spot="select.spot" :ticket="select.ticket" v-if="tab == 3" />
     </UiContent>

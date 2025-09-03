@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const auth = await getAuth(event) as IAuth
     if(auth.type < 1) throw 'Bạn không có quyền truy cập'
 
-    const { code, start } = await readBody(event)
+    const { code, start, complete } = await readBody(event)
     if(!code) throw 'Không tìm thấy mã vé'
 
     const ticket = await DB.Ticket.findOne({ code: code }).select('price time pay') as IDBTicket
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const money = ticket.price.total
-    await verifyTicketSuccess({ code, money }, auth._id)
+    await verifyTicketSuccess({ code, money, complete }, auth._id)
 
     return resp(event, { message: 'Thao tác thánh công' })
   } 

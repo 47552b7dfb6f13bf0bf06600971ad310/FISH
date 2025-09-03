@@ -15,7 +15,10 @@
           type="col"
           v-for="spot in lake" :key="spot._id" 
           justify="center"
-          :class="`bg-${statusFormat[spot.status]['color']}-500`" 
+          :class="{
+            [`bg-${statusFormat[spot.status]['color']}-500`]: true,
+            'blink-bg': !!spot.ticket && !!spot.ticket.pay && !spot.ticket.pay.complete
+          }" 
           class="p-4 w-[80px] h-[80px] cursor-pointer rounded-lg"
           @click="selectSpot(spot)"
         >
@@ -76,3 +79,14 @@ const getLake = async () => {
 
 getLake()
 </script>
+
+<style lang="sass">
+.blink-bg
+  animation: blinkBackground 1s infinite
+
+@keyframes blinkBackground
+  0%, 100%
+    background-color: transparent
+  50%
+    background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1))
+</style>
