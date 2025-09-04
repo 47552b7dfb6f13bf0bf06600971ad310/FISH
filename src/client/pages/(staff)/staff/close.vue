@@ -1,10 +1,6 @@
 <template>
-  <UiContent title="Giao Ca" sub="Nhân viên bàn giao ca" class="bg-card p-4 rounded-2xl">
-    <template #more>
-      <UButton icon="i-bx-x" color="gray" class="ml-auto" size="2xs" square @click="emits('close')"></UButton>
-    </template>
-
-    <UForm :state="state" @submit="submit">
+  <UiContent title="Giao Ca" sub="Nhân viên bàn giao ca">
+    <UForm :state="state" @submit="submit" class="bg-gray-1000 rounded-2xl p-4">
       <UFormGroup label="Thời gian bắt đầu ca làm" class="grow">
         <UInput type="datetime-local" v-model="state.time.start" />
       </UFormGroup>
@@ -26,9 +22,12 @@
       <UFormGroup label="Bàn giao đồ dịch vụ">
         <DataEmpty text="Không có sản phầm nào" class="min-h-[200px]" :loading="loading.item" v-if="!!loading.item || list.length == 0"></DataEmpty>
         <div class="grid grid-cols-12 gap-2">
-          <UiFlex type="col" items="start" class="col-span-6 bg-gray rounded-2xl p-4" v-for="item in list" :key="item._id">
-            <UiText weight="semibold" size="sm" color="orange" class="line-clamp-1 mb-2">{{ item.name }}</UiText>
-            <UInput v-model="stock[item._id]" placeholder="Số lượng" type="number" size="sm" />
+          <UiFlex class="col-span-6 md:col-span-4 bg-gray rounded-2xl p-4 md:p-2 gap-2 md:gap-4 flex-col md:flex-row" v-for="item in list" :key="item._id">
+            <UiImg :src="item.image" w="1" h="1" class="bg-gray-1000 rounded-xl max-w-[80px]"/>
+            <div>
+              <UiText weight="semibold" color="yellow" class="text-sm md:text-base text-center md:text-start line-clamp-1 mb-2">{{ item.name }}</UiText>
+              <UInput v-model="stock[item._id]" placeholder="Số lượng" type="number" size="sm" />
+            </div>
           </UiFlex>
         </div>
       </UFormGroup>
