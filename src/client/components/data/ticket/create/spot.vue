@@ -29,7 +29,7 @@
       <UiFlex wrap class="gap-0.5" justify="center" v-else>
         <UiFlex 
           type="col"
-          v-for="spot in list" :key="spot._id" 
+          v-for="spot in listFormat" :key="spot._id" 
           justify="center"
           :class="`bg-${statusFormat[spot.status]['color']}-500`" 
           class="p-4 w-[70px] h-[70px] cursor-pointer rounded-lg"
@@ -81,6 +81,10 @@ const statusFormat = {
   3: { color: 'red', label: 'Đang câu' },
   4: { color: 'purple', label: 'Sắp kết thúc' },
 }
+
+const listFormat = computed(() => {
+  return list.value.sort((a,b) => Number(a.code) - Number(b.code))
+})
 
 const selectShift = (data) => {
   selectData.value.shift = data.shift

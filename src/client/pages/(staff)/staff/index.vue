@@ -13,7 +13,7 @@
       <UiFlex wrap class="gap-0.5 lg:justify-start justify-center">
         <UiFlex 
           type="col"
-          v-for="spot in lake" :key="spot._id" 
+          v-for="spot in listFormat" :key="spot._id" 
           justify="center"
           :class="{
             [`bg-${statusFormat[spot.status]['color']}-500`]: true,
@@ -53,6 +53,10 @@ const statusFormat = {
   3: { color: 'red', label: 'Đang câu' },
   4: { color: 'purple', label: 'Sắp kết thúc' },
 }
+
+const listFormat = computed(() => {
+  return lake.value.sort((a,b) => Number(a.code) - Number(b.code))
+})
 
 const selectSpot = (spot) => {
   select.value = spot
