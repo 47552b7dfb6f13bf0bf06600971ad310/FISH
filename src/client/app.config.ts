@@ -29,7 +29,7 @@ export default defineAppConfig({
       background: 'bg-gray-1000',
       divide: 'divide-gray-100 dark:divide-gray-900',
       ring: 'ring-0',
-      base: 'relative overflow-x-hidden overflow-visible',
+      base: 'relative',
       rounded: 'rounded-2xl',
     },
 
@@ -63,7 +63,6 @@ export default defineAppConfig({
       overlay: {
         background: 'dark:bg-black/80 backdrop-blur'
       },
-      base: 'overflow-x-hidden overflow-visible',
       rounded: 'rounded-2xl',
     },
 
@@ -134,7 +133,7 @@ export default defineAppConfig({
     },
 
     selectMenu: {
-      base: 'overflow-x-hidden HideScroll',
+      base: 'HideScroll',
       rounded: 'rounded-2xl',
       padding: 'p-1',
       shadow: 'shadow-xl',
@@ -203,7 +202,6 @@ export default defineAppConfig({
     },
 
     dropdown: {
-      container: 'z-[50]',
       padding: 'p-0',
       shadow: 'shadow-xl',
       rounded: 'rounded-2xl',

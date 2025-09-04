@@ -1,25 +1,17 @@
 <template>
-  <div class="relative h-full min-h-full pt-[var(--header-size)]">
+  <div class="relative h-screen min-h-full">
     <LayoutManageHeader />
 
-    <UiFlex class="px-4 py-4 lg:gap-6 gap-0 h-full" items="start">
-      <div class="
-        HideScroll
-        sticky top-[calc(var(--header-size)+1rem)]
-        bg-gray-1000 bg-opacity-90 backdrop-blur-lg rounded-2xl
-        min-h-[calc(100vh-2rem-var(--header-size))] max-h-[calc(100vh-2rem-var(--header-size))] overflow-y-auto
-        lg:min-w-[250px] lg:max-w-[250px] lg:w-[250px]
-        hidden xl:flex
-      ">
+    <UiFlex class="xl:gap-6 gap-0 h-screen pt-[var(--header-size)]" items="start">
+      <aside class="hidden xl:block w-[250px] h-screen fixed top-0 left-0 overflow-y-auto HideScroll pt-[var(--header-size)] bg-gray-1000">
         <LayoutManageNav />
-      </div>
+      </aside>
 
-      <UContainer 
-        class="relative grow h-full !px-0 min-h-[calc(100vh-2rem-var(--header-size))] max-h-[calc(100vh-2rem-var(--header-size))] HideScroll" 
-        :ui="{ constrained: 'overflow-x-hidden overflow-y-auto' }
-      ">
-        <slot></slot>
-      </UContainer>
+      <main class="relative h-full flex-1 xl:ml-[250px] p-4 overflow-x-hidden">
+        <div class="max-w-[1800px] mx-auto">
+          <slot></slot>
+        </div>
+      </main>
     </UiFlex>
   </div>
 </template>
