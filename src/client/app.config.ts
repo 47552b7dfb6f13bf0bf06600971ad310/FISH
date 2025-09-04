@@ -59,7 +59,7 @@ export default defineAppConfig({
     },
 
     modal: {
-      container: 'items-center',
+      container: 'items-center sm:items-center',
       overlay: {
         background: 'dark:bg-black/80 backdrop-blur'
       },
