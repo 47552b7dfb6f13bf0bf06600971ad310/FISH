@@ -8,7 +8,7 @@
       </aside>
 
       <main class="relative h-full flex-1 xl:ml-[250px] p-4 overflow-x-hidden">
-        <div class="max-w-[1800px] mx-auto">
+        <div class="max-w-[1400px] mx-auto">
           <slot></slot>
         </div>
       </main>

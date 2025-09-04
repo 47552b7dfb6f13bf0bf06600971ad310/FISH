@@ -22,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="fish in area.fishs" :key="fish._id" class="border-t border-gray-800">
+          <tr v-for="fish in area.fishs" :key="fish._id" class="border-t border-gray-900">
             <td class="py-2">{{ fish.name }}</td>
             <td class="py-2">
               <UiText color="primary" v-if="fish.display != 0">{{ fish.nowAmount }} con</UiText>

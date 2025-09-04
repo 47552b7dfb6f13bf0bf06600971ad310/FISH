@@ -27,8 +27,7 @@ const tabs = [
   { label: 'Hồ Câu', key: '/staff' },
   { label: 'Gọi Dịch Vụ', key: '/staff/order' },
   { label: 'Đăng Ký Cơm', key: '/staff/lunch' },
-  { label: 'Đơn Nối Ca', key: '/staff/connect' },
-  { label: 'Giao Ca', key: '/staff/close' },
+  { label: 'Đơn Nối Ca', key: '/staff/connect' }
 ]
 
 watch(tab, (val) => navigateTo(tabs[val]['key']))

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UiTitle name="Xếp Hạng Tuần" icon="i-solar-ranking-bold-duotone" class="mb-4" />
+    <!-- <UiTitle name="Xếp Hạng Tuần" icon="i-solar-ranking-bold-duotone" class="mb-4" /> -->
 
     <DataEmpty text="Xếp hạng hiện tại đang được cập nhật" :loading="loading" v-if="!!loading || list.length == 0" />
     <UiFlex type="col" class="grow gap-4" v-else>
