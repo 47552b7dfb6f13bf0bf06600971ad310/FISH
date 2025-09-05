@@ -1,6 +1,6 @@
 <template>
   <header class="
-    bg-[#0d151c]
+    bg-[#09121b]
     sticky top-0
     w-full
     flex items-center

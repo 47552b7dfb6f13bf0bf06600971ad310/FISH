@@ -1,5 +1,8 @@
 <template>
   <div class="max-w-[900px] mx-auto @container">
+    <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Hội Viên</UiText>
+    <UiText color="gray" class="text-base md:text-xl mb-4" align="center">Nâng cấp hội viên để nhận được những ưu đãi hấp dẫn</UiText>
+
     <div class="grid grid-cols-12 gap-4">
       <UCard 
         class="

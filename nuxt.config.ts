@@ -31,7 +31,7 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
       meta: [
-        { name: 'theme-color', content: '#0d151c' },
+        { name: 'theme-color', content: '#09121b' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
@@ -98,8 +98,8 @@ export default defineNuxtConfig({
       name: process.env.NAME,
       short_name: process.env.SHORT_NAME,
       description: process.env.DESCRIPTION,
-      theme_color: '#0d151c',
-      background_color: '#0d151c',
+      theme_color: '#09121b',
+      background_color: '#09121b',
       display: 'standalone',
       start_url: '/',
       orientation: "portrait",

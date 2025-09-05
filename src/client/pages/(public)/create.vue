@@ -1,7 +1,8 @@
 <template>
   <UiFlex type="col">
-    <UiText class="uppercase text-[1.5rem] md:text-[2rem] mb-4" weight="semibold" align="center">Hệ Thống Đặt Chỗ</UiText>
-
+    <UiText class="uppercase text-[1.5rem] md:text-[2rem]" weight="semibold" align="center">Hệ Thống Đặt Chỗ</UiText>
+    <UiText color="gray" class="text-base md:text-xl mb-4" align="center">Để tránh bị trùng ô, quý khách vui lòng đến ô câu trước rồi hãy tiến hành đặt chỗ</UiText>
+    
     <DataTicketCreateArea v-if="step == 1" class="w-full" @area="selectArea"/>
     <DataTicketCreateSpot v-else-if="step == 2" :area="state.area" class="w-full" @spot="selectSpot" @back="back"/>
     <DataTicketCreatePay v-else-if="step == 3" :area="state.area" :spot="state.spot" :shift="state.shift" :lunch="state.lunch" class="w-full" @back="back"/>
