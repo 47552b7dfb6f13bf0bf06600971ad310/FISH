@@ -6,12 +6,20 @@
       :columns="selectedColumns" 
       :rows="list"
     >
-      <template #totalAmount-data="{ row }">
-        <UiText color="green" weight="bold">{{ useMoney().toMoney(row.totalAmount) }}</UiText> 
+      <template #amount-data="{ row }">
+        <UiText color="rose" weight="bold">{{ useMoney().toMoney(row.amount) }}</UiText> 
       </template>
 
-      <template #totalMoney-data="{ row }">
-        <UiText color="yellow" weight="bold">{{ useMoney().toMoney(row.totalMoney) }}</UiText> 
+      <template #money-data="{ row }">
+        <UiText color="orange" weight="bold">{{ useMoney().toMoney(row.money) }}</UiText> 
+      </template>
+
+      <template #bank-data="{ row }">
+        <UiText color="orange" weight="bold">{{ useMoney().toMoney(row.bank) }}</UiText> 
+      </template>
+
+      <template #total-data="{ row }">
+        <UiText color="primary" weight="bold">{{ useMoney().toMoney(row.total) }}</UiText> 
       </template>
     </UTable>
   </UCard>
@@ -27,12 +35,20 @@ const columns = [
     key: 'name',
     label: 'Sản phẩm',
   },{
-    key: 'totalAmount',
-    label: 'Số lượng bán',
+    key: 'amount',
+    label: 'Số lượng',
     sortable: true
   },{
-    key: 'totalMoney',
-    label: 'Tổng tiền bán',
+    key: 'money',
+    label: 'Chuyển khoản',
+    sortable: true
+  },{
+    key: 'bank',
+    label: 'Tiền mặt',
+    sortable: true
+  },{
+    key: 'total',
+    label: 'Tổng',
     sortable: true
   }
 ]

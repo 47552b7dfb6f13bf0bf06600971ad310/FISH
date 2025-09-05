@@ -53,15 +53,34 @@ export default defineEventHandler(async (event) => {
 
     const data = await DB.TicketOrder.aggregate([
       { $match: match },
-      { $project: { cart: 1 }},
+      { $project: { cart: 1, pay: 1 }},
       { $unwind: "$cart" },
-      { 
+      {
         $group: {
-          _id: "$cart.item", 
-          totalAmount: { $sum: "$cart.amount" },
-          totalMoney: { $sum: { $multiply: ["$cart.amount", "$cart.price"] } }
+          _id: { item: "$cart.item", payType: "$pay.type" },
+          amount: { $sum: "$cart.amount" },
+          money: { $sum: { $multiply: ["$cart.amount", "$cart.price"] } },
         }
       },
+      {
+        $group: {
+          _id: "$_id.item",
+          amount: { $sum: "$amount" },
+          money: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.payType", "MONEY"] }, "$money", 0]
+            }
+          },
+          bank: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.payType", "BANK"] }, "$money", 0]
+            }
+          }
+        }
+      },
+      { $addFields: {
+        total: { $add: ["$money", "$bank"] }
+      }},
       {
         $lookup: {
           from: "Item",
@@ -76,8 +95,10 @@ export default defineEventHandler(async (event) => {
       { $unwind: { path: "$item", preserveNullAndEmptyArrays: true } },
       { $project: {
         name: '$item.name',
-        totalAmount: 1,
-        totalMoney: 1
+        amount: 1,
+        money: 1,
+        bank: 1,
+        total: 1
       }}
     ])
 
