@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['staff'])
+const props = defineProps(['staff', 'type', 'range', 'update'])
 
 // List
 const list = ref([])
@@ -149,7 +149,9 @@ const page = ref({
   },
   total: 0,
   area: null,
-  staff: props.staff
+  staff: props.staff,
+  type: props.type,
+  range: props.range
 })
 watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
@@ -157,7 +159,7 @@ watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.area, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
-watch(() => props.staff, () => getList())
+watch(() => props.update, () => getList())
 
 const statusTicket = {
   0: { label: 'Chưa Thanh Toán', color: 'gray' },
@@ -189,7 +191,11 @@ const selectTicket = (ticket) => {
 const getList = async () => {
   try {
     loading.value.load = true
+
     page.value.staff = props.staff
+    page.value.type = props.type
+    page.value.range = props.range
+
     const data = await useAPI('statistic/staff/ticket', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false

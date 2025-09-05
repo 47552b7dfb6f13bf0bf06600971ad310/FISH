@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     if(!staff) throw 'Không tìm thấy ID nhân viên'
     if(!type) throw 'Dữ liệu đầu vào không đủ'
     if(type == 'total' && !range) throw 'Dữ liệu đầu vào không đủ'
-    
+
     const sorting : any = { }
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
@@ -75,17 +75,16 @@ export default defineEventHandler(async (event) => {
     if(!!start && !!end) match['createdAt'] = { $gte: new Date(start['$d']), $lte: new Date(end['$d']) }
 
 
-    const list = await DB.TicketConnect
+    const list = await DB.TicketOrder
     .find(match)
     .populate({ path: 'ticket', select: 'code' })
     .populate({ path: 'user', select: 'name phone' })
-    .populate({ path: 'old', select: 'duration' })
-    .populate({ path: 'new', select: 'duration' })
+    .populate({ path: 'cart.item', select: 'name' })
     .sort(sorting)
     .limit(size)
     .skip((current - 1) * size)
 
-    const total = await DB.TicketConnect.count(match)
+    const total = await DB.TicketOrder.count(match)
     return resp(event, { result: { list, total } })
   } 
   catch (e:any) {

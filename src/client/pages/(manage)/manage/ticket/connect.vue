@@ -21,11 +21,11 @@
         :rows="list"
       >
         <template #code-data="{ row }">
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectOrder(row.code)">{{ row.code }}</UBadge>
+          <UBadge variant="soft" color="primary">{{ row.code }}</UBadge>
         </template>
 
         <template #ticket-data="{ row }">
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket)" v-if="row.ticket">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="purple" @click="selectTicket(row.ticket)" v-if="row.ticket">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
           <span v-else>...</span>
         </template>
 

@@ -1,7 +1,14 @@
 <template>
   <div>
-    <UiFlex class="gap-1">
+    <UiFlex class="gap-1" wrap="">
       <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" />
+
+      <UForm :state="page" @submit="page.current = 1, getList()">
+        <UiFlex class="gap-1">
+          <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />
+          <USelectMenu v-model="page.search.by" :options="['CODE', 'TICKET', 'USER']" />
+        </UiFlex>
+      </UForm>
     </UiFlex>
     
     <!-- Table -->
@@ -13,9 +20,13 @@
         :columns="selectedColumns" 
         :rows="list"
       >
+        <template #code-data="{ row }">
+          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectOrder(row.code)">{{ row.code }}</UBadge>
+        </template>
+
         <template #ticket-data="{ row }">
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectTicket(row.ticket)" v-if="row.ticket">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
-          <UBadge variant="soft" class="cursor-pointer" color="primary" @click="selectOrder(row.code)" v-else>{{ row.code }}</UBadge>
+          <UBadge variant="soft" class="cursor-pointer" color="purple" @click="selectTicket(row.ticket)" v-if="row.ticket">{{ row.ticket ? row.ticket.code : '...' }}</UBadge>
+          <span v-else>...</span>
         </template>
 
         <template #user-data="{ row }">
@@ -63,7 +74,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['staff'])
+const props = defineProps(['staff', 'type', 'range', 'update'])
 
 // List
 const list = ref([])
@@ -71,11 +82,11 @@ const list = ref([])
 // Columns
 const columns = [
   {
-    key: 'ticket',
-    label: 'Xem đơn',
-  },{
     key: 'code',
     label: 'Mã đơn',
+  },{
+    key: 'ticket',
+    label: 'Kèm vé',
   },{
     key: 'user',
     label: 'Khách',
@@ -107,14 +118,21 @@ const page = ref({
     column: 'createdAt',
     direction: 'desc'
   },
+  search: {
+    key: null,
+    by: 'CODE'
+  },
   total: 0,
-  staff: props.staff
+  staff: props.staff,
+  type: props.type,
+  range: props.range
 })
 watch(() => page.value.size, () => getList())
 watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
-watch(() => props.staff, () => getList())
+watch(() => page.value.search.key, (val) => !val && getList())
+watch(() => props.update, () => getList())
 
 const statusOrder = {
   0: { label: 'Chưa Thanh Toán', color: 'gray' },
@@ -146,13 +164,16 @@ const selectOrder = (code) => {
   modal.value.order = true
 }
 
-
 // Fetch
 const getList = async () => {
   try {
     loading.value.load = true
+
     page.value.staff = props.staff
-    const data = await useAPI('statistic/staff/order', JSON.parse(JSON.stringify(page.value)))
+    page.value.type = props.type
+    page.value.range = props.range
+
+    const data = await useAPI('statistic/staff/order/list', JSON.parse(JSON.stringify(page.value)))
 
     loading.value.load = false
     list.value = data.list

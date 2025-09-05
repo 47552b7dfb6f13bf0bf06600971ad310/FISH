@@ -163,16 +163,16 @@
         <UTabs v-model="tabMore" :items="tabMoreList"></UTabs>
       </UiFlex>
 
-      <ManageStatisticStaffTicket v-if="tabMore == 0" :staff="staff" />
-      <ManageStatisticStaffOrder v-if="tabMore == 1" :staff="staff" />
-      <ManageStatisticStaffConnect v-if="tabMore == 2" :staff="staff" />
+      <ManageStatisticStaffTicket v-if="tabMore == 0" :staff="staff" :type="type" :range="range" :update="update" />
+      <ManageStatisticStaffOrder v-if="tabMore == 1" :staff="staff" :type="type" :range="range" :update="update" />
+      <ManageStatisticStaffConnect v-if="tabMore == 2" :staff="staff" :type="type" :range="range" :update="update" />
     </div>
   </div>
 </template>
 
 <script setup>
 const { toMoney } = useMoney()
-
+const update = ref(0)
 const loading = ref(false)
 const tab = ref(0)
 const staff = ref()
@@ -223,14 +223,15 @@ watch(() => range.value.end, (val) => {
 const getData = async () => {
   try {
     loading.value = true
-    const get = await useAPI('statistic/staff/fast', { 
+    const get = await useAPI('statistic/staff/fast', JSON.parse(JSON.stringify({ 
       type: type.value,
       staff: staff.value,
       range: range.value
-    })
+    })))
 
     data.value = get
     loading.value = false
+    update.value = update.value + 1
   }
   catch {
     return
