@@ -7,15 +7,15 @@
       :rows="list"
     >
       <template #amount-data="{ row }">
-        <UiText color="rose" weight="bold">{{ useMoney().toMoney(row.amount) }}</UiText> 
+        <UiText color="yellow" weight="bold">{{ useMoney().toMoney(row.amount) }}</UiText> 
       </template>
 
       <template #money-data="{ row }">
-        <UiText color="orange" weight="bold">{{ useMoney().toMoney(row.money) }}</UiText> 
+        <UiText color="gray" weight="bold">{{ useMoney().toMoney(row.money) }}</UiText> 
       </template>
 
       <template #bank-data="{ row }">
-        <UiText color="orange" weight="bold">{{ useMoney().toMoney(row.bank) }}</UiText> 
+        <UiText color="gray" weight="bold">{{ useMoney().toMoney(row.bank) }}</UiText> 
       </template>
 
       <template #total-data="{ row }">
@@ -40,11 +40,11 @@ const columns = [
     sortable: true
   },{
     key: 'money',
-    label: 'Chuyển khoản',
+    label: 'Tiền mặt',
     sortable: true
   },{
     key: 'bank',
-    label: 'Tiền mặt',
+    label: 'Chuyển khoản',
     sortable: true
   },{
     key: 'total',
